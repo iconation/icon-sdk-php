@@ -24,6 +24,9 @@ There is also some wallet support, but is not yet stable for production.
 
 TODO
 --------
+* icx_sendTransaction
+
+
 Usage:..
 
 
