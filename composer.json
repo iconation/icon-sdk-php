@@ -1,0 +1,31 @@
+{
+  "name": "mitsosf/icon-sdk-php",
+  "description": "SDK to communicate with the ICON JSON-RPC server",
+  "keywords": [
+    "icon",
+    "icx"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dimitris Frangiadakis",
+      "email": "dimitris@frangiadakis.com"
+    }
+  ],
+  "type": "library",
+  "require": {
+    "php": ">=7.1",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-gmp": "*",
+    "simplito/elliptic-php": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "6.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "mitsosf\\IconSDK\\": "src/"
+    }
+  }
+}
