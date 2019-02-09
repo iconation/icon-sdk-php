@@ -22,6 +22,7 @@ class IconService
     //Mainnet
     //private $icon_service_URL = 'https://ctz.solidwallet.io/api/v3';
     private $icon_service_URL = "https://bicon.net.solidwallet.io/api/v3";
+
     /**
      * icx_getLastBlock
      *
@@ -417,6 +418,7 @@ class IconService
         $private_key_object = $ec->keyFromPrivate($privateKey);
 
         //Create Signature
+
         $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
         //TODO Delete
 
@@ -426,10 +428,10 @@ class IconService
             "s" => $signing->s->toString("hex")
 
         );
-        $rec_id = $signing->recoveryParam;
-        $signature =  $sign["r"].$sign["s"];
+        $rec_id = dechex($signing->recoveryParam + 27);
+        return $rec_id;
+        $signature = $sign["r"] . $sign["s"] . $rec_id;
         $transaction_signature = base64_encode(hex2bin($signature));
-        //return $transaction_signature;
 
         //Add signature to transaction data
         $data["params"]["signature"] = $transaction_signature;

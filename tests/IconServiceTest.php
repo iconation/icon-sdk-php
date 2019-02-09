@@ -150,7 +150,7 @@ class IconServiceTest extends TestCase
 
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5";
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
-        $to = "hxe60702311be204646b247ea60be90668d6d01a67";
+        $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
         $value = "0xde0b6b3a7640000";
         $stepLimit = "0x186a0";
         $version = "0x3";
