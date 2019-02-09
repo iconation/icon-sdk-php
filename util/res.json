@@ -1,0 +1,16 @@
+{
+  "jsonrpc": "2.0",
+  "method": "icx_call",
+  "id": 1234,
+  "params": {
+    "version": "0x3",
+    "from": "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160",
+    "to": "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d",
+    "value": "0xde0b6b3a7640000",
+    "stepLimit": "0x186a0",
+    "timestamp": "0x168d38e7845",
+    "nid": "0x3",
+    "nonce": "0x1",
+    "signature": "kAxLRDmwmd+3Igyjxzqn8SLwWzbr8rRXFFokcPJJo80MObhlEEjp6oCdl\/kqFWvWKNTMp0iXaFRzeCzrDwrYpQE="
+  }
+}

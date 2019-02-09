@@ -420,7 +420,6 @@ class IconService
         //Create Signature
 
         $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //TODO Delete
 
         //Break down into components and then assemble
         $sign = array(
@@ -428,17 +427,39 @@ class IconService
             "s" => $signing->s->toString("hex")
 
         );
-        $rec_id = dechex($signing->recoveryParam + 27);
-        return $rec_id;
-        $signature = $sign["r"] . $sign["s"] . $rec_id;
+        $rec_id = $signing->recoveryParam;
+
+        $signature = $sign["r"] . $sign["s"] . '0'.$rec_id;
+        print($signature);
+
         $transaction_signature = base64_encode(hex2bin($signature));
 
+        //TODO Remove
+
+        try {
+            $sign = array(
+                "r" => substr($signature,0,64),
+                "s" => substr($signature,64, 64)
+            );
+
+            $rec_id = (int)substr($signature,128,130);
+
+            $pubkey = $ec->recoverPubKey($msg_hash, $sign, $rec_id);
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+        $pubkey = $ec->keyFromPublic($pubkey)->getPublic(false, 'hex');
+        return Wallet::pubKeyToAddress($pubkey);
+        //END TODO
+        
         //Add signature to transaction data
         $data["params"]["signature"] = $transaction_signature;
 
         //Send request to RPC
         $data_string = json_encode($data);
 
+        return $data_string;
         $ch = curl_init($this->icon_service_URL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
