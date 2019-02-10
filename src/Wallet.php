@@ -59,22 +59,15 @@ class Wallet
         }
 
         $publicKey = $ec->keyFromPrivate($private_key)->getPublic(false, 'hex');
-        if (!$this->isPublicKey(substr($publicKey,2))){
-            throw new \Exception('Invalid public key');
-        }
-
-        $address = $this->pubKeyToAddress($publicKey);
-        //TODO check if valid address
-        return $address;
+        return substr($publicKey,2);
     }
 
-    static function pubKeyToAddress($pubkey) {
-        return "hx" . substr(hash('sha3-256', substr(hex2bin($pubkey),1)),-40);
-        //return "hx" . substr(Keccak::hash(substr(hex2bin($pubkey),1), 256),-40);
+    public function pubKeyToAddress($publicKey) {
+        return "hx" . substr(hash('sha3-256', hex2bin($publicKey)),-40);
     }
 
 
-    private function isPrivateKey($key)
+    public function isPrivateKey($key)
     {
         $length = 64;
         if (strlen($key)!== $length){
@@ -88,7 +81,7 @@ class Wallet
         return true;
     }
 
-    private function isPublicKey($key){
+    public function isPublicKey($key){
         $length = 128;
         if (strlen($key)!== $length){
             return false;
