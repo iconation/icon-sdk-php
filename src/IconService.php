@@ -399,7 +399,7 @@ class IconService
                 "nonce" => "0x1"
             )
         );
-        
+
         //Serialize transaction
         $params = $data['params'];
         //Sort table depending on keys
@@ -409,27 +409,28 @@ class IconService
         foreach ($params as $key => $value) {
             $serialized_transaction .= "." . $key . "." . $value;
         }
-        //return $serialized_transaction;
+        //Hash serialized transaction
         $msg_hash = hash('sha3-256', $serialized_transaction);
 
+        //Initialize secp256k1 elliptic curve
         $ec = new EC('secp256k1');
 
+        //Initialize private key object
         $private_key_object = $ec->keyFromPrivate($privateKey);
 
-        //Create Signature
-
+        //Sign transaction
         $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-
         //Break down into components and then assemble
         $sign = array(
             "r" => $signing->r->toString("hex"),
             "s" => $signing->s->toString("hex")
 
         );
+        //Get recovery bit
         $rec_id = $signing->recoveryParam;
-
+        //Convert signature to hex string
         $signature = $sign["r"] . $sign["s"] . '0'.$rec_id;
-
+        //Encode hex signature to base64
         $transaction_signature = base64_encode(hex2bin($signature));
 
         //Add signature to transaction data
@@ -437,7 +438,6 @@ class IconService
 
         //Send request to RPC
         $data_string = json_encode($data);
-        //return json_decode($data_string);
         $ch = curl_init($this->icon_service_URL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);

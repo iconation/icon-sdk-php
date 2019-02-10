@@ -148,13 +148,13 @@ class IconServiceTest extends TestCase
     {
         $var = new mitsosf\IconSDK\IconService;
 
-        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5";
+        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
-        $value = "0xde0b6b3a7640000";
-        $stepLimit = "0x186a0";
+        $value = "0x2386f26fc10000"; // = 0.01 ICX
+        $stepLimit = "0x186a0"; // = 100000 steps
         $version = "0x3";
-        $nid = "0x3";
+        $nid = "0x3";  // YEOUIDO network
         $test = $var->icx_sendTransaction($from, $to, $value, $stepLimit, $private_key, $version, $nid);
         var_dump($test);
 
