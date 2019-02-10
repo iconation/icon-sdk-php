@@ -133,18 +133,17 @@ class IconServiceTest extends TestCase
     public function test_debug_estimateStep(){
         $var = new mitsosf\IconSDK\IconService;
 
-        $version = "0x3";
         $from = "hxc4193cda4a75526bf50896ec242d6713bb6b02a3";
         $to = "hxaa36c3e67d51f993a900fd5acf8b1eb5029c5dfd";
         $timestamp = "0x5c42da6830136";
         $value = "0xde0b6b3a7640000";
 
-        fwrite(STDERR, print_r($var->debug_estimateStep($version, $from, $to, $timestamp, $value), TRUE));
-        $this->assertTrue(!isset($var->debug_estimateStep($version, $from, $to, $timestamp, $value)->error));
+        fwrite(STDERR, print_r($var->debug_estimateStep($from, $to, $timestamp, $value), TRUE));
+        $this->assertTrue(!isset($var->debug_estimateStep(from, $to, $timestamp, $value)->error));
         unset($var);
-    }*/
+    }
 
-    public function test_icx_sendTransaction()
+    public function test_send()
     {
         $var = new mitsosf\IconSDK\IconService;
 
@@ -153,12 +152,97 @@ class IconServiceTest extends TestCase
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
         $value = "0x2386f26fc10000"; // = 0.01 ICX
         $stepLimit = "0x186a0"; // = 100000 steps
-        $version = "0x3";
         $nid = "0x3";  // YEOUIDO network
-        $test = $var->icx_sendTransaction($from, $to, $value, $stepLimit, $private_key, $version, $nid);
+        $test = $var->send($from, $to, $value, $stepLimit, $private_key, $nid);
         var_dump($test);
 
         unset($var);
+
+    }
+
+    public function test_callSCORE()
+    {
+        //TODO properly test with contract
+        $var = new mitsosf\IconSDK\IconService;
+
+        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
+        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
+        $to = "cxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
+        $stepLimit = "0x186a0"; // = 100000 steps
+        $nid = "0x3";  // YEOUIDO network
+        $method = "tranfer";
+        $params = array(
+            "to" => "hxmyAss",
+            "value" => "0x1231"
+        );
+        $test = $var->callSCORE($from, $to, $stepLimit, $private_key, $method, $params, $nid);
+        var_dump($test);
+
+        unset($var);
+
+    }
+
+    public function test_installSCORE()
+    {
+        //TODO properly test with contract
+        $var = new mitsosf\IconSDK\IconService;
+
+        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
+        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
+        $value = "0x2386f26fc10000"; // = 0.01 ICX
+        $stepLimit = "0x186a0"; // = 100000 steps
+        $nid = "0x3";  // YEOUIDO network
+        $score = "0xtestScoreData";
+        $params = array(
+            "name" => "TestTokenn",
+            "symbol" => "tst",
+            "decimals" => "0x12"  //18
+        );
+        $test = $var->installSCORE($from, $value, $stepLimit, $private_key, $score, $params, $nid);
+        var_dump($test);
+
+        unset($var);
+
+    }
+
+    public function test_updateSCORE()
+    {
+        //TODO properly test with contract
+        $var = new mitsosf\IconSDK\IconService;
+
+        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
+        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
+        $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";s
+        $stepLimit = "0x186a0"; // = 100000 steps
+        $nid = "0x3";  // YEOUIDO network
+        $score = "0xtestScoreData";
+        $params = array(
+            "amount" => "0x123"
+        );
+        $test = $var->updateSCORE($from, $to, $stepLimit, $private_key, $score, $params, $nid);
+        var_dump($test);
+
+        unset($var);
+
+    }*/
+
+    public function test_message()
+    {
+        $var = new mitsosf\IconSDK\IconService;
+
+        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
+        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
+        $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
+        //Lorem ipsum for message
+        $message = "Testing the Messaging system";
+        $stepLimit = "0xfffff"; // = 100000 steps
+        $nid = "0x3";  // YEOUIDO network
+
+        $test = $var->message($from, $to, $stepLimit, $private_key, $message, $nid);
+        var_dump($test);
+
+        unset($var);
+        //TODO Assert stuff
 
     }
 }
