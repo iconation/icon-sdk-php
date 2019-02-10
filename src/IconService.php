@@ -386,7 +386,7 @@ class IconService
         //Create transaction table
         $data = array(
             "jsonrpc" => "2.0",
-            "method" => "icx_call",
+            "method" => "icx_sendTransaction",
             "id" => 1234,
             "params" => array(
                 "version" => $version,
@@ -399,8 +399,7 @@ class IconService
                 "nonce" => "0x1"
             )
         );
-
-
+        
         //Serialize transaction
         $params = $data['params'];
         //Sort table depending on keys
@@ -430,36 +429,15 @@ class IconService
         $rec_id = $signing->recoveryParam;
 
         $signature = $sign["r"] . $sign["s"] . '0'.$rec_id;
-        print($signature);
 
         $transaction_signature = base64_encode(hex2bin($signature));
 
-        //TODO Remove
-
-        try {
-            $sign = array(
-                "r" => substr($signature,0,64),
-                "s" => substr($signature,64, 64)
-            );
-
-            $rec_id = (int)substr($signature,128,130);
-
-            $pubkey = $ec->recoverPubKey($msg_hash, $sign, $rec_id);
-
-        } catch (\Exception $e) {
-            return $e;
-        }
-        $pubkey = $ec->keyFromPublic($pubkey)->getPublic(false, 'hex');
-        return Wallet::pubKeyToAddress($pubkey);
-        //END TODO
-        
         //Add signature to transaction data
         $data["params"]["signature"] = $transaction_signature;
 
         //Send request to RPC
         $data_string = json_encode($data);
-
-        return $data_string;
+        //return json_decode($data_string);
         $ch = curl_init($this->icon_service_URL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -526,7 +504,7 @@ class IconService
 
     private function getBase64TimestampInMilliseconds()
     {
-        $milliseconds = round(microtime(true) * 1000);
+        $milliseconds = round(microtime(true) * 1000000);
         $milliseconds = '0x' . dechex($milliseconds);
 
         return $milliseconds;
