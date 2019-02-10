@@ -21,10 +21,15 @@ class IconService
      */
     //Mainnet
     //private $icon_service_URL = 'https://ctz.solidwallet.io/api/v3';
+    //Yeouido
+    //private $icon_service_URL = "https://bicon.net.solidwallet.io/api/v3";
 
     private $version = "0x3";
-    private $icon_service_URL = "https://bicon.net.solidwallet.io/api/v3";
+    private $icon_service_URL;
 
+    public function __construct($url){
+        $this->icon_service_URL = $url;
+    }
     /**
      * icx_getLastBlock
      *
@@ -454,7 +459,7 @@ class IconService
         return json_decode($result);
     }
 
-    public function callSCORE($from, $to, $value, $stepLimit, string $privateKey, string $method, array $params, $nid = '0x1')
+    public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, array $params, $nid = '0x1')
     {
         //Create transaction table
         $data = array(
@@ -465,7 +470,6 @@ class IconService
                 "version" => $this->version,
                 "from" => $from,
                 "to" => $to,
-                "value" => $value,
                 "stepLimit" => $stepLimit,
                 "timestamp" => $this->getBase64TimestampInMilliseconds(),
                 "nid" => $nid,
