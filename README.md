@@ -18,13 +18,13 @@ Already fully or partially supports the following JSON-RPC functions:
 * icx_getTransactionResult
 * icx_getTransactionByHash
 * ise_getStatus
+* icx_sendTransaction --Partial support, can only send ICX for now
 
 There is also some wallet support, but is not yet stable for production.
 
 
 TODO
 --------
-* icx_sendTransaction
 
 
 Usage:..
