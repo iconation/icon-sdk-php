@@ -3,14 +3,8 @@
 namespace mitsosf\IconSDK;
 
 use Elliptic\EC;
-use Elliptic\Utils;
 
 /**
- *  A sample class
- *
- *  Use this section to define what this class is doing, the PHPDocumentator will use this
- *  to automatically generate an API documentation using this information.
- *
  * @author Dimitris Frangiadakis
  */
 class IconService
@@ -21,7 +15,15 @@ class IconService
      */
     //Mainnet
     //private $icon_service_URL = 'https://ctz.solidwallet.io/api/v3';
-    private $icon_service_URL = "https://bicon.net.solidwallet.io/api/v3";
+    //Yeouido
+    //private $icon_service_URL = "https://bicon.net.solidwallet.io/api/v3";
+
+    private $version = "0x3";
+    private $icon_service_URL;
+
+    public function __construct($url){
+        $this->icon_service_URL = $url;
+    }
 
     /**
      * icx_getLastBlock
@@ -47,7 +49,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -83,7 +85,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -119,7 +121,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -164,7 +166,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -200,7 +202,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -236,7 +238,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -267,7 +269,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -303,7 +305,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -339,7 +341,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -375,21 +377,21 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
     }
 
-    public function icx_sendTransaction($from, $to, $value, $stepLimit, string $privateKey, $version = "0x3", $nid = '0x1')
+    public function send($from, $to, $value, $stepLimit, string $privateKey, $nid = '0x1')
     {
         //Create transaction table
         $data = array(
             "jsonrpc" => "2.0",
-            "method" => "icx_call",
+            "method" => "icx_sendTransaction",
             "id" => 1234,
             "params" => array(
-                "version" => $version,
+                "version" => $this->version,
                 "from" => $from,
                 "to" => $to,
                 "value" => $value,
@@ -400,7 +402,6 @@ class IconService
             )
         );
 
-
         //Serialize transaction
         $params = $data['params'];
         //Sort table depending on keys
@@ -410,27 +411,28 @@ class IconService
         foreach ($params as $key => $value) {
             $serialized_transaction .= "." . $key . "." . $value;
         }
-        //return $serialized_transaction;
+        //Hash serialized transaction
         $msg_hash = hash('sha3-256', $serialized_transaction);
 
+        //Initialize secp256k1 elliptic curve
         $ec = new EC('secp256k1');
 
+        //Initialize private key object
         $private_key_object = $ec->keyFromPrivate($privateKey);
 
-        //Create Signature
-
+        //Sign transaction
         $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //TODO Delete
-
         //Break down into components and then assemble
         $sign = array(
             "r" => $signing->r->toString("hex"),
             "s" => $signing->s->toString("hex")
 
         );
-        $rec_id = dechex($signing->recoveryParam + 27);
-        return $rec_id;
-        $signature = $sign["r"] . $sign["s"] . $rec_id;
+        //Get recovery bit
+        $rec_id = $signing->recoveryParam;
+        //Convert signature to hex string
+        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
+        //Encode hex signature to base64
         $transaction_signature = base64_encode(hex2bin($signature));
 
         //Add signature to transaction data
@@ -438,7 +440,6 @@ class IconService
 
         //Send request to RPC
         $data_string = json_encode($data);
-
         $ch = curl_init($this->icon_service_URL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -447,12 +448,373 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
     }
 
+    public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, array $params, $nid = '0x1')
+    {
+        //Create transaction table
+        $data = array(
+            "jsonrpc" => "2.0",
+            "method" => "icx_sendTransaction",
+            "id" => 1234,
+            "params" => array(
+                "version" => $this->version,
+                "from" => $from,
+                "to" => $to,
+                "stepLimit" => $stepLimit,
+                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "nid" => $nid,
+                "nonce" => "0x1",
+                "dataType" => "call",
+                "data" => array(
+                    "method" => $method,
+                    "params" => $params
+                )
+
+            )
+        );
+
+        //Serialize transaction
+        $params = $data['params'];
+        //Sort all tables depending on keys
+        ksort($params);
+        ksort($params)['data'];
+        ksort($params['data']['params']);
+
+        //Prepare the string
+        $serialized_transaction = "icx_sendTransaction.";
+        foreach ($params as $key => $value) {
+            if (!is_array($value)) {
+                $serialized_transaction .= $key . "." . $value . ".";
+            } else {
+                $serialized_transaction .= $key . ".{";
+                foreach ($value as $data_key => $data_value) {
+                    if (!is_array($data_value)) {
+                        $serialized_transaction .= $data_key . "." . $data_value . ".";
+                    } else {
+                        $serialized_transaction .= $data_key . ".{";
+                        foreach ($data_value as $param_key => $param_value) {
+                            $serialized_transaction .= $param_key . "." . $param_value . ".";
+                        }
+                        $serialized_transaction = substr($serialized_transaction, 0, -1);
+                        $serialized_transaction .= "}";
+                    }
+                }
+                $serialized_transaction .= "}.";
+            }
+        }
+        $serialized_transaction = substr($serialized_transaction, 0, -1);
+
+        //Hash serialized transaction
+        $msg_hash = hash('sha3-256', $serialized_transaction);
+
+        //Initialize secp256k1 elliptic curve
+        $ec = new EC('secp256k1');
+
+        //Initialize private key object
+        $private_key_object = $ec->keyFromPrivate($privateKey);
+
+        //Sign transaction
+        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
+        //Break down into components and then assemble
+        $sign = array(
+            "r" => $signing->r->toString("hex"),
+            "s" => $signing->s->toString("hex")
+
+        );
+        //Get recovery bit
+        $rec_id = $signing->recoveryParam;
+        //Convert signature to hex string
+        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
+        //Encode hex signature to base64
+        $transaction_signature = base64_encode(hex2bin($signature));
+
+        //Add signature to transaction data
+        $data["params"]["signature"] = $transaction_signature;
+
+        //Send request to RPC
+        $data_string = json_encode($data);
+        $ch = curl_init($this->icon_service_URL);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+
+        $result = $this->sendRequest($data);
+
+        //Return as object
+        return json_decode($result);
+    }
+
+    public function installSCORE($from, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
+    {
+        //Create transaction table
+        $data = array(
+            "jsonrpc" => "2.0",
+            "method" => "icx_sendTransaction",
+            "id" => 1234,
+            "params" => array(
+                "version" => $this->version,
+                "from" => $from,
+                "to" => "cx0000000000000000000000000000000000000000", // address 0 means SCORE install
+                "stepLimit" => $stepLimit,
+                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "nid" => $nid,
+                "nonce" => "0x1",
+                "dataType" => "deploy",
+                "data" => array(
+                    "content" => $score, // compressed SCORE data
+                    "contentType" => "application/zip",
+                    "params" => $params // parameters to be passed to on_install()
+                )
+
+            )
+        );
+
+        //Serialize transaction
+        $params = $data['params'];
+        //Sort all tables depending on keys
+        ksort($params);
+        ksort($params)['data'];
+        ksort($params['data']['params']);
+
+        //Prepare the string
+        $serialized_transaction = "icx_sendTransaction.";
+        foreach ($params as $key => $value) {
+            if (!is_array($value)) {
+                $serialized_transaction .= $key . "." . $value . ".";
+            } else {
+                $serialized_transaction .= $key . ".{";
+                foreach ($value as $data_key => $data_value) {
+                    if (!is_array($data_value)) {
+                        $serialized_transaction .= $data_key . "." . $data_value . ".";
+                    } else {
+                        $serialized_transaction .= $data_key . ".{";
+                        foreach ($data_value as $param_key => $param_value) {
+                            $serialized_transaction .= $param_key . "." . $param_value . ".";
+                        }
+                        $serialized_transaction = substr($serialized_transaction, 0, -1);
+                        $serialized_transaction .= "}";
+                    }
+                }
+                $serialized_transaction .= "}.";
+            }
+        }
+        $serialized_transaction = substr($serialized_transaction, 0, -1);
+
+        //Hash serialized transaction
+        $msg_hash = hash('sha3-256', $serialized_transaction);
+
+        //Initialize secp256k1 elliptic curve
+        $ec = new EC('secp256k1');
+
+        //Initialize private key object
+        $private_key_object = $ec->keyFromPrivate($privateKey);
+
+        //Sign transaction
+        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
+        //Break down into components and then assemble
+        $sign = array(
+            "r" => $signing->r->toString("hex"),
+            "s" => $signing->s->toString("hex")
+
+        );
+        //Get recovery bit
+        $rec_id = $signing->recoveryParam;
+        //Convert signature to hex string
+        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
+        //Encode hex signature to base64
+        $transaction_signature = base64_encode(hex2bin($signature));
+
+        //Add signature to transaction data
+        $data["params"]["signature"] = $transaction_signature;
+
+        //Send request to RPC
+        $data_string = json_encode($data);
+        $ch = curl_init($this->icon_service_URL);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+
+        $result = $this->sendRequest($data);
+
+        //Return as object
+        return json_decode($result);
+    }
+
+    public function updateSCORE($from, $to, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
+    {
+        //Create transaction table
+        $data = array(
+            "jsonrpc" => "2.0",
+            "method" => "icx_sendTransaction",
+            "id" => 1234,
+            "params" => array(
+                "version" => $this->version,
+                "from" => $from,
+                "to" => $to, // SCORE address to be updated
+                "stepLimit" => $stepLimit,
+                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "nid" => $nid,
+                "nonce" => "0x1",
+                "dataType" => "deploy",
+                "data" => array(
+                    "content" => $score, // compressed SCORE data
+                    "contentType" => "application/zip",
+                    "params" => $params // parameters to be passed to on_update()
+                )
+
+            )
+        );
+
+        //Serialize transaction
+        $params = $data['params'];
+        //Sort all tables depending on keys
+        ksort($params);
+        ksort($params)['data'];
+        ksort($params['data']['params']);
+
+        //Prepare the string
+        $serialized_transaction = "icx_sendTransaction.";
+        foreach ($params as $key => $value) {
+            if (!is_array($value)) {
+                $serialized_transaction .= $key . "." . $value . ".";
+            } else {
+                $serialized_transaction .= $key . ".{";
+                foreach ($value as $data_key => $data_value) {
+                    if (!is_array($data_value)) {
+                        $serialized_transaction .= $data_key . "." . $data_value . ".";
+                    } else {
+                        $serialized_transaction .= $data_key . ".{";
+                        foreach ($data_value as $param_key => $param_value) {
+                            $serialized_transaction .= $param_key . "." . $param_value . ".";
+                        }
+                        $serialized_transaction = substr($serialized_transaction, 0, -1);
+                        $serialized_transaction .= "}";
+                    }
+                }
+                $serialized_transaction .= "}.";
+            }
+        }
+        $serialized_transaction = substr($serialized_transaction, 0, -1);
+
+        //Hash serialized transaction
+        $msg_hash = hash('sha3-256', $serialized_transaction);
+
+        //Initialize secp256k1 elliptic curve
+        $ec = new EC('secp256k1');
+
+        //Initialize private key object
+        $private_key_object = $ec->keyFromPrivate($privateKey);
+
+        //Sign transaction
+        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
+        //Break down into components and then assemble
+        $sign = array(
+            "r" => $signing->r->toString("hex"),
+            "s" => $signing->s->toString("hex")
+
+        );
+        //Get recovery bit
+        $rec_id = $signing->recoveryParam;
+        //Convert signature to hex string
+        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
+        //Encode hex signature to base64
+        $transaction_signature = base64_encode(hex2bin($signature));
+
+        //Add signature to transaction data
+        $data["params"]["signature"] = $transaction_signature;
+
+        //Send request to RPC
+        $data_string = json_encode($data);
+        $ch = curl_init($this->icon_service_URL);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+
+        $result = $this->sendRequest($data);
+
+        //Return as object
+        return json_decode($result);
+    }
+
+    public function message($from, $to, $stepLimit, string $privateKey, string $message, string $value = "0x0", $nid = '0x1')
+    {
+        //Create transaction table
+        $data = array(
+            "jsonrpc" => "2.0",
+            "method" => "icx_sendTransaction",
+            "id" => 1234,
+            "params" => array(
+                "version" => $this->version,
+                "from" => $from,
+                "to" => $to, // SCORE address to be updated
+                "value" => $value,
+                "stepLimit" => $stepLimit,
+                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "nid" => $nid,
+                "nonce" => "0x1",
+                "dataType" => "message",
+                "data" => "0x" . bin2hex($message)
+            )
+        );
+
+        //Serialize transaction
+        $params = $data['params'];
+        //Sort all tables depending on keys
+        ksort($params);
+
+
+        //Prepare the string
+        $serialized_transaction = "icx_sendTransaction.";
+        foreach ($params as $key => $value) {
+            $serialized_transaction .= $key . "." . $value . ".";
+        }
+        $serialized_transaction = substr($serialized_transaction, 0, -1);
+        //Hash serialized transaction
+        $msg_hash = hash('sha3-256', $serialized_transaction);
+
+        //Initialize secp256k1 elliptic curve
+        $ec = new EC('secp256k1');
+
+        //Initialize private key object
+        $private_key_object = $ec->keyFromPrivate($privateKey);
+
+        //Sign transaction
+        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
+        //Break down into components and then assemble
+        $sign = array(
+            "r" => $signing->r->toString("hex"),
+            "s" => $signing->s->toString("hex")
+
+        );
+        //Get recovery bit
+        $rec_id = $signing->recoveryParam;
+        //Convert signature to hex string
+        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
+        //Encode hex signature to base64
+        $transaction_signature = base64_encode(hex2bin($signature));
+
+        //Add signature to transaction data
+        $data["params"]["signature"] = $transaction_signature;
+
+        $result = $this->sendRequest($data);
+
+        //Return as object
+        return json_decode($result);
+    }
 
     //Not working for now
     /**
@@ -460,7 +822,6 @@ class IconService
      *
      * Estimate step amount for a transaction
      *
-     * @param string $version Protocol version eg. ("0x3" for V3)
      * @param string $from The address that created the transaction
      * @param string $to The address to receive coins, or SCORE address to execute the transaction.
      * @param string $value Amount of ICX coins in loop to transfer (1 icx = 1 ^ 18 loop) in hex eg. 0xde0b6b3a7640000
@@ -469,16 +830,16 @@ class IconService
      * @param string $nonce An arbitrary number used to prevent transaction hash collision eg.0x1
      * @return string
      */
-    /*
+/*
     //TODO make it work for contracts as well
-    public function debug_estimateStep($version, $from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
+    public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
     {
         $data = array(
             "jsonrpc" => "2.0",
             "method" => "debug_estimateStep",
             "id" => 1234,
             "params" => array(
-                "version" => $version,
+                "version" => $this->version,
                 "from" => $from,
                 "to" => $to,
                 "value" => $value,
@@ -503,9 +864,23 @@ class IconService
         return json_decode($result);
     }*/
 
+    private function sendRequest($data){
+        //Send request to RPC
+        $data_string = json_encode($data);
+        $ch = curl_init($this->icon_service_URL);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+
+        return curl_exec($ch);
+    }
+
     private function getBase64TimestampInMilliseconds()
     {
-        $milliseconds = round(microtime(true) * 1000);
+        $milliseconds = round(microtime(true) * 1000000);
         $milliseconds = '0x' . dechex($milliseconds);
 
         return $milliseconds;

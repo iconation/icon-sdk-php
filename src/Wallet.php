@@ -3,43 +3,39 @@
 namespace mitsosf\IconSDK;
 
 use Elliptic\EC;
-use GMP;
-use http\Exception;
-use kornrunner\Keccak;
-use Mdanter\Ecc\EccFactory;
-use function Sodium\add;
+use Exception;
 
+/**
+ * @property string private_key
+ * @property string public_key
+ * @property string public_address
+ */
 class Wallet
 {
     private $private_key;
     private $public_key;
+    private $public_address;
 
-    function __construct($privateKey = null, $publicKey = null)
+    function __construct($privateKey = null)
     {
-        if (is_null($privateKey) && is_null($publicKey)) {
-            return "Both a private and a public key cannot be supplied to the constructor.";
+        if (is_null($privateKey)) { // Generate wallet
+            $this->private_key = $this->create();
+        } else {
+            $this->private_key = $privateKey;
         }
-
-        if (!is_null($privateKey) && !is_null($publicKey)) {
-            return "Both a private and a public key cannot be supplied to the constructor.";
-        }
-
-        if (is_null($privateKey )){
-
-        }
-
+        $this->public_key = $this->getPublicKeyFromPrivate($this->private_key);
+        $this->public_address = $this->pubKeyToAddress($this->public_key);
     }
 
-    public function create(){
-
-
+    public function create()
+    {
         $characters = '0123456789abcdef';
         $charactersLength = strlen($characters);
         $private_key = '';
         for ($i = 0; $i < 64; $i++) {
             try {
                 $private_key .= $characters[random_int(0, $charactersLength - 1)];
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return $e->getMessage();
             }
         }
@@ -50,54 +46,78 @@ class Wallet
     /**
      * @param $private_key
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public function getPublicKey($private_key){
+    public function getPublicKeyFromPrivate($private_key)
+    {
         $ec = new EC('secp256k1');
-        if (!$this->isPrivateKey($private_key)){
-            throw new \Exception('Invalid private key');
+        if (!$this->isPrivateKey($private_key)) {
+            throw new Exception('Invalid private key');
         }
 
         $publicKey = $ec->keyFromPrivate($private_key)->getPublic(false, 'hex');
-        if (!$this->isPublicKey(substr($publicKey,2))){
-            throw new \Exception('Invalid public key');
-        }
-
-        $address = $this->pubKeyToAddress($publicKey);
-        //TODO check if valid address
-        return $address;
+        return substr($publicKey, 2);
     }
 
-    static function pubKeyToAddress($pubkey) {
-        return "hx" . substr(hash('sha3-256', substr(hex2bin($pubkey),1)),-40);
-        //return "hx" . substr(Keccak::hash(substr(hex2bin($pubkey),1), 256),-40);
+    public function pubKeyToAddress($publicKey)
+    {
+        return "hx" . substr(hash('sha3-256', hex2bin($publicKey)), -40);
     }
 
 
-    private function isPrivateKey($key)
+    public function isPrivateKey($key)
     {
         $length = 64;
-        if (strlen($key)!== $length){
+        if (strlen($key) !== $length) {
             return false;
         }
 
-        if (!ctype_xdigit($key)){
+        if (!ctype_xdigit($key)) {
             return false;
         }
 
         return true;
     }
 
-    private function isPublicKey($key){
+    public function isPublicKey($key)
+    {
         $length = 128;
-        if (strlen($key)!== $length){
+        if (strlen($key) !== $length) {
             return false;
         }
 
-        if (!ctype_xdigit($key)){
+        if (!ctype_xdigit($key)) {
             return false;
         }
 
         return true;
-     }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrivateKey(): string
+    {
+        return $this->private_key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicKey(): string
+    {
+        return $this->public_key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicAddress(): string
+    {
+        return $this->public_address;
+    }
+
+
+
+
 }
