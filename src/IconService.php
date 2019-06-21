@@ -3,14 +3,8 @@
 namespace mitsosf\IconSDK;
 
 use Elliptic\EC;
-use Elliptic\Utils;
 
 /**
- *  A sample class
- *
- *  Use this section to define what this class is doing, the PHPDocumentator will use this
- *  to automatically generate an API documentation using this information.
- *
  * @author Dimitris Frangiadakis
  */
 class IconService
@@ -30,6 +24,7 @@ class IconService
     public function __construct($url){
         $this->icon_service_URL = $url;
     }
+
     /**
      * icx_getLastBlock
      *
@@ -54,7 +49,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -90,7 +85,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -126,7 +121,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -171,7 +166,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -207,7 +202,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -243,7 +238,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -274,7 +269,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -310,7 +305,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -346,7 +341,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -382,7 +377,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -453,7 +448,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -551,7 +546,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -650,7 +645,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -749,7 +744,7 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -815,17 +810,7 @@ class IconService
         //Add signature to transaction data
         $data["params"]["signature"] = $transaction_signature;
 
-        //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
-        $result = curl_exec($ch);
+        $result = $this->sendRequest($data);
 
         //Return as object
         return json_decode($result);
@@ -845,7 +830,7 @@ class IconService
      * @param string $nonce An arbitrary number used to prevent transaction hash collision eg.0x1
      * @return string
      */
-    /*
+/*
     //TODO make it work for contracts as well
     public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
     {
@@ -878,6 +863,20 @@ class IconService
         //Return as object
         return json_decode($result);
     }*/
+
+    private function sendRequest($data){
+        //Send request to RPC
+        $data_string = json_encode($data);
+        $ch = curl_init($this->icon_service_URL);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+
+        return curl_exec($ch);
+    }
 
     private function getBase64TimestampInMilliseconds()
     {

@@ -139,7 +139,7 @@ class IconServiceTest extends TestCase
     //Not working for now
 
     /* public function test_debug_estimateStep(){
-         $var = new mitsosf\IconSDK\IconService;
+         $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_yeouido);
 
          $from = "hxc4193cda4a75526bf50896ec242d6713bb6b02a3";
          $to = "hxaa36c3e67d51f993a900fd5acf8b1eb5029c5dfd";
@@ -235,7 +235,7 @@ class IconServiceTest extends TestCase
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
-        //Lorem ipsum for message
+        //Test message
         $message = "Testing the Messaging system";
         $stepLimit = "0xfffff"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
