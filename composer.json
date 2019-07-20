@@ -1,5 +1,5 @@
 {
-  "name": "mitsosf/icon-sdk-php",
+  "name": "iconation/icon-sdk-php",
   "description": "SDK to communicate with the ICON JSON-RPC server",
   "keywords": [
     "icon",
