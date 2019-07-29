@@ -886,4 +886,9 @@ class IconService
         return $milliseconds;
     }
 
+    public function icxToHex($value){
+        $dec = $value* 10**18;
+        return '0x'.dechex($value* 10**18);
+    }
+
 }

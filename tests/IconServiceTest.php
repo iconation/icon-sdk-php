@@ -1,5 +1,6 @@
 <?php
 
+use mitsosf\IconSDK\IconService;
 use PHPUnit\Framework\TestCase;
 
 
@@ -244,5 +245,12 @@ class IconServiceTest extends TestCase
         unset($var);
 
 
+    }
+
+    public function test_icxToHex(){
+        $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_yeouido);
+        $result = '0x2386f26fc10000';
+        $this->assertTrue($var->icxToHex(0.01) === $result);
+        unset($var);
     }
 }
