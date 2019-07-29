@@ -93,6 +93,28 @@ class Wallet
         return true;
     }
 
+    public function isPublicAddress($address)
+    {
+        $length = 42;
+        if (strlen($address) !== $length) {
+            return false;
+        }
+
+        $parts = explode('x', $address);
+        $last_part = array_pop($parts);
+        $first_part = $parts[0] . 'x';
+
+        if ($first_part !== 'hx' && strlen($first_part) !== $length - 40) {
+            return false;
+        }
+
+        if (!ctype_xdigit($last_part) && strlen($last_part) !== $length - 2) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return string
      */
@@ -116,8 +138,6 @@ class Wallet
     {
         return $this->public_address;
     }
-
-
 
 
 }

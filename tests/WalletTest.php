@@ -1,5 +1,6 @@
 <?php
 
+use mitsosf\IconSDK\Wallet;
 use PHPUnit\Framework\TestCase;
 
 
@@ -63,6 +64,14 @@ class WalletTest extends TestCase
         $derived = $var->pubKeyToAddress($var->getPublicKeyFromPrivate($privateKey));
         $this->assertSame($expectedAddress, $derived);
 
+        unset($var);
+    }
+
+    public function test_isPublicAddress(){
+        $var = new mitsosf\IconSDK\Wallet;
+
+        $this->assertTrue($var->isPublicAddress($this->public_address));
+        $this->assertFalse($var->isPublicAddress('h'.$this->public_address));
         unset($var);
     }
 }
