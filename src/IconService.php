@@ -21,7 +21,8 @@ class IconService
     private $version = "0x3";
     private $icon_service_URL;
 
-    public function __construct($url){
+    public function __construct($url)
+    {
         $this->icon_service_URL = $url;
     }
 
@@ -39,16 +40,6 @@ class IconService
             "method" => "icx_getLastBlock",
             "id" => 1234
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
         $result = $this->sendRequest($data);
 
         //Return as object
@@ -75,15 +66,6 @@ class IconService
                 "height" => $height
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -111,15 +93,6 @@ class IconService
                 "hash" => $hash
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -156,15 +129,6 @@ class IconService
                 )
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -192,15 +156,6 @@ class IconService
                 "address" => $address
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -228,15 +183,6 @@ class IconService
                 "address" => $address
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -259,15 +205,6 @@ class IconService
             "method" => "icx_getTotalSupply",
             "id" => 1234
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -295,15 +232,6 @@ class IconService
                 "txHash" => $txHash
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -331,16 +259,6 @@ class IconService
                 "txHash" => $txHash
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
         $result = $this->sendRequest($data);
 
         //Return as object
@@ -367,15 +285,6 @@ class IconService
                 "filter" => $keys
             )
         );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -439,15 +348,6 @@ class IconService
         $data["params"]["signature"] = $transaction_signature;
 
         //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
         $result = $this->sendRequest($data);
 
         //Return as object
@@ -535,16 +435,6 @@ class IconService
 
         //Add signature to transaction data
         $data["params"]["signature"] = $transaction_signature;
-
-        //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
 
         $result = $this->sendRequest($data);
 
@@ -636,15 +526,6 @@ class IconService
         $data["params"]["signature"] = $transaction_signature;
 
         //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
         $result = $this->sendRequest($data);
 
         //Return as object
@@ -735,15 +616,6 @@ class IconService
         $data["params"]["signature"] = $transaction_signature;
 
         //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
         $result = $this->sendRequest($data);
 
         //Return as object
@@ -830,41 +702,33 @@ class IconService
      * @param string $nonce An arbitrary number used to prevent transaction hash collision eg.0x1
      * @return string
      */
-/*
-    //TODO make it work for contracts as well
-    public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
+    /*
+        //TODO make it work for contracts as well
+        public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
+        {
+            $data = array(
+                "jsonrpc" => "2.0",
+                "method" => "debug_estimateStep",
+                "id" => 1234,
+                "params" => array(
+                    "version" => $this->version,
+                    "from" => $from,
+                    "to" => $to,
+                    "value" => $value,
+                    "timestamp" => $timestamp,
+                    "nid" => $nid,
+                    "nonce" => $nonce
+                )
+            );
+
+            $result = $this->sendRequest($data);
+
+            //Return as object
+            return json_decode($result);
+        }*/
+
+    private function sendRequest($data)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "debug_estimateStep",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => $to,
-                "value" => $value,
-                "timestamp" => $timestamp,
-                "nid" => $nid,
-                "nonce" => $nonce
-            )
-        );
-        $data_string = json_encode($data);
-
-        $ch = curl_init($this->icon_service_URL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
-        $result = curl_exec($ch);
-
-        //Return as object
-        return json_decode($result);
-    }*/
-
-    private function sendRequest($data){
         //Send request to RPC
         $data_string = json_encode($data);
         $ch = curl_init($this->icon_service_URL);
@@ -886,9 +750,13 @@ class IconService
         return $milliseconds;
     }
 
-    public function icxToHex($value){
-        $dec = $value* 10**18;
-        return '0x'.dechex($value* 10**18);
+    public function icxToHex($value)
+    {
+        return '0x' . dechex($value * 10 ** 18);
     }
 
+    public function hexToIcx($value)
+    {
+        return hexdec($value) / 10 ** 18;
+    }
 }

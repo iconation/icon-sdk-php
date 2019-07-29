@@ -253,4 +253,11 @@ class IconServiceTest extends TestCase
         $this->assertTrue($var->icxToHex(0.01) === $result);
         unset($var);
     }
+
+    public function test_hexToIcx(){
+        $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_yeouido);
+        $result = 0.01;
+        $this->assertTrue($var->hexToIcx('0x2386f26fc10000') === $result);
+        unset($var);
+    }
 }
