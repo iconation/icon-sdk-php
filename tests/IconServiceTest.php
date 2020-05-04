@@ -1,6 +1,5 @@
 <?php
 
-use mitsosf\IconSDK\IconService;
 use PHPUnit\Framework\TestCase;
 
 
@@ -12,6 +11,10 @@ use PHPUnit\Framework\TestCase;
  */
 class IconServiceTest extends TestCase
 {
+    //Mainnet
+    private $icon_service_URL_main = 'https://ctz.solidwallet.io/api/v3';
+    //Yeouido
+    private $icon_service_URL_yeouido = "https://bicon.net.solidwallet.io/api/v3";
 
     /**
      * Just check if the YourClass has no syntax error
@@ -20,10 +23,6 @@ class IconServiceTest extends TestCase
      * any typo before you even use this library in a real project.
      *
      */
-    //Mainnet
-    private $icon_service_URL_main = 'https://ctz.solidwallet.io/api/v3';
-    //Yeouido
-    private $icon_service_URL_yeouido = "https://bicon.net.solidwallet.io/api/v3";
 
     public function testIsThereAnySyntaxError()
     {
@@ -247,17 +246,4 @@ class IconServiceTest extends TestCase
 
     }
 
-    public function test_icxToHex(){
-        $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_yeouido);
-        $result = '0x2386f26fc10000';
-        $this->assertTrue($var->icxToHex(0.01) === $result);
-        unset($var);
-    }
-
-    public function test_hexToIcx(){
-        $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_yeouido);
-        $result = 0.01;
-        $this->assertTrue($var->hexToIcx('0x2386f26fc10000') === $result);
-        unset($var);
-    }
 }

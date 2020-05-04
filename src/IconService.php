@@ -47,7 +47,7 @@ class IconService
     }
 
     /**
-     * icx_getLastBlock
+     * icx_getBlockByHeight
      *
      * Get the latest block
      *
@@ -74,7 +74,7 @@ class IconService
     }
 
     /**
-     * icx_getLastBlock
+     * icx_getBlockByHash
      *
      * Get the latest block
      *
@@ -101,7 +101,7 @@ class IconService
     }
 
     /**
-     * icx_getLastBlock
+     * icx_call
      *
      * Get the latest block
      *
@@ -305,7 +305,7 @@ class IconService
                 "to" => $to,
                 "value" => $value,
                 "stepLimit" => $stepLimit,
-                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
                 "nid" => $nid,
                 "nonce" => "0x1"
             )
@@ -366,7 +366,7 @@ class IconService
                 "from" => $from,
                 "to" => $to,
                 "stepLimit" => $stepLimit,
-                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
                 "nid" => $nid,
                 "nonce" => "0x1",
                 "dataType" => "call",
@@ -454,7 +454,7 @@ class IconService
                 "from" => $from,
                 "to" => "cx0000000000000000000000000000000000000000", // address 0 means SCORE install
                 "stepLimit" => $stepLimit,
-                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
                 "nid" => $nid,
                 "nonce" => "0x1",
                 "dataType" => "deploy",
@@ -544,7 +544,7 @@ class IconService
                 "from" => $from,
                 "to" => $to, // SCORE address to be updated
                 "stepLimit" => $stepLimit,
-                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
                 "nid" => $nid,
                 "nonce" => "0x1",
                 "dataType" => "deploy",
@@ -635,7 +635,7 @@ class IconService
                 "to" => $to, // SCORE address to be updated
                 "value" => $value,
                 "stepLimit" => $stepLimit,
-                "timestamp" => $this->getBase64TimestampInMilliseconds(),
+                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
                 "nid" => $nid,
                 "nonce" => "0x1",
                 "dataType" => "message",
@@ -728,6 +728,8 @@ class IconService
         return json_decode($result);
     }*/
 
+
+
     /**
      * @param $data
      * @return bool|string
@@ -745,34 +747,5 @@ class IconService
         ));
 
         return curl_exec($ch);
-    }
-
-    /**
-     * @return string
-     */
-    private function getBase64TimestampInMilliseconds()
-    {
-        $milliseconds = round(microtime(true) * 1000000);
-        $milliseconds = '0x' . dechex($milliseconds);
-
-        return $milliseconds;
-    }
-
-    /**
-     * @param $value float|int
-     * @return string
-     */
-    public function icxToHex($value)
-    {
-        return '0x' . dechex($value * 10 ** 18);
-    }
-
-    /**
-     * @param $value
-     * @return float|int
-     */
-    public function hexToIcx($value)
-    {
-        return hexdec($value) / 10 ** 18;
     }
 }
