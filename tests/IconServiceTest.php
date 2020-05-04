@@ -56,8 +56,8 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBlockByHash()
     {
-        $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_yeouido);
-        $hash = "0x8611088a8e121b7148ffaa9e53076bb84295868fc6bad267a811000d522061af"; //Yeouido
+        $var = new mitsosf\IconSDK\IconService($this->icon_service_URL_main);
+        $hash = "0x123986e1c834632f6e65915c249d81cd01453ec915e3370d364d6df7be5e6c03"; //Yeouido
         $this->assertTrue(!isset($var->icx_getBlockByHash($hash)->error));
         unset($var);
     }
