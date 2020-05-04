@@ -689,6 +689,7 @@ class IconService
     }
 
     //Not working for now
+    /*
     /**
      * debug_estimateStep
      *
@@ -702,31 +703,35 @@ class IconService
      * @param string $nonce An arbitrary number used to prevent transaction hash collision eg.0x1
      * @return string
      */
-    /*
-        //TODO make it work for contracts as well
-        public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
-        {
-            $data = array(
-                "jsonrpc" => "2.0",
-                "method" => "debug_estimateStep",
-                "id" => 1234,
-                "params" => array(
-                    "version" => $this->version,
-                    "from" => $from,
-                    "to" => $to,
-                    "value" => $value,
-                    "timestamp" => $timestamp,
-                    "nid" => $nid,
-                    "nonce" => $nonce
-                )
-            );
 
-            $result = $this->sendRequest($data);
+    //TODO make it work for contracts as well
+    /*public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
+    {
+        $data = array(
+            "jsonrpc" => "2.0",
+            "method" => "debug_estimateStep",
+            "id" => 1234,
+            "params" => array(
+                "version" => $this->version,
+                "from" => $from,
+                "to" => $to,
+                "value" => $value,
+                "timestamp" => $timestamp,
+                "nid" => $nid,
+                "nonce" => $nonce
+            )
+        );
 
-            //Return as object
-            return json_decode($result);
-        }*/
+        $result = $this->sendRequest($data);
 
+        //Return as object
+        return json_decode($result);
+    }*/
+
+    /**
+     * @param $data
+     * @return bool|string
+     */
     private function sendRequest($data)
     {
         //Send request to RPC
@@ -742,6 +747,9 @@ class IconService
         return curl_exec($ch);
     }
 
+    /**
+     * @return string
+     */
     private function getBase64TimestampInMilliseconds()
     {
         $milliseconds = round(microtime(true) * 1000000);
@@ -750,11 +758,19 @@ class IconService
         return $milliseconds;
     }
 
+    /**
+     * @param $value float|int
+     * @return string
+     */
     public function icxToHex($value)
     {
         return '0x' . dechex($value * 10 ** 18);
     }
 
+    /**
+     * @param $value
+     * @return float|int
+     */
     public function hexToIcx($value)
     {
         return hexdec($value) / 10 ** 18;
