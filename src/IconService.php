@@ -10,20 +10,20 @@ use Elliptic\EC;
 class IconService
 {
 
-    /** @string string $icon_service_URL
+    /** @string string $iconServiceUrl
      *
      */
     //Mainnet
-    //private $icon_service_URL = 'https://ctz.solidwallet.io/api/v3';
+    //private $iconServiceUrl = 'https://ctz.solidwallet.io/api/v3';
     //Yeouido
-    //private $icon_service_URL = "https://bicon.net.solidwallet.io/api/v3";
+    //private $iconServiceUrl = "https://bicon.net.solidwallet.io/api/v3";
 
     private $version = "0x3";
-    private $icon_service_URL;
+    private $iconServiceUrl;
 
     public function __construct($url)
     {
-        $this->icon_service_URL = $url;
+        $this->iconServiceUrl = $url;
     }
 
     /**
@@ -35,15 +35,17 @@ class IconService
      */
     public function icx_getLastBlock()
     {
-        $data = array(
+        /*$data = array(
             "jsonrpc" => "2.0",
             "method" => "icx_getLastBlock",
             "id" => 1234
         );
-        $result = $this->sendRequest($data);
+        $result = $this->sendRequest($data);*/
 
         //Return as object
-        return json_decode($result);
+        $transaction = new Transaction();
+        $result = $transaction->method(TransactionTypes::LAST_BLOCK)->send();
+        return ($result);
     }
 
     /**
@@ -728,17 +730,15 @@ class IconService
         return json_decode($result);
     }*/
 
-
-
     /**
      * @param $data
-     * @return bool|string
+     * @return object
      */
-    private function sendRequest($data)
+    public function sendRequest($data)
     {
         //Send request to RPC
         $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
+        $ch = curl_init($this->iconServiceUrl);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -746,6 +746,12 @@ class IconService
             'Content-Type: application/json'
         ));
 
-        return curl_exec($ch);
+        return json_decode(curl_exec($ch));
+    }
+
+    public function setIconServiceUrl(string $url) :bool
+    {
+        $this->iconServiceUrl = $url;
+        return true;
     }
 }

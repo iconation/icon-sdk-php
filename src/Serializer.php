@@ -4,7 +4,14 @@ namespace mitsosf\IconSDK;
 
 class Serializer
 {
-    public function arrayTraverse(array $array): string
+    public static function serialize(\stdClass $transaction){
+        $serializedTransaction = 'icx_sendTransaction';
+
+        //TODO implementation
+        return $serializedTransaction;
+    }
+
+    private function arrayTraverse(array $array): string
     {
         $result = '';
 
@@ -38,7 +45,7 @@ class Serializer
         return $result;
     }
 
-    public function objTraverse(array $object): string
+    private function objTraverse(array $object): string
     {
         $result = '';
         $result .= '{';
