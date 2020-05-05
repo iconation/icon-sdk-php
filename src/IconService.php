@@ -35,17 +35,10 @@ class IconService
      */
     public function icx_getLastBlock()
     {
-        /*$data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getLastBlock",
-            "id" => 1234
-        );
-        $result = $this->sendRequest($data);*/
-
-        //Return as object
         $transaction = new Transaction();
-        $result = $transaction->method(TransactionTypes::LAST_BLOCK)->send();
-        return ($result);
+        return $transaction
+            ->method(TransactionTypes::LAST_BLOCK)
+            ->send();
     }
 
     /**
@@ -60,19 +53,11 @@ class IconService
 
     public function icx_getBlockByHeight($height)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getBlockByHeight",
-            "id" => 1234,
-            "params" => array(
-                "height" => $height
-            )
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new Transaction();
+        return $transaction
+            ->method(TransactionTypes::BLOCK_BY_HEIGHT)
+            ->blockHeight($height)
+            ->send();
     }
 
     /**
@@ -87,25 +72,16 @@ class IconService
 
     public function icx_getBlockByHash($hash)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getBlockByHash",
-            "id" => 1234,
-            "params" => array(
-                "hash" => $hash
-            )
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new Transaction();
+        $res = $transaction
+            ->method(TransactionTypes::BLOCK_BY_HASH)
+            ->blockHash($hash)
+            ->send();
+        return $res;
     }
 
     /**
      * icx_call
-     *
-     * Get the latest block
      *
      * @param string $from Message sender eg. hxbe258ceb872e08851f1f59694dac2558708ece11
      * @param string $score SCORE we want to interact with eg. cxb0776ee37f5b45bfaea8cff1d8232fbb6122ec32
@@ -114,7 +90,7 @@ class IconService
      *
      * @return object
      */
-
+    //TODO migrate
     public function icx_call($from, $score, $method, $params)
     {
         $data = array(
@@ -150,19 +126,11 @@ class IconService
 
     public function icx_getBalance($address)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getBalance",
-            "id" => 1234,
-            "params" => array(
-                "address" => $address
-            )
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new Transaction();
+        return $transaction
+            ->method(TransactionTypes::BALANCE)
+            ->address($address)
+            ->send();
     }
 
     /**
@@ -174,26 +142,18 @@ class IconService
      *
      * @return object
      */
-
+    //TODO migrate
     public function icx_getScoreApi($address)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getScoreApi",
-            "id" => 1234,
-            "params" => array(
-                "address" => $address
-            )
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new Transaction();
+        return $transaction
+            ->method(TransactionTypes::BALANCE)
+            ->address($address)
+            ->send();
     }
 
     /**
-     * icx_getScoreApi
+     * icx_getTotalSupply
      *
      * Get ICX Total Supply
      *
@@ -202,16 +162,10 @@ class IconService
 
     public function icx_getTotalSupply()
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getTotalSupply",
-            "id" => 1234
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new Transaction();
+        return $transaction
+            ->method(TransactionTypes::TOTAL_SUPPLY)
+            ->send();
     }
 
     /**
@@ -224,6 +178,7 @@ class IconService
      * @return object
      */
 
+    //TODO Keep migrating from here on
     public function icx_getTransactionResult($txHash)
     {
         $data = array(
@@ -749,7 +704,7 @@ class IconService
         return json_decode(curl_exec($ch));
     }
 
-    public function setIconServiceUrl(string $url) :bool
+    public function setIconServiceUrl(string $url): bool
     {
         $this->iconServiceUrl = $url;
         return true;

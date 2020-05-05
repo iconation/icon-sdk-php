@@ -7,9 +7,11 @@ use mitsosf\IconSDK\Helpers;
 use mitsosf\IconSDK\IconService;
 use mitsosf\IconSDK\Serializer;
 
-class Transaction{
+class Transaction
+{
     private $transaction;
     private $iconService;
+
     public function __construct()
     {
         $this->transaction = new \stdClass();
@@ -19,49 +21,62 @@ class Transaction{
         $this->iconService = new IconService('https://ctz.solidwallet.io/api/v3');
     }
 
-    public function method(string $method) :Transaction
+    public function method(string $method): Transaction
     {
         $this->transaction->method = $method;
         return $this;
     }
 
-    public function version(string $version) :Transaction
+    public function version(string $version): Transaction
     {
+        $this->transaction->params = new \stdClass();
         $this->transaction->params->version = $version;
         return $this;
     }
 
-    public function from(string $address) :Transaction
+    public function address(string $address): Transaction
     {
+        $this->transaction->params = new \stdClass();
+        $this->transaction->params->address = $address;
+        return $this;
+    }
+
+    public function from(string $address): Transaction
+    {
+        $this->transaction->params = new \stdClass();
         $this->transaction->params->from = $address;
         return $this;
     }
 
-    public function to(string $address) :Transaction
+    public function to(string $address): Transaction
     {
+        $this->transaction->params = new \stdClass();
         $this->transaction->params->to = $address;
         return $this;
     }
 
-    public function timestamp() :Transaction
+    public function timestamp(): Transaction
     {
+        $this->transaction->params = new \stdClass();
         $this->transaction->params->timestamp = Helpers::getBase64TimestampInMilliseconds();
         return $this;
     }
 
-    public function nid(string $nid = '0x1') :Transaction
+    public function nid(string $nid = '0x1'): Transaction
     {
+        $this->transaction->params = new \stdClass();
         $this->transaction->params->nid = $nid;
         return $this;
     }
 
-    public function nonce() :Transaction
+    public function nonce(): Transaction
     {
-        $this->transaction->params->nonce = '0x'.dechex(rand(1,1000));
+        $this->transaction->params = new \stdClass();
+        $this->transaction->params->nonce = '0x' . dechex(rand(1, 1000));
         return $this;
     }
 
-    public function sign(string $privateKey) :Transaction
+    public function sign(string $privateKey): Transaction
     {
         $serializedTransaction = Serializer::serialize($this->transaction);
         $msg_hash = hash('sha3-256', $serializedTransaction);
@@ -85,18 +100,38 @@ class Transaction{
         $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
         //Encode hex signature to base64
         $transaction_signature = base64_encode(hex2bin($signature));
+        $this->transaction->params = new \stdClass();
         $this->transaction->params->signature = $transaction_signature;
         return $this;
     }
 
-    public function testnet(string $url) :Transaction
+    //Possibly remove from here
+    public function testnet(string $url): Transaction
     {
         $this->iconService->setIconServiceUrl($url);
         return $this;
     }
 
-    public function send() :\stdClass
+    //TODO add endpoint url in here
+    public function send(): \stdClass
     {
         return $this->iconService->sendRequest($this->transaction);
+    }
+
+    public function blockHeight(string $height): Transaction
+    {
+        if (substr($height, 0, 2) === '0x') {
+            $height = '0x' . hexdec($height);
+        }
+        $this->transaction->params = new \stdClass();
+        $this->transaction->params->height = $height;
+        return $this;
+    }
+
+    public function blockHash(string $hash): Transaction
+    {
+        $this->transaction->params = new \stdClass();
+        $this->transaction->params->hash = $hash;
+        return $this;
     }
 }
