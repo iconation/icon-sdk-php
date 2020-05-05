@@ -382,7 +382,7 @@ class IconService
         $params = $data['params'];
         //Sort all tables depending on keys
         ksort($params);
-        ksort($params)['data'];
+        ksort($params['data']);
         ksort($params['data']['params']);
 
         //Prepare the string
