@@ -14,8 +14,6 @@ class Transaction
     {
         $this->jsonrpc = '2.0';
         $this->id = $id;
-        $this->params = new \stdClass();
-
         $this->iconService = new IconService('https://ctz.solidwallet.io/api/v3');
     }
 
@@ -36,9 +34,9 @@ class Transaction
     }
 
     /**
-     * @return string
+     * @return string | null
      */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         return $this->method;
     }
@@ -52,9 +50,9 @@ class Transaction
     }
 
     /**
-     * @return \stdClass
+     * @return \stdClass | null
      */
-    public function getParams(): \stdClass
+    public function getParams(): ?\stdClass
     {
         return $this->params;
     }
@@ -64,8 +62,46 @@ class Transaction
      */
     public function setParams(array $params): void
     {
+        if(empty($this->params)){
+            $this->params = new \stdClass();
+        }
+
         foreach ($params as $key => $value){
             $this->params->$key = $value;
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getJsonrpc(): string
+    {
+        return $this->jsonrpc;
+    }
+
+    /**
+     * @param string $jsonrpc
+     */
+    public function setJsonrpc(string $jsonrpc): void
+    {
+        $this->jsonrpc = $jsonrpc;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+
 }

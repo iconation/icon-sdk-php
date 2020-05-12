@@ -35,10 +35,11 @@ class IconService
      */
     public function icx_getLastBlock()
     {
-        $transaction = new Transaction();
-        return $transaction
+        $transaction = new TransactionBuilder();
+        $result  = $transaction
             ->method(TransactionTypes::LAST_BLOCK)
             ->send();
+        return $result;
     }
 
     /**
@@ -53,7 +54,7 @@ class IconService
 
     public function icx_getBlockByHeight($height)
     {
-        $transaction = new Transaction();
+        $transaction = new TransactionBuilder();
         return $transaction
             ->method(TransactionTypes::BLOCK_BY_HEIGHT)
             ->blockHeight($height)
@@ -72,7 +73,7 @@ class IconService
 
     public function icx_getBlockByHash($hash)
     {
-        $transaction = new Transaction();
+        $transaction = new TransactionBuilder();
         $res = $transaction
             ->method(TransactionTypes::BLOCK_BY_HASH)
             ->blockHash($hash)
@@ -126,7 +127,7 @@ class IconService
 
     public function icx_getBalance($address)
     {
-        $transaction = new Transaction();
+        $transaction = new TransactionBuilder();
         return $transaction
             ->method(TransactionTypes::BALANCE)
             ->address($address)
@@ -145,7 +146,7 @@ class IconService
     //TODO migrate
     public function icx_getScoreApi($address)
     {
-        $transaction = new Transaction();
+        $transaction = new TransactionBuilder();
         return $transaction
             ->method(TransactionTypes::BALANCE)
             ->address($address)
@@ -162,7 +163,7 @@ class IconService
 
     public function icx_getTotalSupply()
     {
-        $transaction = new Transaction();
+        $transaction = new TransactionBuilder();
         return $transaction
             ->method(TransactionTypes::TOTAL_SUPPLY)
             ->send();
@@ -181,19 +182,11 @@ class IconService
     //TODO Keep migrating from here on
     public function icx_getTransactionResult($txHash)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getTransactionResult",
-            "id" => 1234,
-            "params" => array(
-                "txHash" => $txHash
-            )
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new TransactionBuilder();
+        return $transaction
+            ->method(TransactionTypes::TRANSACTION_RESULT)
+            ->txHash($txHash)
+            ->send();
     }
 
     /**
@@ -208,18 +201,11 @@ class IconService
 
     public function icx_getTransactionByHash($txHash)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_getTransactionByHash",
-            "id" => 1234,
-            "params" => array(
-                "txHash" => $txHash
-            )
-        );
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new TransactionBuilder();
+        return $transaction
+            ->method(TransactionTypes::TRANSACTION_BY_HASH)
+            ->txHash($txHash)
+            ->send();
     }
 
     /**
@@ -234,19 +220,12 @@ class IconService
 
     public function ise_getStatus($keys)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "ise_getStatus",
-            "id" => 1234,
-            "params" => array(
-                "filter" => $keys
-            )
-        );
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        $transaction = new TransactionBuilder();
+        $result = $transaction
+            ->method(TransactionTypes::STATUS)
+            ->filter($keys)
+            ->send();
+        return $result;
     }
 
     public function send($from, $to, $value, $stepLimit, string $privateKey, $nid = '0x1')
