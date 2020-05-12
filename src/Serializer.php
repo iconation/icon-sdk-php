@@ -4,7 +4,7 @@ namespace mitsosf\IconSDK;
 
 class Serializer
 {
-    public static function serialize(\stdClass $transaction){
+    public static function serialize(Transaction $transaction){
         $serializedTransaction = 'icx_sendTransaction';
 
         //TODO implementation

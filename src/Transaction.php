@@ -2,136 +2,70 @@
 
 namespace mitsosf\IconSDK;
 
-use Elliptic\EC;
-use mitsosf\IconSDK\Helpers;
-use mitsosf\IconSDK\IconService;
-use mitsosf\IconSDK\Serializer;
-
 class Transaction
 {
-    private $transaction;
+    private $jsonrpc;
+    private $id;
     private $iconService;
+    private $method;
+    private $params;
 
-    public function __construct()
+    public function __construct(int $id = 1234)
     {
-        $this->transaction = new \stdClass();
-        $this->transaction->jsonrpc = '2.0';
-        $this->transaction->id = 1234;
+        $this->jsonrpc = '2.0';
+        $this->id = $id;
+        $this->params = new \stdClass();
 
         $this->iconService = new IconService('https://ctz.solidwallet.io/api/v3');
     }
 
-    public function method(string $method): Transaction
+    /**
+     * @return IconService
+     */
+    public function getIconService(): IconService
     {
-        $this->transaction->method = $method;
-        return $this;
+        return $this->iconService;
     }
 
-    public function version(string $version): Transaction
+    /**
+     * @param string $url
+     */
+    public function setIconService(string $url): void
     {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->version = $version;
-        return $this;
+        $this->iconService = new IconService($url);
     }
 
-    public function address(string $address): Transaction
+    /**
+     * @return string
+     */
+    public function getMethod()
     {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->address = $address;
-        return $this;
+        return $this->method;
     }
 
-    public function from(string $address): Transaction
+    /**
+     * @param string $method
+     */
+    public function setMethod($method): void
     {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->from = $address;
-        return $this;
+        $this->method = $method;
     }
 
-    public function to(string $address): Transaction
+    /**
+     * @return \stdClass
+     */
+    public function getParams(): \stdClass
     {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->to = $address;
-        return $this;
+        return $this->params;
     }
 
-    public function timestamp(): Transaction
+    /**
+     * @param array $params
+     */
+    public function setParams(array $params): void
     {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->timestamp = Helpers::getBase64TimestampInMilliseconds();
-        return $this;
-    }
-
-    public function nid(string $nid = '0x1'): Transaction
-    {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->nid = $nid;
-        return $this;
-    }
-
-    public function nonce(): Transaction
-    {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->nonce = '0x' . dechex(rand(1, 1000));
-        return $this;
-    }
-
-    public function sign(string $privateKey): Transaction
-    {
-        $serializedTransaction = Serializer::serialize($this->transaction);
-        $msg_hash = hash('sha3-256', $serializedTransaction);
-        //Initialize secp256k1 elliptic curve
-        $ec = new EC('secp256k1');
-
-        //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
-
-        //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //Break down into components and then assemble
-        $sign = array(
-            "r" => $signing->r->toString("hex"),
-            "s" => $signing->s->toString("hex")
-
-        );
-        //Get recovery bit
-        $rec_id = $signing->recoveryParam;
-        //Convert signature to hex string
-        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
-        //Encode hex signature to base64
-        $transaction_signature = base64_encode(hex2bin($signature));
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->signature = $transaction_signature;
-        return $this;
-    }
-
-    //Possibly remove from here
-    public function testnet(string $url): Transaction
-    {
-        $this->iconService->setIconServiceUrl($url);
-        return $this;
-    }
-
-    //TODO add endpoint url in here
-    public function send(): \stdClass
-    {
-        return $this->iconService->sendRequest($this->transaction);
-    }
-
-    public function blockHeight(string $height): Transaction
-    {
-        if (substr($height, 0, 2) === '0x') {
-            $height = '0x' . hexdec($height);
+        foreach ($params as $key => $value){
+            $this->params->$key = $value;
         }
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->height = $height;
-        return $this;
-    }
-
-    public function blockHash(string $hash): Transaction
-    {
-        $this->transaction->params = new \stdClass();
-        $this->transaction->params->hash = $hash;
-        return $this;
     }
 }
