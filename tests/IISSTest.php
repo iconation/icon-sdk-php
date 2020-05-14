@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use mitsosf\IconSDK\Helpers;
+use iconation\IconSDK\Helpers;
 
 
 class IISSTest extends TestCase
@@ -13,7 +13,7 @@ class IISSTest extends TestCase
 
     public function test_setStake()
     {
-        $var = new mitsosf\IconSDK\IISS($this->icon_service_URL_yeouido);
+        $var = new iconation\IconSDK\IISS($this->icon_service_URL_yeouido);
 
         $value = 0.5; //Stake 0.5 ICX
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Staker's private key
@@ -28,7 +28,7 @@ class IISSTest extends TestCase
 
     public function test_getStake()
     {
-        $var = new mitsosf\IconSDK\IISS($this->icon_service_URL_yeouido);
+        $var = new iconation\IconSDK\IISS($this->icon_service_URL_yeouido);
 
         $address = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
 
@@ -39,7 +39,7 @@ class IISSTest extends TestCase
 
     public function test_setDelegation()
     {
-        $var = new mitsosf\IconSDK\IISS($this->icon_service_URL_yeouido);
+        $var = new iconation\IconSDK\IISS($this->icon_service_URL_yeouido);
 
         $delegations = array(
             array(
@@ -63,7 +63,7 @@ class IISSTest extends TestCase
 
     public function test_getDelegation()
     {
-        $var = new mitsosf\IconSDK\IISS($this->icon_service_URL_yeouido);
+        $var = new iconation\IconSDK\IISS($this->icon_service_URL_yeouido);
 
         $address = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $nid = "0x3";  // YEOUIDO network

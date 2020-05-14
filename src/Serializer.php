@@ -1,6 +1,6 @@
 <?php
 
-namespace mitsosf\IconSDK;
+namespace iconation\IconSDK;
 
 class Serializer
 {
