@@ -24,7 +24,8 @@
     "phpunit/phpunit": "6.*"
   },
   "scripts": {
-    "test": "php ./vendor/bin/phpunit --colors=always"
+    "test": "php ./vendor/bin/phpunit --colors=always",
+    "coverage": "php ./vendor/bin/phpunit --coverage-html tests/code_coverage_report"
   },
   "autoload": {
     "psr-4": {

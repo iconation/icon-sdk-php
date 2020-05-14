@@ -19,7 +19,7 @@ class TransactionBuilder
         return $this;
     }
 
-    public function version(string $version): TransactionBuilder
+    public function version(string $version = '0x3'): TransactionBuilder
     {
         $params = [
             'version' => $version
@@ -50,6 +50,25 @@ class TransactionBuilder
     {
         $params = [
             'to' => $address
+        ];
+        $this->transaction->setParams($params);
+        return $this;
+    }
+
+    public function call(string $method, array $params): TransactionBuilder
+    {
+        $paramsObj = new \stdClass();
+        foreach ($params as $key => $value) {
+            $paramsObj->{$key} = $value;
+        }
+
+        $dataObj = new \stdClass();
+        $dataObj->method = $method;
+        $dataObj->params = $paramsObj;
+
+        $params = [
+            'dataType' => 'call',
+            'data' => $dataObj
         ];
         $this->transaction->setParams($params);
         return $this;
@@ -91,10 +110,23 @@ class TransactionBuilder
         return $this;
     }
 
-    public function nonce(): TransactionBuilder
+    public function nonce($nonce = null): TransactionBuilder
     {
         $params = [
-            'nonce' => '0x' . dechex(rand(1, 1000))
+            'nonce' => isset($nonce) ? $nonce : '0x' . dechex(rand(1, 1000))
+        ];
+        $this->transaction->setParams($params);
+        return $this;
+    }
+
+    public function stepLimit(string $stepLimit = '0x186a0'): TransactionBuilder
+    {
+        if (substr($stepLimit, 0, 2) !== '0x') {
+            $stepLimit = dechex($stepLimit);
+        }
+
+        $params = [
+            'stepLimit' => $stepLimit
         ];
         $this->transaction->setParams($params);
         return $this;
@@ -157,6 +189,30 @@ class TransactionBuilder
         $params = [
             'hash' => $hash
         ];
+        $this->transaction->setParams($params);
+        return $this;
+    }
+
+    public function value(string $value): TransactionBuilder
+    {
+        if (substr($value, 0, 2) !== '0x') {
+            $value = Helpers::hexToIcx($value);
+        }
+
+        $params = [
+            'value' => $value
+        ];
+        $this->transaction->setParams($params);
+        return $this;
+    }
+
+    public function message(string $message): TransactionBuilder
+    {
+        $params = [
+            "dataType" => "message",
+            "data" => "0x" . bin2hex($message)
+        ];
+
         $this->transaction->setParams($params);
         return $this;
     }

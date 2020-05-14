@@ -38,7 +38,7 @@ class IISS
     public function setDelegation($delegations, $from, $stepLimit, string $privateKey, $nid)
     {
 
-        return $this->sendTransaction('setStake', $delegations, $from, $stepLimit, $privateKey, $nid);
+        return $this->sendTransaction('setDelegation', $delegations, $from, $stepLimit, $privateKey, $nid);
     }
 
     public function getDelegation($address)
@@ -47,42 +47,25 @@ class IISS
             "address" => $address
         );
 
-        return $this->icx_call('getStake', $methodParams);
+        return $this->icx_call('getDelegation', $methodParams);
     }
 
     private function sendTransaction($method, $methodParams, $from, $stepLimit, string $privateKey, $nid)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_sendTransaction",
-            "id" => 1234,
-            "params" => array(
-                "from" => $from,
-                "to" => "cx0000000000000000000000000000000000000000",
-                "version" => $this->version,
-                "nid" => $nid,
-                "stepLimit" => $stepLimit,
-                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
-                "dataType" => "call",
-                "data" => array(
-                    "method" => $method,
-                    "params" => $methodParams
-                )
-            )
-        );
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to('cx0000000000000000000000000000000000000000')
+            ->version($this->version)
+            ->nid($nid)
+            ->stepLimit($stepLimit)
+            ->timestamp()
+            ->call($method, $methodParams)
+            ->get();
 
-        //Serialize transaction
-        $params = $data['params'];
-        //Sort all tables depending on keys
-        ksort($params);
-        ksort($params['data']);
-        ksort($params['data']['params']);
 
-        //Prepare the string
-        $serialized_transaction = "icx_sendTransaction.";
-        //TODO Serializer https://github.com/icon-project/icon-sdk-js/blob/3ab30c0dbc2759cb480942b8463044fd0c89a703/lib/data/Util.js#L127
-
-        $serialized_transaction = substr($serialized_transaction, 0, -1);
+        $serialized_transaction = Serializer::serialize($transaction);
 
         //Hash serialized transaction
         $msg_hash = hash('sha3-256', $serialized_transaction);
@@ -109,34 +92,25 @@ class IISS
         $transaction_signature = base64_encode(hex2bin($signature));
 
         //Add signature to transaction data
-        $data["params"]["signature"] = $transaction_signature;
+        $transaction->setParams([
+            'signature' => $transaction_signature
+        ]);
 
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        return $this->sendRequest($transaction->getTransactionObject());
     }
 
     private function icx_call($method, $methodParams)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "id" => 1234,
-            "method" => "icx_call",
-            "params" => array(
-                "to" => "cx0000000000000000000000000000000000000000",
-                "dataType" => "call",
-                "data" => array(
-                    "method" => $method,
-                    "params" => $methodParams
-                )
-            )
-        );
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(TransactionTypes::CALL)
+            ->to('cx0000000000000000000000000000000000000000')
+            ->call($method, $methodParams)
+            ->get();
 
-        $result = $this->sendRequest($data);
+        $result = $this->sendRequest($transaction->getTransactionObject());
 
-        //Return as object
-        return json_decode($result);
+        return ($result);
     }
 
     /**

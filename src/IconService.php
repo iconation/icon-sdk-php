@@ -36,10 +36,9 @@ class IconService
     public function icx_getLastBlock()
     {
         $transaction = new TransactionBuilder();
-        $result  = $transaction
+        return $transaction
             ->method(TransactionTypes::LAST_BLOCK)
             ->send();
-        return $result;
     }
 
     /**
@@ -74,11 +73,10 @@ class IconService
     public function icx_getBlockByHash($hash)
     {
         $transaction = new TransactionBuilder();
-        $res = $transaction
+        return $transaction
             ->method(TransactionTypes::BLOCK_BY_HASH)
             ->blockHash($hash)
             ->send();
-        return $res;
     }
 
     /**
@@ -94,25 +92,16 @@ class IconService
     //TODO migrate
     public function icx_call($from, $score, $method, $params)
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_call",
-            "id" => 1234,
-            "params" => array(
-                "from" => $from,
-                "to" => $score,
-                "dataType" => "call",
-                "data" => array(
-                    "method" => $method,
-                    "params" => $params
-                )
-            )
-        );
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(\iconation\IconSDK\TransactionTypes::CALL)
+            ->to($score)
+            ->call($method, $params)
+            ->get();
 
-        $result = $this->sendRequest($data);
+        $res = $this->sendRequest($transaction->getTransactionObject());
 
-        //Return as object
-        return json_decode($result);
+        return  $res;
     }
 
     /**
@@ -221,41 +210,28 @@ class IconService
     public function ise_getStatus($keys)
     {
         $transaction = new TransactionBuilder();
-        $result = $transaction
+        return $transaction
             ->method(TransactionTypes::STATUS)
             ->filter($keys)
             ->send();
-        return $result;
     }
 
     public function send($from, $to, $value, $stepLimit, string $privateKey, $nid = '0x1')
     {
-        //Create transaction table
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_sendTransaction",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => $to,
-                "value" => $value,
-                "stepLimit" => $stepLimit,
-                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
-                "nid" => $nid,
-                "nonce" => "0x1"
-            )
-        );
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(\iconation\IconSDK\TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to($to)
+            ->value($value)
+            ->version($this->version)
+            ->nid($nid)
+            ->stepLimit($stepLimit)
+            ->timestamp()
+            ->nonce()
+            ->get();
+        $serialized_transaction = Serializer::serialize($transaction);
 
-        //Serialize transaction
-        $params = $data['params'];
-        //Sort table depending on keys
-        ksort($params);
-        //Prepare the string
-        $serialized_transaction = "icx_sendTransaction";
-        foreach ($params as $key => $value) {
-            $serialized_transaction .= "." . $key . "." . $value;
-        }
         //Hash serialized transaction
         $msg_hash = hash('sha3-256', $serialized_transaction);
 
@@ -281,13 +257,12 @@ class IconService
         $transaction_signature = base64_encode(hex2bin($signature));
 
         //Add signature to transaction data
-        $data["params"]["signature"] = $transaction_signature;
+        $transaction->setParams([
+            'signature' => $transaction_signature
+        ]);
 
         //Send request to RPC
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        return $this->sendRequest($transaction->getTransactionObject());
     }
 
     public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, array $params, $nid = '0x1')
@@ -578,20 +553,20 @@ class IconService
                 "data" => "0x" . bin2hex($message)
             )
         );
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(\iconation\IconSDK\TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to($to)
+            ->message($message)
+            ->version($this->version)
+            ->nid($nid)
+            ->stepLimit($stepLimit)
+            ->timestamp()
+            ->nonce()
+            ->get();
 
-        //Serialize transaction
-        $params = $data['params'];
-        //Sort all tables depending on keys
-        ksort($params);
-
-
-        //Prepare the string
-        $serialized_transaction = "icx_sendTransaction.";
-        foreach ($params as $key => $value) {
-            $serialized_transaction .= $key . "." . $value . ".";
-        }
-        $serialized_transaction = substr($serialized_transaction, 0, -1);
-        //Hash serialized transaction
+        $serialized_transaction = Serializer::serialize($transaction);
         $msg_hash = hash('sha3-256', $serialized_transaction);
 
         //Initialize secp256k1 elliptic curve
@@ -616,12 +591,11 @@ class IconService
         $transaction_signature = base64_encode(hex2bin($signature));
 
         //Add signature to transaction data
-        $data["params"]["signature"] = $transaction_signature;
+        $transaction->setParams([
+            'signature' => $transaction_signature
+        ]);
 
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        return $this->sendRequest($transaction->getTransactionObject());
     }
 
     //Not working for now

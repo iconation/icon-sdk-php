@@ -68,10 +68,10 @@ class WalletTest extends TestCase
     }
 
     public function test_isPublicAddress(){
-        $var = new iconation\IconSDK\Wallet;
+        $helpers = new \iconation\IconSDK\Helpers();
 
-        $this->assertTrue($var->isPublicAddress($this->public_address));
-        $this->assertFalse($var->isPublicAddress('h'.$this->public_address));
-        unset($var);
+        $this->assertTrue($helpers->isPublicAddress($this->public_address));
+        $this->assertFalse($helpers->isPublicAddress('h'.$this->public_address));
+        unset($helpers);
     }
 }

@@ -236,7 +236,7 @@ class IconServiceTest extends TestCase
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
         //Test message
-        $message = "Testing the Messaging system";
+        $message = "[ICONation PHP SDK] Testing Messaging system";
         $stepLimit = "0xfffff"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
 

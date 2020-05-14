@@ -8,6 +8,7 @@ class Transaction
     private $id;
     private $iconService;
     private $method;
+    private $value;
     private $params;
 
     public function __construct(int $id = 1234)
@@ -62,11 +63,11 @@ class Transaction
      */
     public function setParams(array $params): void
     {
-        if(empty($this->params)){
+        if (empty($this->params)) {
             $this->params = new \stdClass();
         }
 
-        foreach ($params as $key => $value){
+        foreach ($params as $key => $value) {
             $this->params->$key = $value;
         }
     }
@@ -104,6 +105,22 @@ class Transaction
     }
 
     /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setValue($value): void
+    {
+        $this->value = $value;
+    }
+
+    /**
      * @return \stdClass
      */
     public function getTransactionObject(): \stdClass
@@ -122,24 +139,40 @@ class Transaction
         return $transaction;
     }
 
+    /**
+     * @return \stdClass | null
+     */
+    public function getTransactionParamsObject(): ?\stdClass
+    {
+        $params = new \stdClass();
+        if (isset($this->params)) {
+            foreach ($this->params as $key => $value) {
+                $params->{$key} = $value;
+            }
+        } else {
+            return null;
+        }
+
+        return $params;
+    }
+
 
     /**
-     * @return array
+     * @return array | null
      */
-    public function getTransactionArray(): array
+    public function getTransactionParamArray(): ?array
     {
-        $transaction = array();
-        $transaction['jsonrpc'] = $this->getJsonrpc();
-        $transaction['id'] = $this->getId();
 
-        if (!empty($this->getMethod())) {
-            $transaction['method'] = $this->getMethod();
-        }
-        if (!empty($this->getParams())) {
-            $transaction['params'] = $this->getParams();
+        $params = array();
+        if (isset($this->params)) {
+            foreach ($this->params as $key => $value) {
+                $params[$key] = $value;
+            }
+        } else {
+            return null;
         }
 
-        return $transaction;
+        return $params;
     }
 
 }
