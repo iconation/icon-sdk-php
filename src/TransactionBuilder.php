@@ -161,28 +161,14 @@ class TransactionBuilder
         return $this;
     }
 
-    /**
-     * @return \stdClass
-     */
-    public function getTransactionObject(): \stdClass
+    public function get(): Transaction
     {
-        $transaction = new \stdClass();
-        $transaction->jsonrpc = $this->transaction->getJsonrpc();
-        $transaction->id = $this->transaction->getId();
-
-        if (!empty($this->transaction->getMethod())) {
-            $transaction->method = $this->transaction->getMethod();
-        }
-        if (!empty($this->transaction->getParams())) {
-            $transaction->params = $this->transaction->getParams();
-        }
-
-        return $transaction;
+        return $this->transaction;
     }
 
     //TODO add endpoint url in here
     public function send(): \stdClass
     {
-        return $this->transaction->getIconService()->sendRequest($this->getTransactionObject());
+        return $this->transaction->getIconService()->sendRequest($this->transaction->getTransactionObject());
     }
 }

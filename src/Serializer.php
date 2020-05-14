@@ -4,14 +4,20 @@ namespace iconation\IconSDK;
 
 class Serializer
 {
-    public static function serialize(Transaction $transaction){
-        $serializedTransaction = 'icx_sendTransaction';
+    public static function serialize(Transaction $transaction, bool $hashed = false){
+        $resultStr = self::objTraverse($transaction->getTransactionArray());
 
-        //TODO implementation
-        return $serializedTransaction;
+        $resultStringReplaced = substr(substr($resultStr,1), 0, -1);
+        $result = 'icx_sendTransaction.'.$resultStringReplaced;
+
+        if($hashed){
+            $result = hash('sha3-256', $result);
+        }
+
+        return $result;
     }
 
-    private function arrayTraverse(array $array): string
+    private static function arrayTraverse(array $array): string
     {
         $result = '';
 
@@ -25,13 +31,13 @@ class Serializer
                     $result .= '\0';
                     break;
                 case (gettype($value) === 'string');
-                    $result .= $this->escapeString($value);
+                    $result .= self::escapeString($value);
                     break;
                 case (gettype($value) === 'array');
-                    $result .= $this->arrayTraverse($value);
+                    $result .= self::arrayTraverse($value);
                     break;
                 case (gettype($value) === 'object');
-                    $result .= $this->objTraverse($value);
+                    $result .= self::objTraverse($value);
                     break;
                 default:
                     break;
@@ -45,7 +51,7 @@ class Serializer
         return $result;
     }
 
-    private function objTraverse(array $object): string
+    private static function objTraverse(array $object): string
     {
         $result = '';
         $result .= '{';
@@ -62,15 +68,15 @@ class Serializer
                         break;
                     case (gettype($value) === 'string');
                         $result .= $key . '.';
-                        $result .= $this->escapeString($value);
+                        $result .= self::escapeString($value);
                         break;
                     case (gettype($value) === 'array');
                         $result .= $key . '.';
-                        $result .= $this->arrayTraverse($value);
+                        $result .= self::arrayTraverse($value);
                         break;
                     case (gettype($value) === 'object');
                         $result .= $key . '.';
-                        $result .= $this->objTraverse($value);
+                        $result .= self::objTraverse($value);
                         break;
                     default:
                         break;
@@ -85,7 +91,7 @@ class Serializer
         return $result;
     }
 
-    private function escapeString($value)
+    private static function escapeString($value)
     {
         $newString = $value;
         $newString = is_array(explode('\\', $newString)) ? implode('\\\\', explode('\\', $newString)) : $newString;

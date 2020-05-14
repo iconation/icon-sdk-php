@@ -103,5 +103,43 @@ class Transaction
         $this->id = $id;
     }
 
+    /**
+     * @return \stdClass
+     */
+    public function getTransactionObject(): \stdClass
+    {
+        $transaction = new \stdClass();
+        $transaction->jsonrpc = $this->getJsonrpc();
+        $transaction->id = $this->getId();
+
+        if (!empty($this->getMethod())) {
+            $transaction->method = $this->getMethod();
+        }
+        if (!empty($this->getParams())) {
+            $transaction->params = $this->getParams();
+        }
+
+        return $transaction;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getTransactionArray(): array
+    {
+        $transaction = array();
+        $transaction['jsonrpc'] = $this->getJsonrpc();
+        $transaction['id'] = $this->getId();
+
+        if (!empty($this->getMethod())) {
+            $transaction['method'] = $this->getMethod();
+        }
+        if (!empty($this->getParams())) {
+            $transaction['params'] = $this->getParams();
+        }
+
+        return $transaction;
+    }
 
 }
