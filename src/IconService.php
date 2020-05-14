@@ -99,9 +99,7 @@ class IconService
             ->call($method, $params)
             ->get();
 
-        $res = $this->sendRequest($transaction->getTransactionObject());
-
-        return  $res;
+        return $this->sendRequest($transaction->getTransactionObject());
     }
 
     /**
@@ -229,37 +227,8 @@ class IconService
             ->stepLimit($stepLimit)
             ->timestamp()
             ->nonce()
+            ->sign($privateKey)
             ->get();
-        $serialized_transaction = Serializer::serialize($transaction);
-
-        //Hash serialized transaction
-        $msg_hash = hash('sha3-256', $serialized_transaction);
-
-        //Initialize secp256k1 elliptic curve
-        $ec = new EC('secp256k1');
-
-        //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
-
-        //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //Break down into components and then assemble
-        $sign = array(
-            "r" => $signing->r->toString("hex"),
-            "s" => $signing->s->toString("hex")
-
-        );
-        //Get recovery bit
-        $rec_id = $signing->recoveryParam;
-        //Convert signature to hex string
-        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
-        //Encode hex signature to base64
-        $transaction_signature = base64_encode(hex2bin($signature));
-
-        //Add signature to transaction data
-        $transaction->setParams([
-            'signature' => $transaction_signature
-        ]);
 
         //Send request to RPC
         return $this->sendRequest($transaction->getTransactionObject());
@@ -267,6 +236,7 @@ class IconService
 
     public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, array $params, $nid = '0x1')
     {
+        //TODO
         //Create transaction table
         $data = array(
             "jsonrpc" => "2.0",
@@ -288,73 +258,15 @@ class IconService
 
             )
         );
+        //TODO sign($privateKey)
 
-        //Serialize transaction
-        $params = $data['params'];
-        //Sort all tables depending on keys
-        ksort($params);
-        ksort($params['data']);
-        ksort($params['data']['params']);
 
-        //Prepare the string
-        $serialized_transaction = "icx_sendTransaction.";
-        foreach ($params as $key => $value) {
-            if (!is_array($value)) {
-                $serialized_transaction .= $key . "." . $value . ".";
-            } else {
-                $serialized_transaction .= $key . ".{";
-                foreach ($value as $data_key => $data_value) {
-                    if (!is_array($data_value)) {
-                        $serialized_transaction .= $data_key . "." . $data_value . ".";
-                    } else {
-                        $serialized_transaction .= $data_key . ".{";
-                        foreach ($data_value as $param_key => $param_value) {
-                            $serialized_transaction .= $param_key . "." . $param_value . ".";
-                        }
-                        $serialized_transaction = substr($serialized_transaction, 0, -1);
-                        $serialized_transaction .= "}";
-                    }
-                }
-                $serialized_transaction .= "}.";
-            }
-        }
-        $serialized_transaction = substr($serialized_transaction, 0, -1);
-
-        //Hash serialized transaction
-        $msg_hash = hash('sha3-256', $serialized_transaction);
-
-        //Initialize secp256k1 elliptic curve
-        $ec = new EC('secp256k1');
-
-        //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
-
-        //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //Break down into components and then assemble
-        $sign = array(
-            "r" => $signing->r->toString("hex"),
-            "s" => $signing->s->toString("hex")
-
-        );
-        //Get recovery bit
-        $rec_id = $signing->recoveryParam;
-        //Convert signature to hex string
-        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
-        //Encode hex signature to base64
-        $transaction_signature = base64_encode(hex2bin($signature));
-
-        //Add signature to transaction data
-        $data["params"]["signature"] = $transaction_signature;
-
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        return $this->sendRequest($data);
     }
 
     public function installSCORE($from, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
     {
+        //TODO
         //Create transaction table
         $data = array(
             "jsonrpc" => "2.0",
@@ -377,74 +289,15 @@ class IconService
 
             )
         );
+        //TODO sign($privateKey)
 
-        //Serialize transaction
-        $params = $data['params'];
-        //Sort all tables depending on keys
-        ksort($params);
-        ksort($params)['data'];
-        ksort($params['data']['params']);
 
-        //Prepare the string
-        $serialized_transaction = "icx_sendTransaction.";
-        foreach ($params as $key => $value) {
-            if (!is_array($value)) {
-                $serialized_transaction .= $key . "." . $value . ".";
-            } else {
-                $serialized_transaction .= $key . ".{";
-                foreach ($value as $data_key => $data_value) {
-                    if (!is_array($data_value)) {
-                        $serialized_transaction .= $data_key . "." . $data_value . ".";
-                    } else {
-                        $serialized_transaction .= $data_key . ".{";
-                        foreach ($data_value as $param_key => $param_value) {
-                            $serialized_transaction .= $param_key . "." . $param_value . ".";
-                        }
-                        $serialized_transaction = substr($serialized_transaction, 0, -1);
-                        $serialized_transaction .= "}";
-                    }
-                }
-                $serialized_transaction .= "}.";
-            }
-        }
-        $serialized_transaction = substr($serialized_transaction, 0, -1);
-
-        //Hash serialized transaction
-        $msg_hash = hash('sha3-256', $serialized_transaction);
-
-        //Initialize secp256k1 elliptic curve
-        $ec = new EC('secp256k1');
-
-        //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
-
-        //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //Break down into components and then assemble
-        $sign = array(
-            "r" => $signing->r->toString("hex"),
-            "s" => $signing->s->toString("hex")
-
-        );
-        //Get recovery bit
-        $rec_id = $signing->recoveryParam;
-        //Convert signature to hex string
-        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
-        //Encode hex signature to base64
-        $transaction_signature = base64_encode(hex2bin($signature));
-
-        //Add signature to transaction data
-        $data["params"]["signature"] = $transaction_signature;
-
-        //Send request to RPC
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        return $this->sendRequest($data);
     }
 
     public function updateSCORE($from, $to, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
     {
+        //TODO
         //Create transaction table
         $data = array(
             "jsonrpc" => "2.0",
@@ -467,92 +320,14 @@ class IconService
 
             )
         );
+        //TODO sign($privateKey)
 
-        //Serialize transaction
-        $params = $data['params'];
-        //Sort all tables depending on keys
-        ksort($params);
-        ksort($params)['data'];
-        ksort($params['data']['params']);
 
-        //Prepare the string
-        $serialized_transaction = "icx_sendTransaction.";
-        foreach ($params as $key => $value) {
-            if (!is_array($value)) {
-                $serialized_transaction .= $key . "." . $value . ".";
-            } else {
-                $serialized_transaction .= $key . ".{";
-                foreach ($value as $data_key => $data_value) {
-                    if (!is_array($data_value)) {
-                        $serialized_transaction .= $data_key . "." . $data_value . ".";
-                    } else {
-                        $serialized_transaction .= $data_key . ".{";
-                        foreach ($data_value as $param_key => $param_value) {
-                            $serialized_transaction .= $param_key . "." . $param_value . ".";
-                        }
-                        $serialized_transaction = substr($serialized_transaction, 0, -1);
-                        $serialized_transaction .= "}";
-                    }
-                }
-                $serialized_transaction .= "}.";
-            }
-        }
-        $serialized_transaction = substr($serialized_transaction, 0, -1);
-
-        //Hash serialized transaction
-        $msg_hash = hash('sha3-256', $serialized_transaction);
-
-        //Initialize secp256k1 elliptic curve
-        $ec = new EC('secp256k1');
-
-        //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
-
-        //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //Break down into components and then assemble
-        $sign = array(
-            "r" => $signing->r->toString("hex"),
-            "s" => $signing->s->toString("hex")
-
-        );
-        //Get recovery bit
-        $rec_id = $signing->recoveryParam;
-        //Convert signature to hex string
-        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
-        //Encode hex signature to base64
-        $transaction_signature = base64_encode(hex2bin($signature));
-
-        //Add signature to transaction data
-        $data["params"]["signature"] = $transaction_signature;
-
-        //Send request to RPC
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
+        return $this->sendRequest($data);
     }
 
     public function message($from, $to, $stepLimit, string $privateKey, string $message, string $value = "0x0", $nid = '0x1')
     {
-        //Create transaction table
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_sendTransaction",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => $to, // SCORE address to be updated
-                "value" => $value,
-                "stepLimit" => $stepLimit,
-                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
-                "nid" => $nid,
-                "nonce" => "0x1",
-                "dataType" => "message",
-                "data" => "0x" . bin2hex($message)
-            )
-        );
         $transaction = new TransactionBuilder();
         $transaction = $transaction
             ->method(\iconation\IconSDK\TransactionTypes::SEND_TRANSACTION)
@@ -564,36 +339,8 @@ class IconService
             ->stepLimit($stepLimit)
             ->timestamp()
             ->nonce()
+            ->sign($privateKey)
             ->get();
-
-        $serialized_transaction = Serializer::serialize($transaction);
-        $msg_hash = hash('sha3-256', $serialized_transaction);
-
-        //Initialize secp256k1 elliptic curve
-        $ec = new EC('secp256k1');
-
-        //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
-
-        //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
-        //Break down into components and then assemble
-        $sign = array(
-            "r" => $signing->r->toString("hex"),
-            "s" => $signing->s->toString("hex")
-
-        );
-        //Get recovery bit
-        $rec_id = $signing->recoveryParam;
-        //Convert signature to hex string
-        $signature = $sign["r"] . $sign["s"] . '0' . $rec_id;
-        //Encode hex signature to base64
-        $transaction_signature = base64_encode(hex2bin($signature));
-
-        //Add signature to transaction data
-        $transaction->setParams([
-            'signature' => $transaction_signature
-        ]);
 
         return $this->sendRequest($transaction->getTransactionObject());
     }

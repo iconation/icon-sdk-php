@@ -21,7 +21,6 @@ class Serializer
     private static function arrayTraverse(array $array): string
     {
         $result = '';
-
         $result .= '[';
         ksort($array);
 
