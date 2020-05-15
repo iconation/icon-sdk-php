@@ -55,20 +55,11 @@ class TransactionBuilder
         return $this;
     }
 
-    public function call(string $method, array $params): TransactionBuilder
+    public function call(\stdClass $params, string $dataType = 'call'): TransactionBuilder
     {
-        $paramsObj = new \stdClass();
-        foreach ($params as $key => $value) {
-            $paramsObj->{$key} = $value;
-        }
-
-        $dataObj = new \stdClass();
-        $dataObj->method = $method;
-        $dataObj->params = $paramsObj;
-
         $params = [
-            'dataType' => 'call',
-            'data' => $dataObj
+            'dataType' => $dataType,
+            'data' => $params
         ];
         $this->transaction->setParams($params);
         return $this;

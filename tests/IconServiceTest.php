@@ -67,14 +67,14 @@ class IconServiceTest extends TestCase
     {
         $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
 
-        $from = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
         $score = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
-        $method = "balanceOf";
-        $params = array(
-            "_owner" => "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd"
-        );
 
-        $this->assertTrue(!isset($var->icx_call($from, $score, $method, $params)->error));
+        $params = new stdClass();
+        $params->method = "balanceOf";
+        $params->params = new stdClass();
+        $params->params->_owner = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
+
+        $this->assertTrue(!isset($var->icx_call($score, $params)->error));
         unset($var);
     }
 

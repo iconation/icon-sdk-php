@@ -17,39 +17,56 @@ class IISS
 
     public function setStake($value, $from, $stepLimit, string $privateKey, $nid = '0x1')
     {
-        $methodParams = array(
-            "value" => Helpers::icxToHex($value)
-        );
+        $methodParams = new \stdClass();
+        $methodParams->value = Helpers::icxToHex($value);
 
         return $this->sendTransactionToGovernanceContract('setStake', $methodParams, $from, $stepLimit, $privateKey, $nid);
     }
 
     public function getStake($address)
     {
-        $methodParams = array(
-            "address" => $address
-        );
+        $methodParams = new \stdClass();
+        $methodParams->address = $address;
 
         return $this->icx_call('getStake', $methodParams);
     }
 
     public function setDelegation($delegations, $from, $stepLimit, string $privateKey, $nid)
     {
+        $methodParams = new \stdClass();
+        $methodParams->delegations = $delegations;
 
-        return $this->sendTransactionToGovernanceContract('setDelegation', $delegations, $from, $stepLimit, $privateKey, $nid);
+        return $this->sendTransactionToGovernanceContract('setDelegation', $methodParams, $from, $stepLimit, $privateKey, $nid);
     }
 
     public function getDelegation($address)
     {
-        $methodParams = array(
-            "address" => $address
-        );
+        $methodParams = new \stdClass();
+        $methodParams->address = $address;
 
         return $this->icx_call('getDelegation', $methodParams);
     }
 
+    public function claimIScore($from, $stepLimit, string $privateKey, $nid){
+        return $this->sendTransactionToGovernanceContract('claimIScsore', null, $from, $stepLimit, $privateKey, $nid);
+    }
+
+    public function queryIScore($address)
+    {
+        $methodParams = new \stdClass();
+        $methodParams->address = $address;
+
+        return $this->icx_call('queryIScore', $methodParams);
+    }
+
     private function sendTransactionToGovernanceContract($method, $methodParams, $from, $stepLimit, string $privateKey, $nid)
     {
+        $params = new \stdClass();
+        $params->method = $method;
+        if (isset($methodParams)){
+            $params->params = $methodParams;
+        }
+
         $transaction = new TransactionBuilder();
         $transaction = $transaction
             ->method(TransactionTypes::SEND_TRANSACTION)
@@ -59,20 +76,24 @@ class IISS
             ->nid($nid)
             ->stepLimit($stepLimit)
             ->timestamp()
-            ->call($method, $methodParams)
+            ->call($params)
             ->sign($privateKey)
             ->get();
 
         return $this->sendRequest($transaction->getTransactionObject());
     }
 
-    private function icx_call($method, $methodParams)
+    private function icx_call(string $method, \stdClass $methodParams)
     {
+        $params = new \stdClass();
+        $params->method = $method;
+        $params->params = $methodParams;
+
         $transaction = new TransactionBuilder();
         $transaction = $transaction
             ->method(TransactionTypes::CALL)
             ->to('cx0000000000000000000000000000000000000000')
-            ->call($method, $methodParams)
+            ->call($params)
             ->get();
 
         $result = $this->sendRequest($transaction->getTransactionObject());

@@ -82,21 +82,20 @@ class IconService
     /**
      * icx_call
      *
-     * @param string $from Message sender eg. hxbe258ceb872e08851f1f59694dac2558708ece11
      * @param string $score SCORE we want to interact with eg. cxb0776ee37f5b45bfaea8cff1d8232fbb6122ec32
-     * @param string $method SCORE method to be invoked eg. "get_balance"
-     * @param array $params Array of SCORE method possible parameters eg. array("address" => "hx1f9a3310f60a03934b917509c86442db703cbd52")
+     * @param \stdClass $params Array of SCORE method possible parameters eg. array("address" => "hx1f9a3310f60a03934b917509c86442db703cbd52")
      *
      * @return object
      */
     //TODO migrate
-    public function icx_call($from, $score, $method, $params)
+    public function icx_call($score, $params)
     {
+
         $transaction = new TransactionBuilder();
         $transaction = $transaction
             ->method(\iconation\IconSDK\TransactionTypes::CALL)
             ->to($score)
-            ->call($method, $params)
+            ->call($params)
             ->get();
 
         return $this->sendRequest($transaction->getTransactionObject());
@@ -234,37 +233,24 @@ class IconService
         return $this->sendRequest($transaction->getTransactionObject());
     }
 
-    public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, array $params, $nid = '0x1')
+    public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, \stdClass $params, $nid = '0x1')
     {
-        //TODO
-        //Create transaction table
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_sendTransaction",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => $to,
-                "stepLimit" => $stepLimit,
-                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
-                "nid" => $nid,
-                "nonce" => "0x1",
-                "dataType" => "call",
-                "data" => array(
-                    "method" => $method,
-                    "params" => $params
-                )
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to($to)
+            ->stepLimit($stepLimit)
+            ->nid($nid)
+            ->nonce()
+            ->call($params)
+            ->sign($privateKey)
+            ->get();
 
-            )
-        );
-        //TODO sign($privateKey)
-
-
-        return $this->sendRequest($data);
+        return $this->sendRequest($transaction->getTransactionObject());
     }
 
-    public function installSCORE($from, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
+    public function installSCORE($from, $stepLimit, string $privateKey, string $score, \stdClass $params, $nid = '0x1')
     {
         //TODO
         //Create transaction table
@@ -289,6 +275,17 @@ class IconService
 
             )
         );
+        $transaction = new TransactionBuilder();
+        $transaction = $transaction
+            ->method(TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to('cx0000000000000000000000000000000000000000')
+            ->stepLimit($stepLimit)
+            ->nid($nid)
+            ->nonce()
+            ->call($params, 'deploy')
+            ->sign($privateKey)
+            ->get();
         //TODO sign($privateKey)
 
 
