@@ -1,8 +1,9 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\IconService;
 
-use Elliptic\EC;
+use iconation\IconSDK\Transaction\TransactionBuilder;
+use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Utils\Helpers;
 
 /**
@@ -94,7 +95,7 @@ class IconService
 
         $transaction = new TransactionBuilder();
         $transaction = $transaction
-            ->method(\iconation\IconSDK\TransactionTypes::CALL)
+            ->method(TransactionTypes::CALL)
             ->to($score)
             ->call($params)
             ->get();
@@ -218,7 +219,7 @@ class IconService
     {
         $transaction = new TransactionBuilder();
         $transaction = $transaction
-            ->method(\iconation\IconSDK\TransactionTypes::SEND_TRANSACTION)
+            ->method(TransactionTypes::SEND_TRANSACTION)
             ->from($from)
             ->to($to)
             ->value($value)
@@ -328,7 +329,7 @@ class IconService
     {
         $transaction = new TransactionBuilder();
         $transaction = $transaction
-            ->method(\iconation\IconSDK\TransactionTypes::SEND_TRANSACTION)
+            ->method(TransactionTypes::SEND_TRANSACTION)
             ->from($from)
             ->to($to)
             ->message($message)

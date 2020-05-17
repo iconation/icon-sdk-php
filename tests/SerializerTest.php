@@ -1,5 +1,8 @@
 <?php
 
+use iconation\IconSDK\IconService\IconService;
+use iconation\IconSDK\Transaction\TransactionBuilder;
+use iconation\IconSDK\Transaction\TransactionTypes;
 use PHPUnit\Framework\TestCase;
 
 
@@ -26,7 +29,7 @@ class SerializerTest extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
         $this->assertTrue(is_object($var));
         unset($var);
     }
@@ -36,9 +39,9 @@ class SerializerTest extends TestCase
     public function test_serializer()
     {
 
-        $transaction = new \iconation\IconSDK\TransactionBuilder();
+        $transaction = new TransactionBuilder();
         $transaction = $transaction
-            ->method(\iconation\IconSDK\TransactionTypes::SEND_TRANSACTION)
+            ->method(TransactionTypes::SEND_TRANSACTION)
             ->from('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160')
             ->to('hxf8689d6c4c8f333651469fdea2ac59a18f6c242d')
             ->value('0x2386f26fc10000')

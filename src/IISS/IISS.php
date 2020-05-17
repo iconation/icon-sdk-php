@@ -1,7 +1,9 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\IISS;
 
+use iconation\IconSDK\Transaction\TransactionBuilder;
+use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Utils\Helpers;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\Transaction;
 
 abstract class TransactionTypes{
     const LAST_BLOCK = 'icx_getLastBlock';

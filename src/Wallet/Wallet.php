@@ -1,6 +1,6 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\Wallet;
 
 use Elliptic\EC;
 use Exception;

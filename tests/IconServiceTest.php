@@ -1,5 +1,6 @@
 <?php
 
+use iconation\IconSDK\IconService\IconService;
 use PHPUnit\Framework\TestCase;
 
 
@@ -26,7 +27,7 @@ class IconServiceTest extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
         $this->assertTrue(is_object($var));
         unset($var);
     }
@@ -35,7 +36,7 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getLastBlock()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
         $this->assertTrue(!isset($var->icx_getLastBlock()->error));
         unset($var);
     }
@@ -45,7 +46,7 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBlockByHeight()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
         $height = "0x3";
         $this->assertTrue(!isset($var->icx_getBlockByHeight($height)->error));
         unset($var);
@@ -55,7 +56,7 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBlockByHash()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
         $hash = "0x123986e1c834632f6e65915c249d81cd01453ec915e3370d364d6df7be5e6c03"; //Yeouido
         $this->assertTrue(!isset($var->icx_getBlockByHash($hash)->error));
         unset($var);
@@ -65,7 +66,7 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_call()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $score = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
 
@@ -82,7 +83,7 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBalance()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $address = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
         $this->assertTrue(!isset($var->icx_getBalance($address)->error));
@@ -93,7 +94,7 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getScoreApi()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $address = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
         $this->assertTrue(!isset($var->icx_getScoreApi($address)->error));
@@ -102,7 +103,7 @@ class IconServiceTest extends TestCase
 
     public function test_icx_getTotalSupply()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $this->assertTrue(!isset($var->icx_getTotalSupply()->error));
         unset($var);
@@ -111,7 +112,7 @@ class IconServiceTest extends TestCase
 
     public function test_icx_getTransactionResult()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
         $this->assertTrue(!isset($var->icx_getTransactionResult($txHash)->error));
@@ -120,7 +121,7 @@ class IconServiceTest extends TestCase
 
     public function test_icx_getTransactionByHash()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
         $this->assertTrue(!isset($var->icx_getTransactionByHash($txHash)->error));
@@ -129,7 +130,7 @@ class IconServiceTest extends TestCase
 
     public function test_ise_getStatus()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_main);
+        $var = new IconService($this->icon_service_URL_main);
 
         $keys = ['lastBlock'];
         $this->assertTrue(!isset($var->ise_getStatus($keys)->error));
@@ -152,7 +153,7 @@ class IconServiceTest extends TestCase
 
     public function test_send()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_yeouido);
+        $var = new IconService($this->icon_service_URL_yeouido);
 
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
@@ -170,7 +171,7 @@ class IconServiceTest extends TestCase
     /* public function test_callSCORE()
      {
          //TODO properly test with contract
-         $var = new iconation\IconSDK\IconService($this->icon_service_URL_yeouido);
+         $var = new IconService($this->icon_service_URL_yeouido);
 
          $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
          $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
@@ -190,7 +191,7 @@ class IconServiceTest extends TestCase
      public function test_installSCORE()
      {
          //TODO properly test with contract
-         $var = new iconation\IconSDK\IconService($this->icon_service_URL_yeouido);
+         $var = new IconService($this->icon_service_URL_yeouido);
 
          $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
          $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
@@ -211,7 +212,7 @@ class IconServiceTest extends TestCase
      public function test_updateSCORE()
      {
          //TODO properly test with contract
-         $var = new iconation\IconSDK\IconService($this->icon_service_URL_yeouido);
+         $var = new IconService($this->icon_service_URL_yeouido);
 
          $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
          $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
@@ -230,7 +231,7 @@ class IconServiceTest extends TestCase
 
     public function test_message()
     {
-        $var = new iconation\IconSDK\IconService($this->icon_service_URL_yeouido);
+        $var = new IconService($this->icon_service_URL_yeouido);
 
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";

@@ -1,6 +1,8 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\Transaction;
+
+use iconation\IconSDK\IconService\IconService;
 
 class Transaction
 {

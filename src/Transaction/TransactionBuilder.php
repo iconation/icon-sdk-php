@@ -1,6 +1,6 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\Transaction;
 
 use Elliptic\EC;
 use iconation\IconSDK\Utils\Helpers;

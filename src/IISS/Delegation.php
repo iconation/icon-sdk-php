@@ -1,6 +1,6 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\IISS;
 
 use iconation\IconSDK\Utils\Helpers;
 

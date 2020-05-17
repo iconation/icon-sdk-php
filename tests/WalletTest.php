@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use iconation\IconSDK\Wallet\Wallet;
 
 
 /**
@@ -16,7 +17,7 @@ class WalletTest extends TestCase
     public $public_address ="hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
 
     public function test_construct(){
-        $var = new iconation\IconSDK\Wallet;
+        $var = new Wallet;
 
         $privateKey = $var->getPrivateKey();
         $publicKey = $var->getPublicKeyFromPrivate($privateKey);
@@ -26,7 +27,7 @@ class WalletTest extends TestCase
         $this->assertTrue($var->getPublicAddress() === $publicAddress);
         unset($var);
 
-        $var = new iconation\IconSDK\Wallet('d4b34071dc52970d8631674d2e5db510527be5ae08f47cc8212d05f8b0d7db5d');
+        $var = new Wallet('d4b34071dc52970d8631674d2e5db510527be5ae08f47cc8212d05f8b0d7db5d');
 
         $this->assertTrue($var->getPrivateKey() === 'd4b34071dc52970d8631674d2e5db510527be5ae08f47cc8212d05f8b0d7db5d');
         $this->assertTrue($var->getPublicKey() === '9cf951e78c718208084bc9964a410064f78f724b15f39da67e26f3aed7450048c4e2aa8df3a0fa60eaa513a51740f2dff88dbf01c6bd9a17bb45eb907868542b');
@@ -36,7 +37,7 @@ class WalletTest extends TestCase
 
     public function test_create()
     {
-        $var = new iconation\IconSDK\Wallet;
+        $var = new Wallet;
 
         $key = $var->create();
         $this->assertTrue(strlen($key) === 64);
@@ -46,7 +47,7 @@ class WalletTest extends TestCase
 
     public function test_getPublicKey()
     {
-        $var = new iconation\IconSDK\Wallet;
+        $var = new Wallet;
 
         $key = $var->getPublicKeyFromPrivate($this->private_key);
         $this->assertTrue(strlen($key) === 128);
@@ -56,7 +57,7 @@ class WalletTest extends TestCase
     }
 
     public function test_pubkeyToAddress(){
-        $var = new iconation\IconSDK\Wallet;
+        $var = new Wallet;
 
         $privateKey = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5";
         $expectedAddress = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";

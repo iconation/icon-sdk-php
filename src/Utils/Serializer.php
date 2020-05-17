@@ -2,7 +2,7 @@
 
 namespace iconation\IconSDK\Utils;
 
-use iconation\IconSDK\Transaction;
+use iconation\IconSDK\Transaction\Transaction;
 
 class Serializer
 {

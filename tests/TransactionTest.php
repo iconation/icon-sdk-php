@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use iconation\IconSDK\Transaction\Transaction;
 
 
 /**
@@ -21,14 +22,14 @@ class TransactionTest extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $var = new iconation\IconSDK\Transaction();
+        $var = new Transaction();
         $this->assertTrue(is_object($var));
         unset($var);
     }
 
     public function test_setJsonRpc()
     {
-        $transaction = new iconation\IconSDK\Transaction();
+        $transaction = new Transaction();
         $jsonrpc = '5.0';
         $transaction->setJsonrpc($jsonrpc);
         $this->assertSame($jsonrpc, $transaction->getJsonrpc());
@@ -37,7 +38,7 @@ class TransactionTest extends TestCase
 
     public function test_setId()
     {
-        $transaction = new iconation\IconSDK\Transaction();
+        $transaction = new Transaction();
         $id = 1234567;
         $transaction->setId($id);
         $this->assertSame($id, $transaction->getId());
@@ -46,7 +47,7 @@ class TransactionTest extends TestCase
 
     public function test_value()
     {
-        $transaction = new iconation\IconSDK\Transaction();
+        $transaction = new Transaction();
         $value = '0x123';
         $transaction->setValue($value);
         $this->assertSame($value, $transaction->getValue());
@@ -55,14 +56,14 @@ class TransactionTest extends TestCase
 
     public function test_getTransactionParamsObject_empty_params()
     {
-        $transaction = new \iconation\IconSDK\Transaction();
+        $transaction = new Transaction();
         $this->assertNull($transaction->getTransactionParamsObject());
         unset($transaction);
     }
 
     public function test_getTransactionParamsArray(){
         //First check when no param is set
-        $transaction = new \iconation\IconSDK\Transaction();
+        $transaction = new Transaction();
         $this->assertNull($transaction->getTransactionParamsArray());
 
         //Now set an arbitrary param
