@@ -160,7 +160,7 @@ class Transaction
     /**
      * @return array | null
      */
-    public function getTransactionParamArray(): ?array
+    public function getTransactionParamsArray(): ?array
     {
 
         $params = array();
