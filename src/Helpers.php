@@ -71,11 +71,11 @@ class Helpers{
         $last_part = array_pop($parts);
         $first_part = $parts[0] . 'x';
 
-        if ($first_part !== 'hx' && strlen($first_part) !== $length - 40) {
+        if ($first_part !== 'hx') {
             return false;
         }
 
-        if (!ctype_xdigit($last_part) && strlen($last_part) !== $length - 2) {
+        if (!ctype_xdigit($last_part) || strlen($last_part) !== $length - 2) {
             return false;
         }
 
