@@ -38,7 +38,6 @@ class SerializerTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_serializer()
     {
-
         $transaction = new TransactionBuilder();
         $transaction = $transaction
             ->method(TransactionTypes::SEND_TRANSACTION)

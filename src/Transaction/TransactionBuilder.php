@@ -127,8 +127,7 @@ class TransactionBuilder
 
     public function sign(string $privateKey): TransactionBuilder
     {
-        $serializedTransaction = Serializer::serialize($this->transaction);
-        $msg_hash = hash('sha3-256', $serializedTransaction);
+        $serializedTransaction = Serializer::serialize($this->transaction, true);
         //Initialize secp256k1 elliptic curve
         $ec = new EC('secp256k1');
 
@@ -136,7 +135,7 @@ class TransactionBuilder
         $private_key_object = $ec->keyFromPrivate($privateKey);
 
         //Sign transaction
-        $signing = $private_key_object->sign($msg_hash, false, "recoveryParam");
+        $signing = $private_key_object->sign($serializedTransaction, false, "recoveryParam");
         //Break down into components and then assemble
         $sign = array(
             "r" => $signing->r->toString("hex"),

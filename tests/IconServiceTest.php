@@ -243,8 +243,15 @@ class IconServiceTest extends TestCase
 
         $this->assertTrue(!isset($var->message($from, $to, $stepLimit, $private_key, $message, "0x0", $nid)->error));
         unset($var);
+    }
 
+    public function test_setIconServiceUrl(){
+        $iconService = new IconService($this->icon_service_URL_yeouido);
+        $this->assertSame($this->icon_service_URL_yeouido, $iconService->getIconServiceUrl());
 
+        $newUrl = 'test.url';
+        $iconService->setIconServiceUrl($newUrl);
+        $this->assertSame($newUrl, $iconService->getIconServiceUrl());
     }
 
 }

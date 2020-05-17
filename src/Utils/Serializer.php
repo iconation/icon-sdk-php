@@ -41,7 +41,6 @@ class Serializer
                     $result .= self::objTraverse($value);
                     break;
                 default:
-                    break;
             }
             $result .= '.';
         }
@@ -82,7 +81,6 @@ class Serializer
                         $result .= self::objTraverse($value);
                         break;
                     default:
-                        break;
                 }
                 $result .= '.';
             }
@@ -90,15 +88,6 @@ class Serializer
             $result .= '}';
         } else {
             $result .= '}';
-        }
-        return $result;
-    }
-
-    private static function objToArray(\stdClass $obj): array
-    {
-        $result = array();
-        foreach ($obj as $key=>$value){
-            $result[$key] = $value;
         }
         return $result;
     }
