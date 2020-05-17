@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use iconation\IconSDK\Helpers;
+use iconation\IconSDK\Utils\Helpers;
 
 class HelpersTest extends TestCase{
 

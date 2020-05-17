@@ -1,6 +1,5 @@
 <?php
 
-use iconation\IconSDK\Wallet;
 use PHPUnit\Framework\TestCase;
 
 
@@ -68,7 +67,7 @@ class WalletTest extends TestCase
     }
 
     public function test_isPublicAddress(){
-        $helpers = new \iconation\IconSDK\Helpers();
+        $helpers = new \iconation\IconSDK\Utils\Helpers();
 
         $this->assertTrue($helpers->isPublicAddress($this->public_address));
         $this->assertFalse($helpers->isPublicAddress('h'.$this->public_address));

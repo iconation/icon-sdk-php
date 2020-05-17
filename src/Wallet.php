@@ -4,6 +4,7 @@ namespace iconation\IconSDK;
 
 use Elliptic\EC;
 use Exception;
+use iconation\IconSDK\Utils\Helpers;
 
 /**
  * @property string private_key

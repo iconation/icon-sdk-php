@@ -3,6 +3,7 @@
 namespace iconation\IconSDK;
 
 use Elliptic\EC;
+use iconation\IconSDK\Utils\Helpers;
 
 /**
  * @author Dimitris Frangiadakis
@@ -405,5 +406,10 @@ class IconService
     {
         $this->iconServiceUrl = $url;
         return true;
+    }
+
+    public function getIconServiceUrl(): string
+    {
+        return $this->iconServiceUrl;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace iconation\IconSDK;
+namespace iconation\IconSDK\Utils;
+
+use iconation\IconSDK\Transaction;
 
 class Serializer
 {

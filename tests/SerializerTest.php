@@ -1,6 +1,5 @@
 <?php
 
-use iconation\IconSDK\Helpers;
 use PHPUnit\Framework\TestCase;
 
 
@@ -49,7 +48,7 @@ class SerializerTest extends TestCase
             ->nonce('0x1')
             ->get();
 
-        $result = \iconation\IconSDK\Serializer::serialize($transaction);
+        $result = \iconation\IconSDK\Utils\Serializer::serialize($transaction);
         $this->assertEquals('icx_sendTransaction.from.hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160.nid.0x1'.
             '.nonce.0x1.stepLimit.0x186a0.to.hxf8689d6c4c8f333651469fdea2ac59a18f6c242d.value.0x2386f26fc10000'.
             '.version.0x3', $result);

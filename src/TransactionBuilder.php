@@ -3,6 +3,8 @@
 namespace iconation\IconSDK;
 
 use Elliptic\EC;
+use iconation\IconSDK\Utils\Helpers;
+use iconation\IconSDK\Utils\Serializer;
 
 class TransactionBuilder
 {
@@ -113,7 +115,7 @@ class TransactionBuilder
     public function stepLimit(string $stepLimit = '0x186a0'): TransactionBuilder
     {
         if (substr($stepLimit, 0, 2) !== '0x') {
-            $stepLimit = dechex($stepLimit);
+            $stepLimit = '0x'.dechex($stepLimit);
         }
 
         $params = [
@@ -187,7 +189,7 @@ class TransactionBuilder
     public function value(string $value): TransactionBuilder
     {
         if (substr($value, 0, 2) !== '0x') {
-            $value = Helpers::hexToIcx($value);
+            $value = Helpers::icxToHex($value);
         }
 
         $params = [
@@ -217,5 +219,10 @@ class TransactionBuilder
     public function send(): \stdClass
     {
         return $this->transaction->getIconService()->sendRequest($this->transaction->getTransactionObject());
+    }
+
+    public function getTransaction(): Transaction
+    {
+        return $this->transaction;
     }
 }

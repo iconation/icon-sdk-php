@@ -2,6 +2,8 @@
 
 namespace iconation\IconSDK;
 
+use iconation\IconSDK\Utils\Helpers;
+
 class Delegation
 {
     private $address;
