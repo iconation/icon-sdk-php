@@ -17,7 +17,6 @@ class Transaction
     {
         $this->jsonrpc = '2.0';
         $this->id = $id;
-        $this->iconService = new IconService('https://ctz.solidwallet.io/api/v3');
     }
 
     /**

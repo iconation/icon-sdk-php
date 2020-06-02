@@ -2,6 +2,7 @@
 
 namespace iconation\IconSDK\IISS;
 
+use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
 use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Utils\Helpers;
@@ -12,11 +13,13 @@ use iconation\IconSDK\Utils\Helpers;
 class IISS
 {
     private $version = "0x3";
-    private $icon_service_URL;
+    private $iconService;
+    private $transactionBuilder;
 
-    public function __construct($url)
+    public function __construct(IconService $iconService)
     {
-        $this->icon_service_URL = $url;
+        $this->iconService = $iconService;
+        $this->transactionBuilder = new TransactionBuilder($iconService);
     }
 
     public function setStake($value, $from, $stepLimit, string $privateKey, $nid = '0x1')
@@ -71,8 +74,7 @@ class IISS
             $params->params = $methodParams;
         }
 
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
+        $transaction = $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
             ->from($from)
             ->to('cx0000000000000000000000000000000000000000')
@@ -93,8 +95,7 @@ class IISS
         $params->method = $method;
         $params->params = $methodParams;
 
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
+        $transaction = $this->transactionBuilder
             ->method(TransactionTypes::CALL)
             ->to('cx0000000000000000000000000000000000000000')
             ->call($params)
@@ -113,7 +114,7 @@ class IISS
     {
         //Send request to RPC
         $data_string = json_encode($data);
-        $ch = curl_init($this->icon_service_URL);
+        $ch = curl_init($this->iconService->getIconServiceUrl());
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

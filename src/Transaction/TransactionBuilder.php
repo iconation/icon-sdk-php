@@ -3,16 +3,22 @@
 namespace iconation\IconSDK\Transaction;
 
 use Elliptic\EC;
+use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Utils\Helpers;
+use iconation\IconSDK\Utils\IconServiceHelper;
 use iconation\IconSDK\Utils\Serializer;
 
 class TransactionBuilder
 {
     private $transaction;
+    private $iconService;
+    private $iconServiceHelper;
 
-    public function __construct()
+    public function __construct($iconService)
     {
         $this->transaction = new Transaction();
+        $this->iconService = $iconService;
+        $this->iconServiceHelper = new IconServiceHelper($iconService);
     }
 
     public function method(string $method): TransactionBuilder
@@ -217,7 +223,7 @@ class TransactionBuilder
     //TODO add endpoint url in here
     public function send(): \stdClass
     {
-        return $this->transaction->getIconService()->sendRequest($this->transaction->getTransactionObject());
+        return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject());
     }
 
     public function getTransaction(): Transaction

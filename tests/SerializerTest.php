@@ -3,6 +3,7 @@
 use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
 use iconation\IconSDK\Transaction\TransactionTypes;
+use iconation\IconSDK\Utils\Serializer;
 use PHPUnit\Framework\TestCase;
 
 
@@ -14,10 +15,15 @@ use PHPUnit\Framework\TestCase;
  */
 class SerializerTest extends TestCase
 {
-    //Mainnet
-    private $icon_service_URL_main = 'https://ctz.solidwallet.io/api/v3';
-    //Yeouido
-    private $icon_service_URL_yeouido = "https://bicon.net.solidwallet.io/api/v3";
+    private $iconServiceMainnet;
+    private $transactionBuilder;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->iconServiceMainnet = new IconService('https://ctz.solidwallet.io/api/v3');
+        $this->transactionBuilder = new TransactionBuilder($this->iconServiceMainnet);
+    }
 
     /**
      * Just check if the YourClass has no syntax error
@@ -29,7 +35,7 @@ class SerializerTest extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $var = new IconService($this->icon_service_URL_main);
+        $var = new Serializer();
         $this->assertTrue(is_object($var));
         unset($var);
     }
@@ -38,8 +44,7 @@ class SerializerTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_serializer()
     {
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
+        $transaction = $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
             ->from('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160')
             ->to('hxf8689d6c4c8f333651469fdea2ac59a18f6c242d')

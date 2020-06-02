@@ -12,10 +12,15 @@ use PHPUnit\Framework\TestCase;
  */
 class IconServiceTest extends TestCase
 {
-    //Mainnet
-    private $icon_service_URL_main = 'https://ctz.solidwallet.io/api/v3';
-    //Yeouido
-    private $icon_service_URL_yeouido = "https://bicon.net.solidwallet.io/api/v3";
+    private $iconServiceMainnet;
+    private $iconServiceYeouido;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->iconServiceMainnet = new IconService('https://ctz.solidwallet.io/api/v3');
+        $this->iconServiceYeouido = new IconService('https://bicon.net.solidwallet.io/api/v3');
+    }
 
     /**
      * Just check if the YourClass has no syntax error
@@ -27,18 +32,14 @@ class IconServiceTest extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $var = new IconService($this->icon_service_URL_main);
-        $this->assertTrue(is_object($var));
-        unset($var);
+        $this->assertTrue(is_object($this->iconServiceMainnet));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getLastBlock()
     {
-        $var = new IconService($this->icon_service_URL_main);
-        $this->assertTrue(!isset($var->icx_getLastBlock()->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getLastBlock()->error));
     }
 
 
@@ -46,28 +47,22 @@ class IconServiceTest extends TestCase
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBlockByHeight()
     {
-        $var = new IconService($this->icon_service_URL_main);
         $height = "0x3";
-        $this->assertTrue(!isset($var->icx_getBlockByHeight($height)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getBlockByHeight($height)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBlockByHash()
     {
-        $var = new IconService($this->icon_service_URL_main);
         $hash = "0x123986e1c834632f6e65915c249d81cd01453ec915e3370d364d6df7be5e6c03"; //Yeouido
-        $this->assertTrue(!isset($var->icx_getBlockByHash($hash)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getBlockByHash($hash)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_call()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
         $score = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
 
         $params = new stdClass();
@@ -75,66 +70,47 @@ class IconServiceTest extends TestCase
         $params->params = new stdClass();
         $params->params->_owner = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
 
-        $this->assertTrue(!isset($var->icx_call($score, $params)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_call($score, $params)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getBalance()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
         $address = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
-        $this->assertTrue(!isset($var->icx_getBalance($address)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getBalance($address)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_icx_getScoreApi()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
         $address = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
-        $this->assertTrue(!isset($var->icx_getScoreApi($address)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getScoreApi($address)->error));
     }
 
     public function test_icx_getTotalSupply()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
-        $this->assertTrue(!isset($var->icx_getTotalSupply()->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getTotalSupply()->error));
     }
 
 
     public function test_icx_getTransactionResult()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $this->assertTrue(!isset($var->icx_getTransactionResult($txHash)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getTransactionResult($txHash)->error));
     }
 
     public function test_icx_getTransactionByHash()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $this->assertTrue(!isset($var->icx_getTransactionByHash($txHash)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getTransactionByHash($txHash)->error));
     }
 
     public function test_ise_getStatus()
     {
-        $var = new IconService($this->icon_service_URL_main);
-
         $keys = ['lastBlock'];
-        $this->assertTrue(!isset($var->ise_getStatus($keys)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->ise_getStatus($keys)->error));
     }
 
     //Not working for now
@@ -153,8 +129,6 @@ class IconServiceTest extends TestCase
 
     public function test_send()
     {
-        $var = new IconService($this->icon_service_URL_yeouido);
-
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
@@ -162,10 +136,7 @@ class IconServiceTest extends TestCase
         $stepLimit = "0x186a0"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($var->send($from, $to, $value, $stepLimit, $private_key, $nid)->error));
-
-        unset($var);
-
+        $this->assertTrue(!isset($this->iconServiceYeouido->send($from, $to, $value, $stepLimit, $private_key, $nid)->error));
     }
     //Commenting out until I find a contract to test against
     /* public function test_callSCORE()
@@ -231,8 +202,6 @@ class IconServiceTest extends TestCase
 
     public function test_message()
     {
-        $var = new IconService($this->icon_service_URL_yeouido);
-
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
@@ -241,17 +210,15 @@ class IconServiceTest extends TestCase
         $stepLimit = "0xfffff"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($var->message($from, $to, $stepLimit, $private_key, $message, "0x0", $nid)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceYeouido->message($from, $to, $stepLimit, $private_key, $message, "0x0", $nid)->error));
     }
 
     public function test_setIconServiceUrl(){
-        $iconService = new IconService($this->icon_service_URL_yeouido);
-        $this->assertSame($this->icon_service_URL_yeouido, $iconService->getIconServiceUrl());
+        $this->assertSame('https://ctz.solidwallet.io/api/v3', $this->iconServiceMainnet->getIconServiceUrl());
 
         $newUrl = 'test.url';
-        $iconService->setIconServiceUrl($newUrl);
-        $this->assertSame($newUrl, $iconService->getIconServiceUrl());
+        $this->iconServiceMainnet->setIconServiceUrl($newUrl);
+        $this->assertSame($newUrl, $this->iconServiceMainnet->getIconServiceUrl());
     }
 
 }

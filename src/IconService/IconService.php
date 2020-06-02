@@ -22,10 +22,12 @@ class IconService
 
     private $version = "0x3";
     private $iconServiceUrl;
+    private $transactionBuilder;
 
     public function __construct($url)
     {
         $this->iconServiceUrl = $url;
+        $this->transactionBuilder = new TransactionBuilder($this);
     }
 
     /**
@@ -37,8 +39,7 @@ class IconService
      */
     public function icx_getLastBlock()
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::LAST_BLOCK)
             ->send();
     }
@@ -55,8 +56,7 @@ class IconService
 
     public function icx_getBlockByHeight($height)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HEIGHT)
             ->blockHeight($height)
             ->send();
@@ -74,8 +74,7 @@ class IconService
 
     public function icx_getBlockByHash($hash)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HASH)
             ->blockHash($hash)
             ->send();
@@ -92,15 +91,11 @@ class IconService
     //TODO migrate
     public function icx_call($score, $params)
     {
-
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::CALL)
             ->to($score)
             ->call($params)
-            ->get();
-
-        return $this->sendRequest($transaction->getTransactionObject());
+            ->send();
     }
 
     /**
@@ -115,8 +110,7 @@ class IconService
 
     public function icx_getBalance($address)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
             ->address($address)
             ->send();
@@ -134,8 +128,7 @@ class IconService
     //TODO migrate
     public function icx_getScoreApi($address)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
             ->address($address)
             ->send();
@@ -151,8 +144,7 @@ class IconService
 
     public function icx_getTotalSupply()
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::TOTAL_SUPPLY)
             ->send();
     }
@@ -170,8 +162,7 @@ class IconService
     //TODO Keep migrating from here on
     public function icx_getTransactionResult($txHash)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_RESULT)
             ->txHash($txHash)
             ->send();
@@ -189,8 +180,7 @@ class IconService
 
     public function icx_getTransactionByHash($txHash)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_BY_HASH)
             ->txHash($txHash)
             ->send();
@@ -208,8 +198,7 @@ class IconService
 
     public function ise_getStatus($keys)
     {
-        $transaction = new TransactionBuilder();
-        return $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::STATUS)
             ->filter($keys)
             ->send();
@@ -217,8 +206,7 @@ class IconService
 
     public function send($from, $to, $value, $stepLimit, string $privateKey, $nid = '0x1')
     {
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
             ->from($from)
             ->to($to)
@@ -229,13 +217,10 @@ class IconService
             ->timestamp()
             ->nonce()
             ->sign($privateKey)
-            ->get();
-
-        //Send request to RPC
-        return $this->sendRequest($transaction->getTransactionObject());
+            ->send();
     }
 
-    public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, \stdClass $params, $nid = '0x1')
+   /* public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, \stdClass $params, $nid = '0x1')
     {
         $transaction = new TransactionBuilder();
         $transaction = $transaction
@@ -323,12 +308,11 @@ class IconService
 
 
         return $this->sendRequest($data);
-    }
+    }*/
 
     public function message($from, $to, $stepLimit, string $privateKey, string $message, string $value = "0x0", $nid = '0x1')
     {
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
+        return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
             ->from($from)
             ->to($to)
@@ -339,9 +323,7 @@ class IconService
             ->timestamp()
             ->nonce()
             ->sign($privateKey)
-            ->get();
-
-        return $this->sendRequest($transaction->getTransactionObject());
+            ->send();
     }
 
     //Not working for now
@@ -383,25 +365,6 @@ class IconService
         //Return as object
         return json_decode($result);
     }*/
-
-    /**
-     * @param $data
-     * @return object
-     */
-    public function sendRequest($data)
-    {
-        //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->iconServiceUrl);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
-        return json_decode(curl_exec($ch));
-    }
 
     public function setIconServiceUrl(string $url): bool
     {
