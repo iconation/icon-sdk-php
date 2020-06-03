@@ -20,12 +20,13 @@ class IconService
     //Yeouido
     //private $iconServiceUrl = "https://bicon.net.solidwallet.io/api/v3";
 
-    private $version = "0x3";
+    private $version;
     private $iconServiceUrl;
     private $transactionBuilder;
 
     public function __construct($url)
     {
+        $this->version = '0x3';
         $this->iconServiceUrl = $url;
         $this->transactionBuilder = new TransactionBuilder($this);
     }
@@ -375,5 +376,13 @@ class IconService
     public function getIconServiceUrl(): string
     {
         return $this->iconServiceUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
     }
 }
