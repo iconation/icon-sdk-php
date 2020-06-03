@@ -104,7 +104,7 @@ class IRC2
         $params->params->_to = $to;
         $params->params->_value = substr($value, 0, 2) === '0x' ? $value : Helpers::icxToHex($value);
         if (isset($data)) {
-            $params->params->_data = $data;
+            $params->params->_data = "0x" . bin2hex($data);
         }
 
         $res = $this->transactionBuilder

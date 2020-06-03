@@ -20,6 +20,11 @@ class IISSTest extends TestCase
         $this->iiss = new IISS($this->iconService);
     }
 
+    public function testIsThereAnySyntaxError()
+    {
+        $this->assertTrue(is_object(new IISS( $this->iconService)));
+    }
+
     public function test_setStake()
     {
         $value = 0.5; //Stake 0.5 ICX

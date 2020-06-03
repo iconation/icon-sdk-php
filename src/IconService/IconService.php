@@ -221,95 +221,95 @@ class IconService
             ->send();
     }
 
-   /* public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, \stdClass $params, $nid = '0x1')
-    {
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
-            ->method(TransactionTypes::SEND_TRANSACTION)
-            ->from($from)
-            ->to($to)
-            ->stepLimit($stepLimit)
-            ->nid($nid)
-            ->nonce()
-            ->call($params)
-            ->sign($privateKey)
-            ->get();
+    /* public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, \stdClass $params, $nid = '0x1')
+     {
+         $transaction = new TransactionBuilder();
+         $transaction = $transaction
+             ->method(TransactionTypes::SEND_TRANSACTION)
+             ->from($from)
+             ->to($to)
+             ->stepLimit($stepLimit)
+             ->nid($nid)
+             ->nonce()
+             ->call($params)
+             ->sign($privateKey)
+             ->get();
 
-        return $this->sendRequest($transaction->getTransactionObject());
-    }
+         return $this->sendRequest($transaction->getTransactionObject());
+     }
 
-    public function installSCORE($from, $stepLimit, string $privateKey, string $score, \stdClass $params, $nid = '0x1')
-    {
-        //TODO
-        //Create transaction table
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_sendTransaction",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => "cx0000000000000000000000000000000000000000", // address 0 means SCORE install
-                "stepLimit" => $stepLimit,
-                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
-                "nid" => $nid,
-                "nonce" => "0x1",
-                "dataType" => "deploy",
-                "data" => array(
-                    "content" => $score, // compressed SCORE data
-                    "contentType" => "application/zip",
-                    "params" => $params // parameters to be passed to on_install()
-                )
+     public function installSCORE($from, $stepLimit, string $privateKey, string $score, \stdClass $params, $nid = '0x1')
+     {
+         //TODO
+         //Create transaction table
+         $data = array(
+             "jsonrpc" => "2.0",
+             "method" => "icx_sendTransaction",
+             "id" => 1234,
+             "params" => array(
+                 "version" => $this->version,
+                 "from" => $from,
+                 "to" => "cx0000000000000000000000000000000000000000", // address 0 means SCORE install
+                 "stepLimit" => $stepLimit,
+                 "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
+                 "nid" => $nid,
+                 "nonce" => "0x1",
+                 "dataType" => "deploy",
+                 "data" => array(
+                     "content" => $score, // compressed SCORE data
+                     "contentType" => "application/zip",
+                     "params" => $params // parameters to be passed to on_install()
+                 )
 
-            )
-        );
-        $transaction = new TransactionBuilder();
-        $transaction = $transaction
-            ->method(TransactionTypes::SEND_TRANSACTION)
-            ->from($from)
-            ->to('cx0000000000000000000000000000000000000000')
-            ->stepLimit($stepLimit)
-            ->nid($nid)
-            ->nonce()
-            ->call($params, 'deploy')
-            ->sign($privateKey)
-            ->get();
-        //TODO sign($privateKey)
-
-
-        return $this->sendRequest($data);
-    }
-
-    public function updateSCORE($from, $to, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
-    {
-        //TODO
-        //Create transaction table
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "icx_sendTransaction",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => $to, // SCORE address to be updated
-                "stepLimit" => $stepLimit,
-                "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
-                "nid" => $nid,
-                "nonce" => "0x1",
-                "dataType" => "deploy",
-                "data" => array(
-                    "content" => $score, // compressed SCORE data
-                    "contentType" => "application/zip",
-                    "params" => $params // parameters to be passed to on_update()
-                )
-
-            )
-        );
-        //TODO sign($privateKey)
+             )
+         );
+         $transaction = new TransactionBuilder();
+         $transaction = $transaction
+             ->method(TransactionTypes::SEND_TRANSACTION)
+             ->from($from)
+             ->to('cx0000000000000000000000000000000000000000')
+             ->stepLimit($stepLimit)
+             ->nid($nid)
+             ->nonce()
+             ->call($params, 'deploy')
+             ->sign($privateKey)
+             ->get();
+         //TODO sign($privateKey)
 
 
-        return $this->sendRequest($data);
-    }*/
+         return $this->sendRequest($data);
+     }
+
+     public function updateSCORE($from, $to, $stepLimit, string $privateKey, string $score, array $params, $nid = '0x1')
+     {
+         //TODO
+         //Create transaction table
+         $data = array(
+             "jsonrpc" => "2.0",
+             "method" => "icx_sendTransaction",
+             "id" => 1234,
+             "params" => array(
+                 "version" => $this->version,
+                 "from" => $from,
+                 "to" => $to, // SCORE address to be updated
+                 "stepLimit" => $stepLimit,
+                 "timestamp" => Helpers::getBase64TimestampInMilliseconds(),
+                 "nid" => $nid,
+                 "nonce" => "0x1",
+                 "dataType" => "deploy",
+                 "data" => array(
+                     "content" => $score, // compressed SCORE data
+                     "contentType" => "application/zip",
+                     "params" => $params // parameters to be passed to on_update()
+                 )
+
+             )
+         );
+         //TODO sign($privateKey)
+
+
+         return $this->sendRequest($data);
+     }*/
 
     public function message($from, $to, $stepLimit, string $privateKey, string $message, string $value = "0x0", $nid = '0x1')
     {
@@ -328,7 +328,7 @@ class IconService
     }
 
     //Not working for now
-    /*
+
     /**
      * debug_estimateStep
      *
@@ -337,35 +337,26 @@ class IconService
      * @param string $from The address that created the transaction
      * @param string $to The address to receive coins, or SCORE address to execute the transaction.
      * @param string $value Amount of ICX coins in loop to transfer (1 icx = 1 ^ 18 loop) in hex eg. 0xde0b6b3a7640000
-     * @param string $timestamp Transaction creation time. timestamp is in microsecond in hex. eg. 0x563a6cf330136
      * @param string $nid Network ID ("0x1" for Mainnet, "0x2" for Testnet, etc)
-     * @param string $nonce An arbitrary number used to prevent transaction hash collision eg.0x1
      * @return string
      */
 
     //TODO make it work for contracts as well
-    /*public function debug_estimateStep($from, $to, $timestamp, $value = "0", $nid = "0x1", $nonce = "0x1")
+    public function debug_estimateStep(string $from, string $to, string $value = "0", string $nid = "0x1")
     {
-        $data = array(
-            "jsonrpc" => "2.0",
-            "method" => "debug_estimateStep",
-            "id" => 1234,
-            "params" => array(
-                "version" => $this->version,
-                "from" => $from,
-                "to" => $to,
-                "value" => $value,
-                "timestamp" => $timestamp,
-                "nid" => $nid,
-                "nonce" => $nonce
-            )
-        );
+        $res = $this->transactionBuilder
+            ->method(TransactionTypes::ESTIMATE_STEP)
+            ->version($this->version)
+            ->from($from)
+            ->to($to)
+            ->value($value)
+            ->timestamp()
+            ->nid($nid)
+            ->nonce()
+            ->send();
 
-        $result = $this->sendRequest($data);
-
-        //Return as object
-        return json_decode($result);
-    }*/
+        return $res;
+    }
 
     public function setIconServiceUrl(string $url): bool
     {

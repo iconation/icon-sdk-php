@@ -14,11 +14,13 @@ class IconServiceTest extends TestCase
 {
     private $iconServiceMainnet;
     private $iconServiceYeouido;
+    private $iconServiceDebugMainnet;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
         $this->iconServiceMainnet = new IconService('https://ctz.solidwallet.io/api/v3');
+        $this->iconServiceDebugMainnet = new IconService('https://ctz.solidwallet.io/api/debug/v3');
         $this->iconServiceYeouido = new IconService('https://bicon.net.solidwallet.io/api/v3');
     }
 
@@ -115,17 +117,16 @@ class IconServiceTest extends TestCase
 
     //Not working for now
 
-    /* public function test_debug_estimateStep(){
-         $var = new iconation\IconSDK\IconService($this->icon_service_URL_yeouido);
+    public function test_debug_estimateStep()
+    {
+        $from = "hxc4193cda4a75526bf50896ec242d6713bb6b02a3";
+        $to = "hxaa36c3e67d51f993a900fd5acf8b1eb5029c5dfd";
+        $timestamp = "0x5c42da6830136";
+        $value = "0xde0b6b3a7640000";
 
-         $from = "hxc4193cda4a75526bf50896ec242d6713bb6b02a3";
-         $to = "hxaa36c3e67d51f993a900fd5acf8b1eb5029c5dfd";
-         $timestamp = "0x5c42da6830136";
-         $value = "0xde0b6b3a7640000";
-
-         $this->assertTrue(!isset($var->debug_estimateStep($from, $to, $timestamp, $value)->error));
-         unset($var);
-     }*/
+        $this->assertTrue(!isset($this->iconServiceDebugMainnet->debug_estimateStep($from, $to, $timestamp, $value)->error));
+        unset($var);
+    }
 
     public function test_send()
     {
@@ -213,7 +214,8 @@ class IconServiceTest extends TestCase
         $this->assertTrue(!isset($this->iconServiceYeouido->message($from, $to, $stepLimit, $private_key, $message, "0x0", $nid)->error));
     }
 
-    public function test_setIconServiceUrl(){
+    public function test_setIconServiceUrl()
+    {
         $this->assertSame('https://ctz.solidwallet.io/api/v3', $this->iconServiceMainnet->getIconServiceUrl());
 
         $newUrl = 'test.url';

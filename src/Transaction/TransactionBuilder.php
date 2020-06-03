@@ -63,7 +63,7 @@ class TransactionBuilder
         return $this;
     }
 
-    public function call(\stdClass $params, string $dataType = 'call'): TransactionBuilder
+    public function call(?\stdClass $params, string $dataType = 'call'): TransactionBuilder
     {
         $params = [
             'dataType' => $dataType,

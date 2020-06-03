@@ -26,7 +26,7 @@ class IRC2Test extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $this->assertTrue(is_object($this->irc2));
+        $this->assertTrue(is_object(new IRC2($this->contract, $this->iconService)));
     }
 
     public function testName()
@@ -51,20 +51,31 @@ class IRC2Test extends TestCase
 
     public function testBalanceOf()
     {
-        $this->assertSame('0x43c33c1937564800000', $this->irc2->balanceOf('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160'));
+        $this->assertTrue(!isset($this->irc2->balanceOf('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160')->error));
+        //$this->assertSame('0x43c33c1937564800000', $this->irc2->balanceOf('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160'));
     }
 
     public function testTransfer()
     {
-        $this->assertSame('0x43c33c1937564800000', $this->irc2->
-        transfer('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160',
-            'hxf8689d6c4c8f333651469fdea2ac59a18f6c242d',
-            '1',
-            '3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5',
-            '0x186a00',
-            '0x3',
-            null
-        ));
+        $this->assertTrue(!isset($this->irc2->transfer('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160',
+                'hxf8689d6c4c8f333651469fdea2ac59a18f6c242d',
+                '1',
+                '3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5',
+                '0x186a00',
+                '0x3'
+            )->error));
+    }
+
+    public function testTransferWithData()
+    {
+        $this->assertTrue(!isset($this->irc2->transfer('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160',
+                'hxf8689d6c4c8f333651469fdea2ac59a18f6c242d',
+                '1',
+                '3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5',
+                '0x186a00',
+                '0x3',
+                'test'
+            )->error));
     }
 
 }
