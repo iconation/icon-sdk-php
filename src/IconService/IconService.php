@@ -32,13 +32,13 @@ class IconService
     }
 
     /**
-     * icx_getLastBlock
+     * getLastBlock
      *
      * Get the latest block
      *
      * @return object
      */
-    public function icx_getLastBlock()
+    public function getLastBlock()
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::LAST_BLOCK)
@@ -46,7 +46,7 @@ class IconService
     }
 
     /**
-     * icx_getBlockByHeight
+     * getBlockByHeight
      *
      * Get the latest block
      *
@@ -55,7 +55,7 @@ class IconService
      * @return object
      */
 
-    public function icx_getBlockByHeight($height)
+    public function getBlockByHeight($height)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HEIGHT)
@@ -64,7 +64,7 @@ class IconService
     }
 
     /**
-     * icx_getBlockByHash
+     * getBlockByHash
      *
      * Get the latest block
      *
@@ -73,7 +73,7 @@ class IconService
      * @return object
      */
 
-    public function icx_getBlockByHash($hash)
+    public function getBlockByHash($hash)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HASH)
@@ -82,7 +82,7 @@ class IconService
     }
 
     /**
-     * icx_call
+     * call
      *
      * @param string $score SCORE we want to interact with eg. cxb0776ee37f5b45bfaea8cff1d8232fbb6122ec32
      * @param \stdClass $params Array of SCORE method possible parameters eg. array("address" => "hx1f9a3310f60a03934b917509c86442db703cbd52")
@@ -90,7 +90,7 @@ class IconService
      * @return object
      */
     //TODO migrate
-    public function icx_call($score, $params)
+    public function call($score, $params)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::CALL)
@@ -100,7 +100,7 @@ class IconService
     }
 
     /**
-     * icx_getBalance
+     * getBalance
      *
      * Get the balance of an address
      *
@@ -109,7 +109,7 @@ class IconService
      * @return object
      */
 
-    public function icx_getBalance($address)
+    public function getBalance($address)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
@@ -118,7 +118,7 @@ class IconService
     }
 
     /**
-     * icx_getScoreApi
+     * getScoreApi
      *
      * Get a SCORE API
      *
@@ -127,7 +127,7 @@ class IconService
      * @return object
      */
     //TODO migrate
-    public function icx_getScoreApi($address)
+    public function getScoreApi($address)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
@@ -136,14 +136,14 @@ class IconService
     }
 
     /**
-     * icx_getTotalSupply
+     * getTotalSupply
      *
      * Get ICX Total Supply
      *
      * @return object
      */
 
-    public function icx_getTotalSupply()
+    public function getTotalSupply()
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TOTAL_SUPPLY)
@@ -151,7 +151,7 @@ class IconService
     }
 
     /**
-     * icx_getTransactionResult
+     * getTransactionResult
      *
      * Get transaction result
      *
@@ -161,7 +161,7 @@ class IconService
      */
 
     //TODO Keep migrating from here on
-    public function icx_getTransactionResult($txHash)
+    public function getTransactionResult($txHash)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_RESULT)
@@ -170,7 +170,7 @@ class IconService
     }
 
     /**
-     * icx_getTransactionByHash
+     * getTransactionByHash
      *
      * Get transaction result
      *
@@ -179,7 +179,7 @@ class IconService
      * @return object
      */
 
-    public function icx_getTransactionByHash($txHash)
+    public function getTransactionByHash($txHash)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_BY_HASH)
@@ -197,7 +197,7 @@ class IconService
      * @return object
      */
 
-    public function ise_getStatus($keys)
+    public function getStatus($keys)
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::STATUS)
@@ -205,7 +205,7 @@ class IconService
             ->send();
     }
 
-    public function send($from, $to, $value, $stepLimit, string $privateKey, $nid = '0x1')
+    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
@@ -214,9 +214,9 @@ class IconService
             ->value($value)
             ->version($this->version)
             ->nid($nid)
-            ->stepLimit($stepLimit)
             ->timestamp()
             ->nonce()
+            ->stepLimit($stepLimit)
             ->sign($privateKey)
             ->send();
     }
@@ -244,7 +244,7 @@ class IconService
          //Create transaction table
          $data = array(
              "jsonrpc" => "2.0",
-             "method" => "icx_sendTransaction",
+             "method" => "sendTransaction",
              "id" => 1234,
              "params" => array(
                  "version" => $this->version,
@@ -286,7 +286,7 @@ class IconService
          //Create transaction table
          $data = array(
              "jsonrpc" => "2.0",
-             "method" => "icx_sendTransaction",
+             "method" => "sendTransaction",
              "id" => 1234,
              "params" => array(
                  "version" => $this->version,
@@ -305,13 +305,13 @@ class IconService
 
              )
          );
-         //TODO sign($privateKey)
+
 
 
          return $this->sendRequest($data);
      }*/
 
-    public function message($from, $to, $stepLimit, string $privateKey, string $message, string $value = "0x0", $nid = '0x1')
+    public function message(string $from, string $to, string $privateKey, string $message, ?string $stepLimit = null, string $nid = '0x1')
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
@@ -320,9 +320,9 @@ class IconService
             ->message($message)
             ->version($this->version)
             ->nid($nid)
-            ->stepLimit($stepLimit)
             ->timestamp()
             ->nonce()
+            ->stepLimit($stepLimit)
             ->sign($privateKey)
             ->send();
     }
@@ -344,6 +344,9 @@ class IconService
     //TODO make it work for contracts as well
     public function debug_estimateStep(string $from, string $to, string $value = "0", string $nid = "0x1")
     {
+        $url = $this->iconServiceUrl;
+        $this->setIconServiceUrl(substr($url, 0,-2).'debug/v3');
+
         $res = $this->transactionBuilder
             ->method(TransactionTypes::ESTIMATE_STEP)
             ->version($this->version)
@@ -354,6 +357,8 @@ class IconService
             ->nid($nid)
             ->nonce()
             ->send();
+
+        $this->setIconServiceUrl($url);
 
         return $res;
     }

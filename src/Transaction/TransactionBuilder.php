@@ -11,13 +11,11 @@ use iconation\IconSDK\Utils\Serializer;
 class TransactionBuilder
 {
     private $transaction;
-    private $iconService;
     private $iconServiceHelper;
 
-    public function __construct($iconService)
+    public function __construct(IconService $iconService)
     {
-        $this->transaction = new Transaction();
-        $this->iconService = $iconService;
+        $this->transaction = new Transaction($iconService);
         $this->iconServiceHelper = new IconServiceHelper($iconService);
     }
 
@@ -118,10 +116,25 @@ class TransactionBuilder
         return $this;
     }
 
-    public function stepLimit(string $stepLimit = '0x186a0'): TransactionBuilder
+    public function stepLimit(?string $stepLimit = null): TransactionBuilder
     {
-        if (substr($stepLimit, 0, 2) !== '0x') {
-            $stepLimit = '0x'.dechex($stepLimit);
+        if (is_null($stepLimit)){
+            $url = $this->transaction->getIconService()->getIconServiceUrl();
+            $this->transaction->getIconService()->setIconServiceUrl(substr($url, 0, -2).'debug/v3');
+
+            $method = $this->transaction->getMethod();
+            $stepLimit = $this->
+            method(TransactionTypes::ESTIMATE_STEP)->
+            send();
+            $stepLimit = isset($stepLimit) ? (isset($stepLimit->result) ? $stepLimit->result : '0x0') : '0x0';
+
+            //Revert changes to method and iconservice
+            $this->transaction->setMethod($method);
+            $this->transaction->getIconService()->setIconServiceUrl($url);
+        }else{
+            if(substr($stepLimit, 0, 2) !== '0x') {
+                $stepLimit = '0x'.dechex($stepLimit);
+            }
         }
 
         $params = [
@@ -159,13 +172,6 @@ class TransactionBuilder
             'signature' => $transaction_signature
         ];
         $this->transaction->setParams($params);
-        return $this;
-    }
-
-    //Possibly remove from here
-    public function testnet(string $url): TransactionBuilder
-    {
-        $this->transaction->setIconService($url);
         return $this;
     }
 

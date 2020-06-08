@@ -33,7 +33,7 @@ class IISSTest extends TestCase
         $stepLimit = "0x1b580"; //112000 steps
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($this->iiss->setStake($value, $from, $stepLimit, $private_key, $nid)->error));
+        $this->assertTrue(!isset($this->iiss->setStake($value, $from, $private_key, $stepLimit, $nid)->error));
     }
 
     public function test_getStake()
@@ -59,7 +59,7 @@ class IISSTest extends TestCase
         $stepLimit = "0x7e3a85"; //
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($this->iiss->setDelegation($delegations, $from, $stepLimit, $private_key, $nid)->error));
+        $this->assertTrue(!isset($this->iiss->setDelegation($delegations, $from, $private_key, $stepLimit, $nid)->error));
     }
 
     public function test_getDelegation()
@@ -78,7 +78,7 @@ class IISSTest extends TestCase
         $stepLimit = "0x7e3a85"; //
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($this->iiss->claimIScore($from, $stepLimit, $private_key, $nid)->error));
+        $this->assertTrue(!isset($this->iiss->claimIScore($from, $private_key, $stepLimit, $nid)->error));
     }
 
     public function test_queryIScore()

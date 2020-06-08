@@ -22,12 +22,12 @@ class IISS
         $this->transactionBuilder = new TransactionBuilder($iconService);
     }
 
-    public function setStake($value, $from, $stepLimit, string $privateKey, $nid = '0x1')
+    public function setStake($value, $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
     {
         $methodParams = new \stdClass();
         $methodParams->value = Helpers::icxToHex($value);
 
-        return $this->sendTransactionToGovernanceContract('setStake', $methodParams, $from, $stepLimit, $privateKey, $nid);
+        return $this->sendTransactionToGovernanceContract('setStake', $methodParams, $from, $privateKey, $stepLimit, $nid);
     }
 
     public function getStake($address)
@@ -35,15 +35,15 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->icx_call('getStake', $methodParams);
+        return $this->call('getStake', $methodParams);
     }
 
-    public function setDelegation($delegations, $from, $stepLimit, string $privateKey, $nid)
+    public function setDelegation($delegations, $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
     {
         $methodParams = new \stdClass();
         $methodParams->delegations = $delegations;
 
-        return $this->sendTransactionToGovernanceContract('setDelegation', $methodParams, $from, $stepLimit, $privateKey, $nid);
+        return $this->sendTransactionToGovernanceContract('setDelegation', $methodParams, $from, $privateKey, $stepLimit, $nid);
     }
 
     public function getDelegation($address)
@@ -51,11 +51,11 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->icx_call('getDelegation', $methodParams);
+        return $this->call('getDelegation', $methodParams);
     }
 
-    public function claimIScore($from, $stepLimit, string $privateKey, $nid){
-        return $this->sendTransactionToGovernanceContract('claimIScsore', null, $from, $stepLimit, $privateKey, $nid);
+    public function claimIScore($from, string $privateKey, ?string $stepLimit = null, $nid = '0x1'){
+        return $this->sendTransactionToGovernanceContract('claimIScore', null, $from, $privateKey, $stepLimit, $nid);
     }
 
     public function queryIScore($address)
@@ -63,10 +63,10 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->icx_call('queryIScore', $methodParams);
+        return $this->call('queryIScore', $methodParams);
     }
 
-    private function sendTransactionToGovernanceContract($method, $methodParams, $from, $stepLimit, string $privateKey, $nid)
+    private function sendTransactionToGovernanceContract(string $method, ?\stdClass$methodParams, string $from, string $privateKey, ?string $stepLimit= null, string $nid = '0x1')
     {
         $params = new \stdClass();
         $params->method = $method;
@@ -74,54 +74,29 @@ class IISS
             $params->params = $methodParams;
         }
 
-        $transaction = $this->transactionBuilder
+        return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
             ->from($from)
             ->to('cx0000000000000000000000000000000000000000')
             ->version($this->version)
             ->nid($nid)
-            ->stepLimit($stepLimit)
             ->timestamp()
             ->call($params)
+            ->stepLimit($stepLimit)
             ->sign($privateKey)
-            ->get();
-
-        return $this->sendRequest($transaction->getTransactionObject());
+            ->send();
     }
 
-    private function icx_call(string $method, \stdClass $methodParams)
+    private function call(string $method, ?\stdClass $methodParams)
     {
         $params = new \stdClass();
         $params->method = $method;
         $params->params = $methodParams;
 
-        $transaction = $this->transactionBuilder
+       return $this->transactionBuilder
             ->method(TransactionTypes::CALL)
             ->to('cx0000000000000000000000000000000000000000')
             ->call($params)
-            ->get();
-
-        $result = $this->sendRequest($transaction->getTransactionObject());
-
-        return ($result);
-    }
-
-    /**
-     * @param $data
-     * @return bool|string
-     */
-    private function sendRequest($data)
-    {
-        //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->iconService->getIconServiceUrl());
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
-        return curl_exec($ch);
+            ->send();
     }
 }

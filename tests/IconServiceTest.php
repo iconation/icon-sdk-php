@@ -35,35 +35,37 @@ class IconServiceTest extends TestCase
     public function testIsThereAnySyntaxError()
     {
         $this->assertTrue(is_object($this->iconServiceMainnet));
+        $this->assertTrue(is_object(new IconService('https://ctz.solidwallet.io/api/v3')));
+
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
-    public function test_icx_getLastBlock()
+    public function test_getLastBlock()
     {
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getLastBlock()->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getLastBlock()->error));
     }
 
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
-    public function test_icx_getBlockByHeight()
+    public function test_getBlockByHeight()
     {
         $height = "0x3";
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getBlockByHeight($height)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getBlockByHeight($height)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
-    public function test_icx_getBlockByHash()
+    public function test_getBlockByHash()
     {
         $hash = "0x123986e1c834632f6e65915c249d81cd01453ec915e3370d364d6df7be5e6c03"; //Yeouido
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getBlockByHash($hash)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getBlockByHash($hash)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
-    public function test_icx_call()
+    public function test_call()
     {
         $score = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
 
@@ -72,47 +74,47 @@ class IconServiceTest extends TestCase
         $params->params = new stdClass();
         $params->params->_owner = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
 
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_call($score, $params)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->call($score, $params)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
-    public function test_icx_getBalance()
+    public function test_getBalance()
     {
         $address = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getBalance($address)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getBalance($address)->error));
     }
 
     //Check if error is returned
     //TODO Check if request is made properly, error doesn't mean that test should fail
-    public function test_icx_getScoreApi()
+    public function test_getScoreApi()
     {
         $address = "cx9ab3078e72c8d9017194d17b34b1a47b661945ca";
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getScoreApi($address)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getScoreApi($address)->error));
     }
 
-    public function test_icx_getTotalSupply()
+    public function test_getTotalSupply()
     {
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getTotalSupply()->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getTotalSupply()->error));
     }
 
 
-    public function test_icx_getTransactionResult()
-    {
-        $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getTransactionResult($txHash)->error));
-    }
-
-    public function test_icx_getTransactionByHash()
+    public function test_getTransactionResult()
     {
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $this->assertTrue(!isset($this->iconServiceMainnet->icx_getTransactionByHash($txHash)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getTransactionResult($txHash)->error));
+    }
+
+    public function test_getTransactionByHash()
+    {
+        $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
+        $this->assertTrue(!isset($this->iconServiceMainnet->getTransactionByHash($txHash)->error));
     }
 
     public function test_ise_getStatus()
     {
         $keys = ['lastBlock'];
-        $this->assertTrue(!isset($this->iconServiceMainnet->ise_getStatus($keys)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getStatus($keys)->error));
     }
 
     //Not working for now
@@ -124,8 +126,7 @@ class IconServiceTest extends TestCase
         $timestamp = "0x5c42da6830136";
         $value = "0xde0b6b3a7640000";
 
-        $this->assertTrue(!isset($this->iconServiceDebugMainnet->debug_estimateStep($from, $to, $timestamp, $value)->error));
-        unset($var);
+        $this->assertTrue(!isset($this->iconServiceMainnet->debug_estimateStep($from, $to, $timestamp, $value)->error));
     }
 
     public function test_send()
@@ -137,7 +138,7 @@ class IconServiceTest extends TestCase
         $stepLimit = "0x186a0"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($this->iconServiceYeouido->send($from, $to, $value, $stepLimit, $private_key, $nid)->error));
+        $this->assertTrue(!isset($this->iconServiceYeouido->send($from, $to, $value, $private_key, $stepLimit, $nid)->error));
     }
     //Commenting out until I find a contract to test against
     /* public function test_callSCORE()
@@ -211,7 +212,7 @@ class IconServiceTest extends TestCase
         $stepLimit = "0xfffff"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
 
-        $this->assertTrue(!isset($this->iconServiceYeouido->message($from, $to, $stepLimit, $private_key, $message, "0x0", $nid)->error));
+        $this->assertTrue(!isset($this->iconServiceYeouido->message($from, $to, $private_key, $message, $stepLimit, $nid)->error));
     }
 
     public function test_setIconServiceUrl()
