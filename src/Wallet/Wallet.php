@@ -1,9 +1,10 @@
 <?php
 
-namespace mitsosf\IconSDK;
+namespace iconation\IconSDK\Wallet;
 
 use Elliptic\EC;
 use Exception;
+use iconation\IconSDK\Utils\Helpers;
 
 /**
  * @property string private_key
@@ -23,7 +24,11 @@ class Wallet
         } else {
             $this->private_key = $privateKey;
         }
-        $this->public_key = $this->getPublicKeyFromPrivate($this->private_key);
+        try {
+            $this->public_key = $this->getPublicKeyFromPrivate($this->private_key);
+        } catch (Exception $e) {
+            throw $e;
+        }
         $this->public_address = $this->pubKeyToAddress($this->public_key);
     }
 
@@ -51,7 +56,7 @@ class Wallet
     public function getPublicKeyFromPrivate($private_key)
     {
         $ec = new EC('secp256k1');
-        if (!$this->isPrivateKey($private_key)) {
+        if (!Helpers::isPrivateKey($private_key)) {
             throw new Exception('Invalid private key');
         }
 
@@ -62,57 +67,6 @@ class Wallet
     public function pubKeyToAddress($publicKey)
     {
         return "hx" . substr(hash('sha3-256', hex2bin($publicKey)), -40);
-    }
-
-
-    public function isPrivateKey($key)
-    {
-        $length = 64;
-        if (strlen($key) !== $length) {
-            return false;
-        }
-
-        if (!ctype_xdigit($key)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isPublicKey($key)
-    {
-        $length = 128;
-        if (strlen($key) !== $length) {
-            return false;
-        }
-
-        if (!ctype_xdigit($key)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isPublicAddress($address)
-    {
-        $length = 42;
-        if (strlen($address) !== $length) {
-            return false;
-        }
-
-        $parts = explode('x', $address);
-        $last_part = array_pop($parts);
-        $first_part = $parts[0] . 'x';
-
-        if ($first_part !== 'hx' && strlen($first_part) !== $length - 40) {
-            return false;
-        }
-
-        if (!ctype_xdigit($last_part) && strlen($last_part) !== $length - 2) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
