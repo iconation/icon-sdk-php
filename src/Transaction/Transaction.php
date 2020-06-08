@@ -13,9 +13,10 @@ class Transaction
     private $value;
     private $params;
 
-    public function __construct(int $id = 1234)
+    public function __construct(IconService $iconService, int $id = 1234)
     {
         $this->jsonrpc = '2.0';
+        $this->iconService = $iconService;
         $this->id = $id;
     }
 
@@ -25,14 +26,6 @@ class Transaction
     public function getIconService(): IconService
     {
         return $this->iconService;
-    }
-
-    /**
-     * @param string $url
-     */
-    public function setIconService(string $url): void
-    {
-        $this->iconService = new IconService($url);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
+use iconation\IconSDK\Transaction\TransactionTypes;
 use PHPUnit\Framework\TestCase;
 
 
@@ -45,12 +46,29 @@ class TransactionBuilderTest extends TestCase
         unset($var);
     }
 
-    public function test_testnet(){
-        $endpoint = 'test.net/endpoint';
-        $builder = $this->transactionBuilder;
-        $result = $builder->testnet($endpoint)->getTransaction()->getIconService()->getIconServiceUrl();
-        $this->assertSame($endpoint, $result);
-        unset($var);
+    public function test_stepLimit(){
+
+        $privateKey = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
+        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
+        $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
+        $value = "0x2386f26fc10000"; // = 0.01 ICX
+        $nid = "0x3";  // YEOUIDO network
+
+        $transaction = $this->transactionBuilder
+            ->method(TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to($to)
+            ->value($value)
+            ->version('0x3')
+            ->nid($nid)
+            ->timestamp()
+            ->nonce()
+            ->stepLimit()
+            ->get();
+
+        $expectedStepLimit = '0x186a0';
+        $resStepLimit = $transaction->getParams()->stepLimit;
+        $this->assertSame($expectedStepLimit, $resStepLimit);
     }
 
     public function test_value(){

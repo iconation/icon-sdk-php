@@ -31,28 +31,27 @@ class IRC2Test extends TestCase
 
     public function testName()
     {
-        $this->assertSame('IWinToken', $this->irc2->name());
+        $this->assertSame('IWinToken', $this->irc2->name()->result);
     }
 
     public function testSymbol()
     {
-        $this->assertSame('IWIN', $this->irc2->symbol());
+        $this->assertSame('IWIN', $this->irc2->symbol()->result);
     }
 
     public function testDecimals()
     {
-        $this->assertSame('0x12', $this->irc2->decimals());
+        $this->assertSame('0x12', $this->irc2->decimals()->result);
     }
 
     public function testTotalSupply()
     {
-        $this->assertSame('0x1431e0fae6d7217caa0000000', $this->irc2->totalSupply());
+        $this->assertSame('0x1431e0fae6d7217caa0000000', $this->irc2->totalSupply()->result);
     }
 
     public function testBalanceOf()
     {
         $this->assertTrue(!isset($this->irc2->balanceOf('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160')->error));
-        //$this->assertSame('0x43c33c1937564800000', $this->irc2->balanceOf('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160'));
     }
 
     public function testTransfer()

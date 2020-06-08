@@ -51,8 +51,8 @@ class SerializerTest extends TestCase
             ->value('0x2386f26fc10000')
             ->version('0x3')
             ->nid()
-            ->stepLimit()
             ->nonce('0x1')
+            ->stepLimit('0x186a0')
             ->get();
 
         $result = \iconation\IconSDK\Utils\Serializer::serialize($transaction);

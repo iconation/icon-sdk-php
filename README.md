@@ -28,7 +28,7 @@ Already fully or partially supports the following JSON-RPC functions:
 * icx_getTransactionResult
 * icx_getTransactionByHash
 * ise_getStatus
-* icx_sendTransaction --Partial support, can only send ICX for now
+* icx_sendTransaction
 
 There is also some wallet support, see Wallet.php file for more info.
 More detailed documentation coming soon.
