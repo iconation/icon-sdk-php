@@ -10,7 +10,6 @@ class Transaction
     private $id;
     private $iconService;
     private $method;
-    private $value;
     private $params;
 
     public function __construct(IconService $iconService, int $id = 1234)
@@ -96,22 +95,6 @@ class Transaction
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setValue($value): void
-    {
-        $this->value = $value;
     }
 
     /**

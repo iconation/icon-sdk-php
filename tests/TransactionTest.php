@@ -53,14 +53,6 @@ class TransactionTest extends TestCase
         unset($transaction);
     }
 
-    public function test_value()
-    {
-        $value = '0x123';
-        $this->transaction->setValue($value);
-        $this->assertSame($value, $this->transaction->getValue());
-        unset($transaction);
-    }
-
     public function test_getTransactionParamsObject_empty_params()
     {
         $this->assertNull($this->transaction->getTransactionParamsObject());

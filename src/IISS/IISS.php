@@ -22,7 +22,7 @@ class IISS
         $this->transactionBuilder = new TransactionBuilder($iconService);
     }
 
-    public function setStake($value, $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
+    public function setStake(string $value, string $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
     {
         $methodParams = new \stdClass();
         $methodParams->value = Helpers::icxToHex($value);
@@ -30,7 +30,7 @@ class IISS
         return $this->sendTransactionToGovernanceContract('setStake', $methodParams, $from, $privateKey, $stepLimit, $nid);
     }
 
-    public function getStake($address)
+    public function getStake(string $address)
     {
         $methodParams = new \stdClass();
         $methodParams->address = $address;
@@ -38,7 +38,7 @@ class IISS
         return $this->call('getStake', $methodParams);
     }
 
-    public function setDelegation($delegations, $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
+    public function setDelegation(array $delegations, string $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
     {
         $methodParams = new \stdClass();
         $methodParams->delegations = $delegations;
@@ -46,7 +46,7 @@ class IISS
         return $this->sendTransactionToGovernanceContract('setDelegation', $methodParams, $from, $privateKey, $stepLimit, $nid);
     }
 
-    public function getDelegation($address)
+    public function getDelegation(string $address)
     {
         $methodParams = new \stdClass();
         $methodParams->address = $address;
@@ -54,7 +54,7 @@ class IISS
         return $this->call('getDelegation', $methodParams);
     }
 
-    public function claimIScore($from, string $privateKey, ?string $stepLimit = null, $nid = '0x1'){
+    public function claimIScore(string $from, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'){
         return $this->sendTransactionToGovernanceContract('claimIScore', null, $from, $privateKey, $stepLimit, $nid);
     }
 

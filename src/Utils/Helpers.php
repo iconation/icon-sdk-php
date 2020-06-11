@@ -15,21 +15,24 @@ class Helpers{
     }
 
     /**
-     * @param $value float|int
+     * @param string $value
+     * @param int $decimals
      * @return string
      */
-    public static function icxToHex($value)
+    public static function icxToHex($value, $decimals = 18)
     {
-        return '0x' . dechex($value * 10 ** 18);
+        return '0x' . self::bcdechex(bcmul($value, 10**$decimals));
     }
 
     /**
-     * @param $value
-     * @return float|int
+     * @param string $value
+     * @param int $decimals
+     * @return string
      */
-    public static function hexToIcx($value)
+    public static function hexToIcx($value, $decimals = 18)
     {
-        return hexdec($value) / 10 ** 18;
+        $value = gmp_init($value, '16');
+        return bcdiv(gmp_strval($value), 10**18, $decimals);
     }
 
     public static function isPrivateKey($key)
@@ -80,5 +83,15 @@ class Helpers{
         }
 
         return true;
+    }
+
+    public static function bcdechex($dec) {
+        $hex = '';
+        do {
+            $last = bcmod($dec, 16);
+            $hex = dechex($last).$hex;
+            $dec = bcdiv(bcsub($dec, $last), 16);
+        } while($dec>0);
+        return $hex;
     }
 }

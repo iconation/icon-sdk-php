@@ -14,13 +14,11 @@ class IconServiceTest extends TestCase
 {
     private $iconServiceMainnet;
     private $iconServiceYeouido;
-    private $iconServiceDebugMainnet;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
         $this->iconServiceMainnet = new IconService('https://ctz.solidwallet.io/api/v3');
-        $this->iconServiceDebugMainnet = new IconService('https://ctz.solidwallet.io/api/debug/v3');
         $this->iconServiceYeouido = new IconService('https://bicon.net.solidwallet.io/api/v3');
     }
 
@@ -123,10 +121,9 @@ class IconServiceTest extends TestCase
     {
         $from = "hxc4193cda4a75526bf50896ec242d6713bb6b02a3";
         $to = "hxaa36c3e67d51f993a900fd5acf8b1eb5029c5dfd";
-        $timestamp = "0x5c42da6830136";
         $value = "0xde0b6b3a7640000";
 
-        $this->assertTrue(!isset($this->iconServiceMainnet->debug_estimateStep($from, $to, $timestamp, $value)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->debug_estimateStep($from, $to, $value)->error));
     }
 
     public function test_send()
@@ -134,7 +131,7 @@ class IconServiceTest extends TestCase
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
-        $value = "0x2386f26fc10000"; // = 0.01 ICX
+        $value = "0.001"; // = 0.01 ICX
         $stepLimit = "0x186a0"; // = 100000 steps
         $nid = "0x3";  // YEOUIDO network
 

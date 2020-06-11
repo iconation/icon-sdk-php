@@ -205,7 +205,7 @@ class IconService
             ->send();
     }
 
-    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
+    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1')
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)

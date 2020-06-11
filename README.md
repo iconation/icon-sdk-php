@@ -5,11 +5,11 @@
     alt="ICONation logo">
 </p>
 
-<h1 align="center">ICON SDK for PHP (Unofficial)</h1>
+<h1 align="center">ICON SDK for PHP</h1>
 
  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
  
-This is an unofficial SDK to communicate with the ICON JSON-RPC server, built for PHP.
+This is an SDK to communicate with the ICON blockchain, built for PHP.
 
 Disclaimer: I cannot guarantee optimal performance of this software.
 It is provided as is and without any assurances. Use it at your own risk.
@@ -18,9 +18,30 @@ Features
 --------
 Fully or partially supports all Iconservice functions, IRC-2 tokens and IISS calls.
 
+Requirements & Installation
+--------
+Make sure you're using >=php7.2. Then check if you already have or install the required php extensions:
+
+```shell script
+apt install php-curl php-xml php-gmp php-bcmath
+```
+
+Require the package in the `composer.json` file in your project:
+```shell script
+composer require iconation/icon-sdk-php --no-dev
+```
+Testing
+--------
+
+```shell script
+apt install php-mbstring
+composer install
+composer test
+```
+
 Usage
 --------
-####Iconservice:
+#### Iconservice:
 * icx_getLastBlock
 ```php
 use iconation\IconSDK\IconService\IconService;
@@ -140,7 +161,7 @@ $message = "Your message goes here"; // = 0.01 ICX
 
 $res = $iconservice->message($from, $to, $private_key, $message);
 ```
-###IRC-2:
+### IRC-2:
 * name
 ```php
 use iconation\IconSDK\IconService\IconService;
@@ -216,7 +237,7 @@ $res = $irc2->transfer($from, $to, $value, $privateKey);
 ```
 
 
-###IISS:
+### IISS:
 * setStake
 ```php
 use iconation\IconSDK\IconService\IconService;

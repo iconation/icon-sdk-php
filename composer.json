@@ -1,6 +1,6 @@
 {
   "name": "iconation/icon-sdk-php",
-  "description": "SDK to communicate with the ICON JSON-RPC server",
+  "description": "SDK to communicate with the ICON blockchain",
   "keywords": [
     "icon",
     "icx"
@@ -14,10 +14,11 @@
   ],
   "type": "library",
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.2",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-gmp": "*",
+    "ext-bcmath": "*",
     "simplito/elliptic-php": "^1.0"
   },
   "require-dev": {

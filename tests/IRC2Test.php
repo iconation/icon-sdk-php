@@ -58,9 +58,9 @@ class IRC2Test extends TestCase
     {
         $this->assertTrue(!isset($this->irc2->transfer('hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160',
                 'hxf8689d6c4c8f333651469fdea2ac59a18f6c242d',
-                '1',
+                '13.8',
                 '3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5',
-                '0x186a00',
+                null,
                 '0x3'
             )->error));
     }
