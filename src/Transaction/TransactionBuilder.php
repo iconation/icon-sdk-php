@@ -226,10 +226,14 @@ class TransactionBuilder
         return $this->transaction;
     }
 
-    //TODO add endpoint url in here
-    public function send(): \stdClass
+    public function send(): ?\stdClass
     {
-        return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject());
+        try {
+            return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject());
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            return null;
+        }
     }
 
     public function getTransaction(): Transaction

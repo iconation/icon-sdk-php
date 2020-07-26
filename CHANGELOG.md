@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2020-07-26
+### Changed
+- IconServiceHelper::sendRequest throws exception on invalid curl request
+- TransactionBuilder::send() handles the exception and returns Object or null
+- Removed unnecessary TODOs
+
 ## [1.1.0] - 2020-06-11
 ### Added
 - README, added requirements and installation instructions

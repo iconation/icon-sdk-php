@@ -89,7 +89,6 @@ class IconService
      *
      * @return object
      */
-    //TODO migrate
     public function call($score, $params)
     {
         return $this->transactionBuilder
@@ -126,7 +125,6 @@ class IconService
      *
      * @return object
      */
-    //TODO migrate
     public function getScoreApi($address)
     {
         return $this->transactionBuilder
@@ -160,7 +158,6 @@ class IconService
      * @return object
      */
 
-    //TODO Keep migrating from here on
     public function getTransactionResult($txHash)
     {
         return $this->transactionBuilder
