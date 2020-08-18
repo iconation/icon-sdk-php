@@ -34,7 +34,6 @@ class TransactionTest extends TestCase
     public function testIsThereAnySyntaxError()
     {
         $this->assertTrue(is_object($this->transaction));
-        unset($var);
     }
 
     public function test_setJsonRpc()
@@ -42,7 +41,6 @@ class TransactionTest extends TestCase
         $jsonrpc = '5.0';
         $this->transaction->setJsonrpc($jsonrpc);
         $this->assertSame($jsonrpc, $this->transaction->getJsonrpc());
-        unset($transaction);
     }
 
     public function test_setId()
@@ -50,13 +48,11 @@ class TransactionTest extends TestCase
         $id = 1234567;
         $this->transaction->setId($id);
         $this->assertSame($id, $this->transaction->getId());
-        unset($transaction);
     }
 
     public function test_getTransactionParamsObject_empty_params()
     {
         $this->assertNull($this->transaction->getTransactionParamsObject());
-        unset($transaction);
     }
 
     public function test_getTransactionParamsArray(){

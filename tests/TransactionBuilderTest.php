@@ -34,7 +34,6 @@ class TransactionBuilderTest extends TestCase
     public function testIsThereAnySyntaxError()
     {
         $this->assertTrue(is_object($this->transactionBuilder));
-        unset($var);
     }
 
     public function test_stepLimit_wrong_prefix(){
@@ -43,7 +42,6 @@ class TransactionBuilderTest extends TestCase
         $result = substr($builder->stepLimit($limit)->getTransaction()->getParams()->stepLimit,0, 2);
         $expected ='0x';
         $this->assertSame($expected, $result);
-        unset($var);
     }
 
     public function test_stepLimit(){
@@ -76,7 +74,6 @@ class TransactionBuilderTest extends TestCase
         $builder = $this->transactionBuilder;
         $result = $builder->value($endpoint)->getTransaction()->getParams()->value;
         $this->assertSame('0xde0b6b3a7640000', $result);
-        unset($var);
     }
 
 }
