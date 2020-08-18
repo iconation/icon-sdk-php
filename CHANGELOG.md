@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2020-08-18
+### Added
+- Added a test
+
+### Changed
+- IconService::getTransactionResult returns the calculated transaction fee
+- Removed unused vars from tests
+
 ## [1.2.0] - 2020-07-26
 ### Changed
 - IconServiceHelper::sendRequest throws exception on invalid curl request
