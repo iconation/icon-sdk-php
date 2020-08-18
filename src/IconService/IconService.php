@@ -160,10 +160,26 @@ class IconService
 
     public function getTransactionResult($txHash)
     {
-        return $this->transactionBuilder
+        $result = $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_RESULT)
             ->txHash($txHash)
             ->send();
+
+        //If successful, return transaction fee as well
+        if (!isset($result->error)) {
+            $fee = $this->calculateTransactionFee($result->result->stepUsed, $result->result->stepPrice);
+            $result->result->transactionFee = $fee;
+        }
+
+        return $result;
+    }
+
+    private function calculateTransactionFee(string $stepUsed, string $stepPrice): string
+    {
+        $stepUsed = strval(hexdec($stepUsed));
+        $stepPrice = Helpers::hexToIcx($stepPrice);
+
+        return bcmul($stepUsed, $stepPrice, 18);
     }
 
     /**
