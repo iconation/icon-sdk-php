@@ -100,7 +100,9 @@ class IconServiceTest extends TestCase
     public function test_getTransactionResult()
     {
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $this->assertTrue(!isset($this->iconServiceMainnet->getTransactionResult($txHash)->error));
+        $result = $this->iconServiceMainnet->getTransactionResult($txHash);
+        $this->assertTrue(!isset($result->error));
+        $this->assertEquals('10.453448000000000000', $result->result->transactionFee);
     }
 
     public function test_getTransactionByHash()
