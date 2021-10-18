@@ -23,7 +23,7 @@ class IRC2
         $this->transactionBuilder = new TransactionBuilder($this->iconService);
     }
 
-    public function name()
+    public function name(): ?stdClass
     {
         $params = new stdClass();
         $params->method = "name";
@@ -35,7 +35,7 @@ class IRC2
             ->send();
     }
 
-    public function symbol()
+    public function symbol(): ?stdClass
     {
         $params = new stdClass();
         $params->method = "symbol";
@@ -47,7 +47,7 @@ class IRC2
             ->send();
     }
 
-    public function decimals()
+    public function decimals(): ?stdClass
     {
         $params = new stdClass();
         $params->method = "decimals";
@@ -59,7 +59,7 @@ class IRC2
             ->send();
     }
 
-    public function totalSupply()
+    public function totalSupply(): ?stdClass
     {
         $params = new stdClass();
         $params->method = "totalSupply";
@@ -71,7 +71,7 @@ class IRC2
             ->send();
     }
 
-    public function balanceOf(string $account)
+    public function balanceOf(string $account): ?stdClass
     {
         $params = new stdClass();
         $params->method = "balanceOf";
@@ -85,7 +85,7 @@ class IRC2
             ->send();
     }
 
-    public function transfer(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid= '0x1', ?string $data = null)
+    public function transfer(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid= '0x1', ?string $data = null): ?stdClass
     {
         $params = new stdClass();
         $params->method = "transfer";

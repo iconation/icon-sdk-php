@@ -66,7 +66,13 @@ class IISS
         return $this->call('queryIScore', $methodParams);
     }
 
-    private function sendTransactionToGovernanceContract(string $method, ?\stdClass$methodParams, string $from, string $privateKey, ?string $stepLimit= null, string $nid = '0x1')
+    private function sendTransactionToGovernanceContract(
+        string     $method,
+        ?\stdClass $methodParams,
+        string     $from,
+        string     $privateKey,
+        ?string    $stepLimit = null,
+        string     $nid = '0x1'): ?\stdClass
     {
         $params = new \stdClass();
         $params->method = $method;
@@ -87,7 +93,7 @@ class IISS
             ->send();
     }
 
-    private function call(string $method, ?\stdClass $methodParams)
+    private function call(string $method, ?\stdClass $methodParams): ?\stdClass
     {
         $params = new \stdClass();
         $params->method = $method;

@@ -110,7 +110,7 @@ class TransactionBuilder
     public function nonce($nonce = null): TransactionBuilder
     {
         $params = [
-            'nonce' => isset($nonce) ? $nonce : '0x' . dechex(rand(1, 1000))
+            'nonce' => $nonce ?? '0x' . dechex(rand(1, 1000))
         ];
         $this->transaction->setParams($params);
         return $this;
@@ -126,7 +126,7 @@ class TransactionBuilder
             $stepLimit = $this->
             method(TransactionTypes::ESTIMATE_STEP)->
             send();
-            $stepLimit = isset($stepLimit) ? (isset($stepLimit->result) ? $stepLimit->result : '0x0') : '0x0';
+            $stepLimit = isset($stepLimit) ? ($stepLimit->result ?? '0x0') : '0x0';
 
             //Revert changes to method and iconservice
             $this->transaction->setMethod($method);

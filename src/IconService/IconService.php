@@ -24,7 +24,7 @@ class IconService
     private $iconServiceUrl;
     private $transactionBuilder;
 
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->version = '0x3';
         $this->iconServiceUrl = $url;
@@ -38,7 +38,7 @@ class IconService
      *
      * @return object
      */
-    public function getLastBlock()
+    public function getLastBlock(): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::LAST_BLOCK)
@@ -55,7 +55,7 @@ class IconService
      * @return object
      */
 
-    public function getBlockByHeight($height)
+    public function getBlockByHeight(string $height): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HEIGHT)
@@ -73,7 +73,7 @@ class IconService
      * @return object
      */
 
-    public function getBlockByHash($hash)
+    public function getBlockByHash(string $hash): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HASH)
@@ -89,7 +89,7 @@ class IconService
      *
      * @return object
      */
-    public function call($score, $params)
+    public function call(string $score, \stdClass $params): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::CALL)
@@ -108,7 +108,7 @@ class IconService
      * @return object
      */
 
-    public function getBalance($address)
+    public function getBalance($address): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
@@ -125,7 +125,7 @@ class IconService
      *
      * @return object
      */
-    public function getScoreApi($address)
+    public function getScoreApi($address): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
@@ -141,7 +141,7 @@ class IconService
      * @return object
      */
 
-    public function getTotalSupply()
+    public function getTotalSupply(): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TOTAL_SUPPLY)
@@ -158,7 +158,7 @@ class IconService
      * @return object
      */
 
-    public function getTransactionResult($txHash)
+    public function getTransactionResult(string $txHash): object
     {
         $result = $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_RESULT)
@@ -192,7 +192,7 @@ class IconService
      * @return object
      */
 
-    public function getTransactionByHash($txHash)
+    public function getTransactionByHash($txHash): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_BY_HASH)
@@ -210,7 +210,7 @@ class IconService
      * @return object
      */
 
-    public function getStatus($keys)
+    public function getStatus(array $keys): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::STATUS)
@@ -218,7 +218,7 @@ class IconService
             ->send();
     }
 
-    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1')
+    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'): ?\stdClass
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
@@ -324,7 +324,7 @@ class IconService
          return $this->sendRequest($data);
      }*/
 
-    public function message(string $from, string $to, string $privateKey, string $message, ?string $stepLimit = null, string $nid = '0x1')
+    public function message(string $from, string $to, string $privateKey, string $message, ?string $stepLimit = null, string $nid = '0x1'): ?\stdClass
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
@@ -355,7 +355,7 @@ class IconService
      */
 
     //TODO make it work for contracts as well
-    public function debug_estimateStep(string $from, string $to, string $value = "0", string $nid = "0x1")
+    public function debug_estimateStep(string $from, string $to, string $value = "0", string $nid = "0x1"): \stdClass
     {
         $url = $this->iconServiceUrl;
         $this->setIconServiceUrl(substr($url, 0,-2).'debug/v3');
