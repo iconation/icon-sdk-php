@@ -351,14 +351,14 @@ class IconService
      * @param string $to The address to receive coins, or SCORE address to execute the transaction.
      * @param string $value Amount of ICX coins in loop to transfer (1 icx = 1 ^ 18 loop) in hex eg. 0xde0b6b3a7640000
      * @param string $nid Network ID ("0x1" for Mainnet, "0x2" for Testnet, etc)
-     * @return string
+     * @return \stdClass
      */
 
     //TODO make it work for contracts as well
     public function debug_estimateStep(string $from, string $to, string $value = "0", string $nid = "0x1")
     {
         $url = $this->iconServiceUrl;
-        $this->setIconServiceUrl(substr($url, 0,-2).'debug/v3');
+        $this->setIconServiceUrl($url . 'd');
 
         $res = $this->transactionBuilder
             ->method(TransactionTypes::ESTIMATE_STEP)
