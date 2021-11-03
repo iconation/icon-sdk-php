@@ -120,13 +120,13 @@ class TransactionBuilder
     {
         if (is_null($stepLimit)){
             $url = $this->transaction->getIconService()->getIconServiceUrl();
-            $this->transaction->getIconService()->setIconServiceUrl(substr($url, 0, -2).'debug/v3');
+            $this->transaction->getIconService()->setIconServiceUrl($url . 'd');
 
             $method = $this->transaction->getMethod();
             $stepLimit = $this->
             method(TransactionTypes::ESTIMATE_STEP)->
             send();
-            $stepLimit = isset($stepLimit) ? (isset($stepLimit->result) ? $stepLimit->result : '0x0') : '0x0';
+            $stepLimit = isset($stepLimit) ? ($stepLimit->result ?? '0x0') : '0x0';
 
             //Revert changes to method and iconservice
             $this->transaction->setMethod($method);
