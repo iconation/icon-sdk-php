@@ -17,6 +17,9 @@ class Wallet
     private $public_key;
     private $public_address;
 
+    /**
+     * @throws Exception
+     */
     function __construct($privateKey = null)
     {
         if (is_null($privateKey)) { // Generate wallet
@@ -24,25 +27,20 @@ class Wallet
         } else {
             $this->private_key = $privateKey;
         }
-        try {
-            $this->public_key = $this->getPublicKeyFromPrivate($this->private_key);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $this->public_key = $this->getPublicKeyFromPrivate($this->private_key);
         $this->public_address = $this->pubKeyToAddress($this->public_key);
     }
 
+    /**
+     * @throws Exception
+     */
     public function create()
     {
         $characters = '0123456789abcdef';
         $charactersLength = strlen($characters);
         $private_key = '';
         for ($i = 0; $i < 64; $i++) {
-            try {
                 $private_key .= $characters[random_int(0, $charactersLength - 1)];
-            } catch (Exception $e) {
-                return $e->getMessage();
-            }
         }
 
         return $private_key;
@@ -57,7 +55,7 @@ class Wallet
     {
         $ec = new EC('secp256k1');
         if (!Helpers::isPrivateKey($private_key)) {
-            throw new Exception('Invalid private key');
+            throw new Exception('Private key must be a 64 char hex string');
         }
 
         $publicKey = $ec->keyFromPrivate($private_key)->getPublic(false, 'hex');

@@ -12,17 +12,15 @@ use iconation\IconSDK\Utils\Helpers;
  */
 class IISS
 {
-    private $version = "0x3";
-    private $iconService;
-    private $transactionBuilder;
+    private string $version = "0x3";
+    private TransactionBuilder $transactionBuilder;
 
     public function __construct(IconService $iconService)
     {
-        $this->iconService = $iconService;
         $this->transactionBuilder = new TransactionBuilder($iconService);
     }
 
-    public function setStake(string $value, string $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
+    public function setStake(string $value, string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->value = Helpers::icxToHex($value);
@@ -30,7 +28,7 @@ class IISS
         return $this->sendTransactionToGovernanceContract('setStake', $methodParams, $from, $privateKey, $stepLimit, $nid);
     }
 
-    public function getStake(string $address)
+    public function getStake(string $address): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->address = $address;
@@ -38,7 +36,7 @@ class IISS
         return $this->call('getStake', $methodParams);
     }
 
-    public function setDelegation(array $delegations, string $from, string $privateKey, ?string $stepLimit = null, $nid = '0x1')
+    public function setDelegation(array $delegations, string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->delegations = $delegations;
@@ -46,7 +44,7 @@ class IISS
         return $this->sendTransactionToGovernanceContract('setDelegation', $methodParams, $from, $privateKey, $stepLimit, $nid);
     }
 
-    public function getDelegation(string $address)
+    public function getDelegation(string $address): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->address = $address;
@@ -54,11 +52,12 @@ class IISS
         return $this->call('getDelegation', $methodParams);
     }
 
-    public function claimIScore(string $from, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'){
+    public function claimIScore(string $from, string $privateKey, string $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    {
         return $this->sendTransactionToGovernanceContract('claimIScore', null, $from, $privateKey, $stepLimit, $nid);
     }
 
-    public function queryIScore($address)
+    public function queryIScore($address): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->address = $address;
@@ -66,7 +65,7 @@ class IISS
         return $this->call('queryIScore', $methodParams);
     }
 
-    private function sendTransactionToGovernanceContract(string $method, ?\stdClass$methodParams, string $from, string $privateKey, ?string $stepLimit= null, string $nid = '0x1')
+    private function sendTransactionToGovernanceContract(string $method, ?\stdClass$methodParams, string $from, string $privateKey, ?string $stepLimit= null, string $nid = '0x1'): ?\stdClass
     {
         $params = new \stdClass();
         $params->method = $method;
@@ -87,7 +86,7 @@ class IISS
             ->send();
     }
 
-    private function call(string $method, ?\stdClass $methodParams)
+    private function call(string $method, ?\stdClass $methodParams): ?\stdClass
     {
         $params = new \stdClass();
         $params->method = $method;

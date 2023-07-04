@@ -56,7 +56,7 @@ use iconation\IconSDK\IconService\IconService;
 
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
 
-$res = $iconservice->getBlockByHeight('0x3');
+$res = $iconservice->getBlockByHeight('0x2');
 ```
 * icx_getBlockByHash
 ```php
@@ -124,16 +124,6 @@ $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
 $txHash = '0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9';
 
 $res = $iconservice->getTransactionByHash($txHash);
-```
-* ise_getStatus
-```php
-use iconation\IconSDK\IconService\IconService;
-
-$iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
-
-$keys = ['lastBlock'];
-
-$res = $iconservice->getStatus($keys);
 ```
 * icx_sendTransaction
 ```php

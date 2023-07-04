@@ -3,3 +3,5 @@ composer.lock
 .DS_Store
 /.idea
 tests/code_coverage_report
+.phpunit.result.cache
+.phpunit.cache

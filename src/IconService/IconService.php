@@ -17,12 +17,12 @@ class IconService
      */
     //Mainnet
     //private $iconServiceUrl = 'https://ctz.solidwallet.io/api/v3';
-    //Yeouido
-    //private $iconServiceUrl = "https://bicon.net.solidwallet.io/api/v3";
+    //Lisbon
+    //private $iconServiceUrl = 'https://lisbon.net.solidwallet.io/api/v3';
 
-    private $version;
-    private $iconServiceUrl;
-    private $transactionBuilder;
+    private string $version;
+    private string $iconServiceUrl;
+    private TransactionBuilder $transactionBuilder;
 
     public function __construct($url)
     {
@@ -37,8 +37,9 @@ class IconService
      * Get the latest block
      *
      * @return object
+     * @throws \Exception
      */
-    public function getLastBlock()
+    public function getLastBlock(): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::LAST_BLOCK)
@@ -50,12 +51,12 @@ class IconService
      *
      * Get the latest block
      *
-     * @param string $height Block height in hex e.g 0x3
+     * @param string $height Block height in hex e.g 0x2
      *
      * @return object
      */
 
-    public function getBlockByHeight($height)
+    public function getBlockByHeight(string $height): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HEIGHT)
@@ -71,9 +72,10 @@ class IconService
      * @param string $hash Block hash e.g 0x1fcf7c34dc875681761bdaa5d75d770e78e8166b5c4f06c226c53300cbe85f57
      *
      * @return object
+     * @throws \Exception
      */
 
-    public function getBlockByHash($hash)
+    public function getBlockByHash(string $hash): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BLOCK_BY_HASH)
@@ -88,8 +90,9 @@ class IconService
      * @param \stdClass $params Array of SCORE method possible parameters eg. array("address" => "hx1f9a3310f60a03934b917509c86442db703cbd52")
      *
      * @return object
+     * @throws \Exception
      */
-    public function call($score, $params)
+    public function call(string $score, \stdClass $params): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::CALL)
@@ -106,9 +109,10 @@ class IconService
      * @param string $address The address to be checked
      *
      * @return object
+     * @throws \Exception
      */
 
-    public function getBalance($address)
+    public function getBalance(string $address): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
@@ -124,8 +128,9 @@ class IconService
      * @param string $address SCORE address
      *
      * @return object
+     * @throws \Exception
      */
-    public function getScoreApi($address)
+    public function getScoreApi(string $address): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::BALANCE)
@@ -139,9 +144,10 @@ class IconService
      * Get ICX Total Supply
      *
      * @return object
+     * @throws \Exception
      */
 
-    public function getTotalSupply()
+    public function getTotalSupply(): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TOTAL_SUPPLY)
@@ -156,9 +162,10 @@ class IconService
      * @param string $txHash Transaction hash
      *
      * @return object
+     * @throws \Exception
      */
 
-    public function getTransactionResult($txHash)
+    public function getTransactionResult(string $txHash): object
     {
         $result = $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_RESULT)
@@ -190,9 +197,10 @@ class IconService
      * @param string $txHash Transaction hash
      *
      * @return object
+     * @throws \Exception
      */
 
-    public function getTransactionByHash($txHash)
+    public function getTransactionByHash(string $txHash): ?\stdClass
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::TRANSACTION_BY_HASH)
@@ -208,17 +216,10 @@ class IconService
      * @param array $keys Array of keys to filter eg. ["lastBlock"]
      *
      * @return object
+     * @throws \Exception
      */
 
-    public function getStatus($keys)
-    {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::STATUS)
-            ->filter($keys)
-            ->send();
-    }
-
-    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1')
+    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'): object
     {
         return $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)
@@ -232,6 +233,26 @@ class IconService
             ->stepLimit($stepLimit)
             ->sign($privateKey)
             ->send();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function sendAndWait(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'): ?\stdClass
+    {
+        return $this->transactionBuilder
+            ->method(TransactionTypes::SEND_TRANSACTION)
+            ->from($from)
+            ->to($to)
+            ->value($value)
+            ->version($this->version)
+            ->nid($nid)
+            ->timestamp()
+            ->nonce()
+            ->stepLimit($stepLimit)
+            ->sign($privateKey)
+            ->wait()
+            ->send(true);
     }
 
     /* public function callSCORE($from, $to, $stepLimit, string $privateKey, string $method, \stdClass $params, $nid = '0x1')
@@ -324,6 +345,9 @@ class IconService
          return $this->sendRequest($data);
      }*/
 
+    /**
+     * @throws \Exception
+     */
     public function message(string $from, string $to, string $privateKey, string $message, ?string $stepLimit = null, string $nid = '0x1')
     {
         return $this->transactionBuilder
@@ -352,6 +376,7 @@ class IconService
      * @param string $value Amount of ICX coins in loop to transfer (1 icx = 1 ^ 18 loop) in hex eg. 0xde0b6b3a7640000
      * @param string $nid Network ID ("0x1" for Mainnet, "0x2" for Testnet, etc)
      * @return \stdClass
+     * @throws \Exception
      */
 
     //TODO make it work for contracts as well

@@ -45,6 +45,14 @@ class WalletTest extends TestCase
         unset($wallet);
     }
 
+    public function test_wallet_creation_with_wrong_private_key() {
+        try {
+            $wallet = new Wallet('123456');
+        } catch (Exception $e) {
+            $this->assertSame("Private key must be a 64 char hex string", $e->getMessage());
+        }
+    }
+
     public function test_getPublicKey()
     {
         $wallet = new Wallet;
@@ -53,6 +61,18 @@ class WalletTest extends TestCase
         $this->assertTrue(strlen($key) === 128);
         $this->assertTrue(ctype_xdigit($key));
         $this->assertSame($this->public_key, $key);
+        unset($wallet);
+    }
+
+    public function test_getPublicKeyWithWrongPrivateKey()
+    {
+        $wallet = new Wallet;
+
+        try {
+            $wallet->getPublicKeyFromPrivate("123345");
+        } catch (Exception $e) {
+            $this->assertSame("Private key must be a 64 char hex string", $e->getMessage());
+        }
         unset($wallet);
     }
 

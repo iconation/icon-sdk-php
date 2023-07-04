@@ -18,8 +18,8 @@ class IRC2Test extends TestCase
         parent::__construct($name, $data, $dataName);
 
         //IWinToken (IWIN)
-        $this->contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
-        $this->iconService = new IconService('https://bicon.net.solidwallet.io/api/v3');
+        $this->contract = 'cx273548dff8bb77ffaac5a342c4c04aeae0bc48fa';
+        $this->iconService = new IconService('https://lisbon.net.solidwallet.io/api/v3');
         $this->transactionBuilder = new TransactionBuilder($this->iconService);
         $this->irc2 = new IRC2($this->contract, $this->iconService);
     }
@@ -31,12 +31,12 @@ class IRC2Test extends TestCase
 
     public function testName()
     {
-        $this->assertSame('IWinToken', $this->irc2->name()->result);
+        $this->assertSame('MyIRC2Token', $this->irc2->name()->result);
     }
 
     public function testSymbol()
     {
-        $this->assertSame('IWIN', $this->irc2->symbol()->result);
+        $this->assertSame('MIT', $this->irc2->symbol()->result);
     }
 
     public function testDecimals()
@@ -46,7 +46,7 @@ class IRC2Test extends TestCase
 
     public function testTotalSupply()
     {
-        $this->assertSame('0x1431e0fae6d7217caa0000000', $this->irc2->totalSupply()->result);
+        $this->assertSame('0x3635c9adc5dea00000', $this->irc2->totalSupply()->result);
     }
 
     public function testBalanceOf()
@@ -61,7 +61,7 @@ class IRC2Test extends TestCase
                 '13.8',
                 '3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5',
                 null,
-                '0x3'
+                '0x2'
             )->error));
     }
 
@@ -72,7 +72,7 @@ class IRC2Test extends TestCase
                 '1',
                 '3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5',
                 '0x186a00',
-                '0x3',
+                '0x2',
                 'test'
             )->error));
     }

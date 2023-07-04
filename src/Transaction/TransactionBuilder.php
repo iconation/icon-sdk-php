@@ -80,15 +80,6 @@ class TransactionBuilder
         return $this;
     }
 
-    public function filter(array $filter): TransactionBuilder
-    {
-        $params = [
-            'filter' => $filter
-        ];
-        $this->transaction->setParams($params);
-        return $this;
-    }
-
     public function timestamp(): TransactionBuilder
     {
         $params = [
@@ -123,9 +114,7 @@ class TransactionBuilder
             $this->transaction->getIconService()->setIconServiceUrl($url . 'd');
 
             $method = $this->transaction->getMethod();
-            $stepLimit = $this->
-            method(TransactionTypes::ESTIMATE_STEP)->
-            send();
+            $stepLimit = $this->method(TransactionTypes::ESTIMATE_STEP)->send();
             $stepLimit = isset($stepLimit) ? ($stepLimit->result ?? '0x0') : '0x0';
 
             //Revert changes to method and iconservice
@@ -172,6 +161,18 @@ class TransactionBuilder
             'signature' => $transaction_signature
         ];
         $this->transaction->setParams($params);
+        return $this;
+    }
+
+    /**
+     * @deprecated
+     * Not really deprecated, can only be used if sendTransactionAndWait is enabled on the node
+     *
+     * @return $this
+     */
+    public function wait(): TransactionBuilder
+    {
+        $this->transaction->setMethod(TransactionTypes::SEND_TRANSACTION_AND_WAIT);
         return $this;
     }
 
@@ -226,14 +227,12 @@ class TransactionBuilder
         return $this->transaction;
     }
 
-    public function send(): ?\stdClass
+    /**
+     * @throws \Exception
+     */
+    public function send(?bool $wait = false): ?\stdClass
     {
-        try {
-            return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject());
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            return null;
-        }
+        return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject(), $wait);
     }
 
     public function getTransaction(): Transaction

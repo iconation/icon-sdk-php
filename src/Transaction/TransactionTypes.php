@@ -12,6 +12,8 @@ abstract class TransactionTypes{
     const BALANCE = 'icx_getBalance';
     const SCORE_API = 'icx_getScoreApi';
     const SEND_TRANSACTION = 'icx_sendTransaction';
+    const SEND_TRANSACTION_AND_WAIT = 'icx_sendTransactionAndWait';
+    const WAIT_TRANSACTION_RESULT = 'icx_waitTransactionResult';
     const CALL = 'icx_call';
     const ESTIMATE_STEP = 'debug_estimateStep';
     const REP_LIST = 'rep_getList';

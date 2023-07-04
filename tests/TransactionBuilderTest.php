@@ -27,7 +27,7 @@ class TransactionBuilderTest extends TestCase
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
-        $this->iconService = new IconService('https://ctz.solidwallet.io/api/v3');
+        $this->iconService = new IconService('https://lisbon.net.solidwallet.io/api/v3');
         $this->transactionBuilder = new TransactionBuilder($this->iconService);
     }
 
@@ -50,7 +50,7 @@ class TransactionBuilderTest extends TestCase
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
         $value = "0x2386f26fc10000"; // = 0.01 ICX
-        $nid = "0x3";  // YEOUIDO network
+        $nid = "0x2";  // Lisbon network
 
         $transaction = $this->transactionBuilder
             ->method(TransactionTypes::SEND_TRANSACTION)

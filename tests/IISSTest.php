@@ -15,8 +15,8 @@ class IISSTest extends TestCase
     {
         parent::__construct($name, $data, $dataName);
 
-        //Yeouido
-        $this->iconService = new IconService("https://bicon.net.solidwallet.io/api/v3");
+        //Lisbon
+        $this->iconService = new IconService("https://lisbon.net.solidwallet.io/api/v3");
         $this->iiss = new IISS($this->iconService);
     }
 
@@ -27,13 +27,12 @@ class IISSTest extends TestCase
 
     public function test_setStake()
     {
-        $value = 0.5; //Stake 0.5 ICX
+        $value = 10; //Stake 0.5 ICX
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Staker's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
-        $stepLimit = "0x1b580"; //112000 steps
-        $nid = "0x3";  // YEOUIDO network
+        $nid = "0x2";  // Lisbon network
 
-        $this->assertTrue(!isset($this->iiss->setStake($value, $from, $private_key, $stepLimit, $nid)->error));
+        $this->assertTrue(!isset($this->iiss->setStake($value, $from, $private_key, $nid)->error));
     }
 
     public function test_getStake()
@@ -56,10 +55,9 @@ class IISSTest extends TestCase
         );
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Staker's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
-        $stepLimit = "0x7e3a85"; //
-        $nid = "0x3";  // YEOUIDO network
+        $nid = "0x2";  // Lisbon network
 
-        $this->assertTrue(!isset($this->iiss->setDelegation($delegations, $from, $private_key, $stepLimit, $nid)->error));
+        $this->assertTrue(!isset($this->iiss->setDelegation($delegations, $from, $private_key, $nid)->error));
     }
 
     public function test_getDelegation()
@@ -75,10 +73,9 @@ class IISSTest extends TestCase
 
         $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Staker's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
-        $stepLimit = "0x7e3a85"; //
-        $nid = "0x3";  // YEOUIDO network
+        $nid = "0x2";  // Lisbon network
 
-        $this->assertTrue(!isset($this->iiss->claimIScore($from, $private_key, $stepLimit, $nid)->error));
+        $this->assertTrue(!isset($this->iiss->claimIScore($from, $private_key, $nid)->error));
     }
 
     public function test_queryIScore()

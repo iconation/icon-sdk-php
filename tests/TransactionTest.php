@@ -1,5 +1,6 @@
 <?php
 
+use iconation\IconSDK\Transaction\TransactionBuilder;
 use PHPUnit\Framework\TestCase;
 use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\Transaction;

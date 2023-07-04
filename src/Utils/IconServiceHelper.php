@@ -18,7 +18,7 @@ class IconServiceHelper
      * @return object|null
      * @throws \Exception
      */
-    public function sendRequest($data)
+    public function sendRequest($data, ?bool $wait = false)
     {
         //Send request to RPC
         $data_string = json_encode($data);
@@ -27,15 +27,19 @@ class IconServiceHelper
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
+        $headers = [
+            'Content-Type: application/json',
+        ];
+        if ($wait) {
+            $headers[] = 'timeout: 10000';
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $result = curl_exec($ch);
 
-        if (curl_errno($ch) !== 0 || strpos(strtolower($result), 'jsonrpc') === false) {
+        if (curl_errno($ch) !== 0 || !str_contains(strtolower($result), 'jsonrpc')) {
             curl_close($ch);
-            throw new \Exception('Curl error' . curl_error($ch) !== '' ? curl_error($ch) : $result );
+            throw new \Exception('Error: '. curl_error($ch));
         }
 
         curl_close($ch);
