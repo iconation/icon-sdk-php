@@ -6,8 +6,8 @@ use iconation\IconSDK\Utils\Helpers;
 
 class Delegation
 {
-    private $address;
-    private $value;
+    protected $address;
+    protected $value;
 
     public function __construct(string $address, string $value)
     {

@@ -1,26 +1,25 @@
-<p align="center">
-  <img 
-    src="https://iconation.team/images/very_small.png" 
-    width="120px"
-    alt="ICONation logo">
-</p>
+![ICONation logo](https://iconation.team/images/very_small.png)
 
-<h1 align="center">ICON SDK for PHP</h1>
+# ICON SDK for PHP
 
- [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
- 
-This is an SDK to communicate with the ICON blockchain, built for PHP.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Disclaimer: I cannot guarantee optimal performance of this software.
-It is provided as is and without any assurances. Use it at your own risk.
+ICON SDK for PHP is a tool to interact with the ICON blockchain.
 
-Features
---------
-Fully or partially supports all Iconservice functions, IRC-2 tokens and IISS calls.
+**Disclaimer:** This software is provided "as is", without warranty of any kind. Use at your own risk.
 
-Requirements & Installation
---------
-Make sure you're using >=php7.2. Then check if you already have or install the required php extensions:
+## Features
+
+- Supports all Iconservice functions, IRC-2 tokens, and IISS calls
+
+## Requirements
+
+- PHP 8.0 or higher
+- Composer
+
+## Installation
+
+Install the package via composer:
 
 ```shell script
 apt install php-curl php-xml php-gmp php-bcmath
@@ -28,7 +27,7 @@ apt install php-curl php-xml php-gmp php-bcmath
 
 Require the package in the `composer.json` file in your project:
 ```shell script
-composer require iconation/icon-sdk-php --no-dev
+composer require iconation/icon-sdk-php
 ```
 Testing
 --------

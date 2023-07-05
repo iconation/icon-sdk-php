@@ -133,7 +133,7 @@ class IconService
     public function getScoreApi(string $address): object
     {
         return $this->transactionBuilder
-            ->method(TransactionTypes::BALANCE)
+            ->method(TransactionTypes::SCORE_API)
             ->address($address)
             ->send();
     }
