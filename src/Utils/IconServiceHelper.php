@@ -18,7 +18,7 @@ class IconServiceHelper
      * @return object|null
      * @throws \Exception
      */
-    public function sendRequest($data, ?bool $wait = false)
+    public function sendRequest($data, ?bool $wait = false): ?object
     {
         //Send request to RPC
         $data_string = json_encode($data);

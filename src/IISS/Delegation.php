@@ -55,7 +55,8 @@ class Delegation
         $this->value = $value;
     }
 
-    public function getDelegationObject(){
+    public function getDelegationObject(): \stdClass
+    {
         $delegation = new \stdClass();
         $delegation->address = $this->address;
         $delegation->value = $this->value;

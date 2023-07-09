@@ -48,10 +48,10 @@ class Wallet
 
     /**
      * @param $private_key
-     * @return bool
+     * @return string
      * @throws Exception
      */
-    public function getPublicKeyFromPrivate($private_key)
+    public function getPublicKeyFromPrivate(string $private_key): string
     {
         $ec = new EC('secp256k1');
         if (!Helpers::isPrivateKey($private_key)) {
@@ -62,7 +62,7 @@ class Wallet
         return substr($publicKey, 2);
     }
 
-    public function pubKeyToAddress($publicKey)
+    public function pubKeyToAddress(string $publicKey): string
     {
         return "hx" . substr(hash('sha3-256', hex2bin($publicKey)), -40);
     }

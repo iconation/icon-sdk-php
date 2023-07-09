@@ -80,6 +80,15 @@ class TransactionBuilder
         return $this;
     }
 
+    public function filter(array $filter): TransactionBuilder
+    {
+        $params = [
+            'filter' => $filter
+        ];
+        $this->transaction->setParams($params);
+        return $this;
+    }
+
     public function timestamp(): TransactionBuilder
     {
         $params = [
@@ -101,7 +110,7 @@ class TransactionBuilder
     public function nonce($nonce = null): TransactionBuilder
     {
         $params = [
-            'nonce' => isset($nonce) ? $nonce : '0x' . dechex(rand(1, 1000))
+            'nonce' => $nonce ?? '0x' . dechex(rand(1, 1000))
         ];
         $this->transaction->setParams($params);
         return $this;

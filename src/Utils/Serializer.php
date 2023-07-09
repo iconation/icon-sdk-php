@@ -6,7 +6,12 @@ use iconation\IconSDK\Transaction\Transaction;
 
 class Serializer
 {
-    public static function serialize(Transaction $transaction, bool $hashed = false)
+    /**
+     * @param Transaction $transaction
+     * @param bool $hashed
+     * @return string
+     */
+    public static function serialize(Transaction $transaction, bool $hashed = false): string
     {
         $resultStr = self::objTraverse($transaction->getTransactionParamsObject());
 
@@ -92,7 +97,11 @@ class Serializer
         return $result;
     }
 
-    private static function escapeString($value)
+    /**
+     * @param $value
+     * @return string
+     */
+    private static function escapeString($value): string
     {
         $newString = $value;
         $newString = is_array(explode('\\', $newString)) ? implode('\\\\', explode('\\', $newString)) : $newString;
