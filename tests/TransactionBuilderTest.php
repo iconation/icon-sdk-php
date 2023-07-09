@@ -21,12 +21,12 @@ class TransactionBuilderTest extends TestCase
      * any typo before you even use this library in a real project.
      *
      */
-    private $iconService;
-    private $transactionBuilder;
+    private IconService $iconService;
+    private TransactionBuilder $transactionBuilder;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct($name = 'TransactionBuilderTest')
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
         $this->iconService = new IconService('https://lisbon.net.solidwallet.io/api/v3');
         $this->transactionBuilder = new TransactionBuilder($this->iconService);
     }

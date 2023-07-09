@@ -1,6 +1,7 @@
 <?php
 
 use iconation\IconSDK\IconService\IconService;
+use iconation\IconSDK\Wallet\Wallet;
 use PHPUnit\Framework\TestCase;
 
 
@@ -12,16 +13,19 @@ use PHPUnit\Framework\TestCase;
  */
 class IconServiceTest extends TestCase
 {
-    private $iconServiceMainnet;
-    private $iconServiceLisbon;
-    private $wrongIconService;
+    private IconService $iconServiceMainnet;
+    private IconService $iconServiceLisbon;
+    private IconService $wrongIconService;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    private Wallet $wallet;
+
+    public function __construct($name = 'IconServiceTest')
     {
-        parent::__construct($name, $data, $dataName);
-        $this->iconServiceMainnet = new IconService('https://ctz.solidwallet.io/api/v3');
-        $this->iconServiceLisbon = new IconService('https://lisbon.net.solidwallet.io/api/v3');
-        $this->wrongIconService = new IconService('https://wrong.net.solidwallet.io/api/v3');
+        parent::__construct($name);
+        $this->iconServiceMainnet = new IconService(url: 'https://ctz.solidwallet.io/api/v3');
+        $this->iconServiceLisbon = new IconService(url: 'https://lisbon.net.solidwallet.io/api/v3');
+        $this->wrongIconService = new IconService(url: 'https://wrong.net.solidwallet.io/api/v3');
+        $this->wallet = new Wallet(privateKey: "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5");
     }
 
     /**
@@ -45,24 +49,19 @@ class IconServiceTest extends TestCase
 
     public function test_createIconService()
     {
-        $this->assertInstanceOf(IconService::class, new IconService('https://ctz.solidwallet.io/api/v3'));
+        $this->assertInstanceOf(IconService::class, new IconService(url: 'https://ctz.solidwallet.io/api/v3'));
     }
 
-
-    //Check if error is returned
-    //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_getBlockByHeight()
     {
         $height = "0x2";
-        $this->assertTrue(!isset($this->iconServiceLisbon->getBlockByHeight($height)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->getBlockByHeight(height: $height)->error));
     }
 
-    //Check if error is returned
-    //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_getBlockByHash()
     {
         $hash = "0x123986e1c834632f6e65915c249d81cd01453ec915e3370d364d6df7be5e6c03";
-        $this->assertTrue(!isset($this->iconServiceMainnet->getBlockByHash($hash)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getBlockByHash(hash: $hash)->error));
     }
 
     //Check if error is returned
@@ -76,35 +75,31 @@ class IconServiceTest extends TestCase
         $params->params = new stdClass();
         $params->params->_owner = "hx70e8eeb5d23ab18a828ec95f769db6d953e5f0fd";
 
-        $this->assertTrue(!isset($this->iconServiceLisbon->call($score, $params)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->call(score: $score, params: $params)->error));
     }
 
-    //Check if error is returned
-    //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_getBalance()
     {
         $address = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
-        $this->assertTrue(!isset($this->iconServiceLisbon->getBalance($address)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->getBalance(address: $address)->error));
     }
 
-    //Check if error is returned
-    //TODO Check if request is made properly, error doesn't mean that test should fail
     public function test_getScoreApi()
     {
         $address = "cx273548dff8bb77ffaac5a342c4c04aeae0bc48fa";
-        $this->assertTrue(!isset($this->iconServiceLisbon->getScoreApi($address)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->getScoreApi(address: $address)->error));
     }
 
     public function test_getTotalSupply()
     {
-        $this->assertTrue(!isset($this->iconServiceMainnet->getTotalSupply()->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->getTotalSupply()->error));
     }
 
 
     public function test_getTransactionResult()
     {
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $result = $this->iconServiceMainnet->getTransactionResult($txHash);
+        $result = $this->iconServiceMainnet->getTransactionResult(txHash: $txHash);
         $this->assertTrue(!isset($result->error));
         $this->assertEquals('10.453448000000000000', $result->result->transactionFee);
     }
@@ -113,7 +108,7 @@ class IconServiceTest extends TestCase
     {
         $height = "0x2";
         try {
-            $this->wrongIconService->getBlockByHeight($height);
+            $this->wrongIconService->getBlockByHeight(height: $height);
         } catch (Exception $e) {
             $this->assertStringContainsString("Error", $e->getMessage());
         }
@@ -122,43 +117,56 @@ class IconServiceTest extends TestCase
 
     public function test_sendTransactionWithTimeoutOnLisbon()
     {
-        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
-        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
         $value = "0.001"; // = 0.01 ICX
         $stepLimit = "0x186a0"; // = 100000 steps
         $nid = "0x2";  // Lisbon network
 
 
-        $result = $this->iconServiceLisbon->sendAndWait($from, $to, $value, $private_key, $stepLimit, $nid);
+        $result = $this->iconServiceLisbon->sendAndWait(
+            from: $this->wallet->getPublicAddress(),
+            to: $to,
+            value: $value,
+            wallet: $this->wallet,
+            stepLimit: $stepLimit,
+            nid: $nid
+        );
         $this->assertSame('MethodNotFound: NotEnabled(waitTimeout=0)', $result->error->message);
     }
 
     public function test_getTransactionByHash()
     {
         $txHash = "0xb89690b7598e07c286db87f05c1ee4cfc1cf915bf061007ac3404a42dc4979e9";
-        $this->assertTrue(!isset($this->iconServiceMainnet->getTransactionByHash($txHash)->error));
+        $this->assertTrue(!isset($this->iconServiceMainnet->getTransactionByHash(txHash: $txHash)->error));
     }
 
     public function test_debug_estimateStep()
     {
-        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxaa36c3e67d51f993a900fd5acf8b1eb5029c5dfd";
         $value = "0xde0b6b3a7640000";
 
-        $this->assertTrue(!isset($this->iconServiceLisbon->debug_estimateStep($from, $to, $value)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->debug_estimateStep(
+            from: $this->wallet->getPublicAddress(),
+            to: $to,
+            value: $value
+            )->error));
     }
 
     public function test_send()
     {
-        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
-        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
         $value = "0.001"; // = 0.01 ICX
         $stepLimit = "0x186a0"; // = 100000 steps
         $nid = "0x2";  // Lisbon network
 
-        $this->assertTrue(!isset($this->iconServiceLisbon->send($from, $to, $value, $private_key, $stepLimit, $nid)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->send(
+            from: $this->wallet->getPublicAddress(),
+            to: $to,
+            value: $value,
+            wallet: $this->wallet,
+            stepLimit: $stepLimit,
+            nid: $nid
+            )->error));
     }
     //Commenting out until I find a contract to test against
     /* public function test_callSCORE()
@@ -224,15 +232,19 @@ class IconServiceTest extends TestCase
 
     public function test_message()
     {
-        $private_key = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
-        $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
         $to = "hxf8689d6c4c8f333651469fdea2ac59a18f6c242d";
-        //Test message
         $message = "[ICONation PHP SDK] Testing Messaging system";
         $stepLimit = "0xfffff"; // = 100000 steps
         $nid = "0x2";  // Lisbon network
 
-        $this->assertTrue(!isset($this->iconServiceLisbon->message($from, $to, $private_key, $message, $stepLimit, $nid)->error));
+        $this->assertTrue(!isset($this->iconServiceLisbon->message(
+            from: $this->wallet->getPublicAddress(),
+            to: $to,
+            wallet: $this->wallet,
+            message: $message,
+            stepLimit: $stepLimit,
+            nid: $nid
+            )->error));
     }
 
     public function test_setIconServiceUrl()

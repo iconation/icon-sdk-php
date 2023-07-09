@@ -6,6 +6,7 @@ use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
 use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Utils\Helpers;
+use iconation\IconSDK\Wallet\Wallet;
 
 /**
  * @author Dimitris Frangiadakis
@@ -13,19 +14,33 @@ use iconation\IconSDK\Utils\Helpers;
 class IISS
 {
     private string $version = "0x3";
-    private TransactionBuilder $transactionBuilder;
+
+    private IconService $iconservice;
 
     public function __construct(IconService $iconService)
     {
-        $this->transactionBuilder = new TransactionBuilder($iconService);
+        $this->iconservice = $iconService;
     }
 
-    public function setStake(string $value, string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    public function setStake(
+        string $value,
+        string $from,
+        Wallet $wallet,
+        $nid = '0x1',
+        ?string $stepLimit = null
+    ): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->value = Helpers::icxToHex($value);
 
-        return $this->sendTransactionToGovernanceContract('setStake', $methodParams, $from, $privateKey, $stepLimit, $nid);
+        return $this->sendTransactionToGovernanceContract(
+            method: 'setStake',
+            methodParams: $methodParams,
+            from: $from,
+            wallet: $wallet,
+            stepLimit: $stepLimit,
+            nid: $nid
+        );
     }
 
     public function getStake(string $address): ?\stdClass
@@ -33,15 +48,28 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->call('getStake', $methodParams);
+        return $this->call(method: 'getStake', methodParams: $methodParams);
     }
 
-    public function setDelegation(array $delegations, string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    public function setDelegation(
+        array $delegations,
+        string $from,
+        Wallet $wallet,
+        $nid = '0x1',
+        ?string $stepLimit = null
+    ): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->delegations = $delegations;
 
-        return $this->sendTransactionToGovernanceContract('setDelegation', $methodParams, $from, $privateKey, $stepLimit, $nid);
+        return $this->sendTransactionToGovernanceContract(
+            method: 'setDelegation',
+            methodParams: $methodParams,
+            from: $from,
+            wallet:  $wallet,
+            stepLimit: $stepLimit,
+            nid: $nid
+        );
     }
 
     public function getDelegation(string $address): ?\stdClass
@@ -49,12 +77,24 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->call('getDelegation', $methodParams);
+        return $this->call(method: 'getDelegation', methodParams: $methodParams);
     }
 
-    public function claimIScore(string $from, string $privateKey, string $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    public function claimIScore(
+        string $from,
+        Wallet $wallet,
+        string $nid = '0x1',
+        ?string $stepLimit = null
+    ): ?\stdClass
     {
-        return $this->sendTransactionToGovernanceContract('claimIScore', null, $from, $privateKey, $stepLimit, $nid);
+        return $this->sendTransactionToGovernanceContract(
+            method: 'claimIScore',
+            methodParams: null,
+            from: $from,
+            wallet: $wallet,
+            stepLimit: $stepLimit,
+            nid: $nid
+        );
     }
 
     public function queryIScore($address): ?\stdClass
@@ -62,10 +102,18 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->call('queryIScore', $methodParams);
+        return $this->call(method: 'queryIScore', methodParams: $methodParams);
     }
 
-    private function sendTransactionToGovernanceContract(string $method, ?\stdClass$methodParams, string $from, string $privateKey, ?string $stepLimit= null, string $nid = '0x1', string $value = null): ?\stdClass
+    private function sendTransactionToGovernanceContract(
+        string $method,
+        ?\stdClass$methodParams,
+        string $from,
+        Wallet $wallet,
+        ?string $stepLimit= null,
+        string $nid = '0x1',
+        string $value = null
+    ): ?\stdClass
     {
         $params = new \stdClass();
         $params->method = $method;
@@ -77,16 +125,18 @@ class IISS
             $params->value = $value;
         }
 
-        return $this->transactionBuilder
-            ->method(TransactionTypes::SEND_TRANSACTION)
-            ->from($from)
-            ->to('cx0000000000000000000000000000000000000000')
-            ->version($this->version)
-            ->nid($nid)
+        $transactionBuilder = new TransactionBuilder($this->iconservice);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::SEND_TRANSACTION)
+            ->from(address: $from)
+            ->to(address: 'cx0000000000000000000000000000000000000000')
+            ->version(version: $this->version)
+            ->nid(nid: $nid)
             ->timestamp()
-            ->call($params)
-            ->stepLimit($stepLimit)
-            ->sign($privateKey)
+            ->call(params: $params)
+            ->stepLimit(stepLimit: $stepLimit)
+            ->sign(wallet: $wallet)
             ->send();
     }
 
@@ -96,19 +146,34 @@ class IISS
         $params->method = $method;
         $params->params = $methodParams;
 
-       return $this->transactionBuilder
-            ->method(TransactionTypes::CALL)
-            ->to('cx0000000000000000000000000000000000000000')
-            ->call($params)
+        $transactionBuilder = new TransactionBuilder($this->iconservice);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::CALL)
+            ->to(address: 'cx0000000000000000000000000000000000000000')
+            ->call(params: $params)
             ->send();
     }
 
-    public function setBond(array $bonds, string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    public function setBond(
+        array $bonds,
+        string $from,
+        Wallet $wallet,
+        $nid = '0x1',
+        ?string $stepLimit = null
+    ): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->bonds = $bonds;
 
-        return $this->sendTransactionToGovernanceContract('setBond', $methodParams, $from, $privateKey, $stepLimit, $nid);
+        return $this->sendTransactionToGovernanceContract(
+            method: 'setBond',
+            methodParams: $methodParams,
+            from: $from,
+            wallet: $wallet,
+            stepLimit: $stepLimit,
+            nid: $nid,
+        );
     }
 
     public function getBond(string $address): ?\stdClass
@@ -116,20 +181,36 @@ class IISS
         $methodParams = new \stdClass();
         $methodParams->address = $address;
 
-        return $this->call('getBond', $methodParams);
+        return $this->call(method: 'getBond', methodParams: $methodParams);
     }
 
-    public function getBonderList(): ?\stdClass
+    public function getBonderList(string $address): ?\stdClass
     {
-        return $this->call('getBonderList', null);
+        $methodParams = new \stdClass();
+        $methodParams->address = $address;
+
+        return $this->call(method: 'getBonderList', methodParams: $methodParams);
     }
 
-    public function setBonderList(array $bonders, string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    public function setBonderList(
+        array $bonders,
+        string $from,
+        Wallet $wallet,
+        $nid = '0x1',
+        ?string $stepLimit = null
+    ): ?\stdClass
     {
         $methodParams = new \stdClass();
         $methodParams->bonderList = $bonders;
 
-        return $this->sendTransactionToGovernanceContract('setBonderList', $methodParams, $from, $privateKey, $stepLimit, $nid);
+        return $this->sendTransactionToGovernanceContract(
+            method: 'setBonderList',
+            methodParams: $methodParams,
+            from: $from,
+            wallet: $wallet,
+            stepLimit: $stepLimit,
+            nid: $nid
+        );
     }
 
     public function registerPrep(
@@ -141,7 +222,7 @@ class IISS
         string $details,
         string $p2pEndpoint,
         string $from,
-        string $privateKey,
+        Wallet $wallet,
         string $nodeAddress = null,
         $nid = '0x1',
         ?string $stepLimit = null
@@ -163,20 +244,25 @@ class IISS
             method:'registerPRep',
             methodParams: $methodParams,
             from: $from,
-            privateKey: $privateKey,
+            wallet: $wallet,
             stepLimit: $stepLimit,
             nid: $nid,
             value: '0x6c6b935b8bbd400000'
         );
     }
 
-    public function unRegisterPrep(string $from, string $privateKey, $nid = '0x1', ?string $stepLimit = null): ?\stdClass
+    public function unRegisterPrep(
+        string $from,
+        Wallet $wallet,
+        $nid = '0x1',
+        ?string $stepLimit = null
+    ): ?\stdClass
     {
         return $this->sendTransactionToGovernanceContract(
             method:'unregisterPRep',
             methodParams: null,
             from: $from,
-            privateKey: $privateKey,
+            wallet: $wallet,
             stepLimit: $stepLimit,
             nid: $nid
         );

@@ -7,6 +7,7 @@ use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Utils\Helpers;
 use iconation\IconSDK\Utils\IconServiceHelper;
 use iconation\IconSDK\Utils\Serializer;
+use iconation\IconSDK\Wallet\Wallet;
 
 class TransactionBuilder
 {
@@ -123,7 +124,7 @@ class TransactionBuilder
             $this->transaction->getIconService()->setIconServiceUrl($url . 'd');
 
             $method = $this->transaction->getMethod();
-            $stepLimit = $this->method(TransactionTypes::ESTIMATE_STEP)->send();
+            $stepLimit = $this->method(method: TransactionTypes::ESTIMATE_STEP)->send();
             $stepLimit = isset($stepLimit) ? ($stepLimit->result ?? '0x0') : '0x0';
 
             //Revert changes to method and iconservice
@@ -142,14 +143,14 @@ class TransactionBuilder
         return $this;
     }
 
-    public function sign(string $privateKey): TransactionBuilder
+    public function sign(Wallet $wallet): TransactionBuilder
     {
         $serializedTransaction = Serializer::serialize($this->transaction, true);
         //Initialize secp256k1 elliptic curve
         $ec = new EC('secp256k1');
 
         //Initialize private key object
-        $private_key_object = $ec->keyFromPrivate($privateKey);
+        $private_key_object = $ec->keyFromPrivate($wallet->getPrivateKey());
 
         //Sign transaction
         $signing = $private_key_object->sign($serializedTransaction, false, "recoveryParam");
@@ -181,7 +182,7 @@ class TransactionBuilder
      */
     public function wait(): TransactionBuilder
     {
-        $this->transaction->setMethod(TransactionTypes::SEND_TRANSACTION_AND_WAIT);
+        $this->transaction->setMethod(method: TransactionTypes::SEND_TRANSACTION_AND_WAIT);
         return $this;
     }
 
@@ -241,7 +242,7 @@ class TransactionBuilder
      */
     public function send(?bool $wait = false): ?\stdClass
     {
-        return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject(), $wait);
+         return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject(), $wait);
     }
 
     public function getTransaction(): Transaction

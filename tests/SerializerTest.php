@@ -16,12 +16,12 @@ use PHPUnit\Framework\TestCase;
  */
 class SerializerTest extends TestCase
 {
-    private $iconServiceMainnet;
-    private $transactionBuilder;
+    private IconService $iconServiceMainnet;
+    private TransactionBuilder $transactionBuilder;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct($name = 'SerializerTest')
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
         $this->iconServiceMainnet = new IconService('https://ctz.solidwallet.io/api/v3');
         $this->transactionBuilder = new TransactionBuilder($this->iconServiceMainnet);
     }

@@ -17,9 +17,9 @@ class TransactionTest extends TestCase
     private $iconservice;
     private $transaction;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct($name = 'TransactionTest')
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
         $this->iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
         $this->transaction = new Transaction($this->iconservice);
     }

@@ -5,30 +5,24 @@ namespace iconation\IconSDK\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
 use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Utils\Helpers;
+use iconation\IconSDK\Wallet\Wallet;
 
 /**
  * @author Dimitris Frangiadakis
  */
 class IconService
 {
+    //Mainnet - https://ctz.solidwallet.io/api/v3
 
-    /** @string string $iconServiceUrl
-     *
-     */
-    //Mainnet
-    //private $iconServiceUrl = 'https://ctz.solidwallet.io/api/v3';
-    //Lisbon
-    //private $iconServiceUrl = 'https://lisbon.net.solidwallet.io/api/v3';
+    //Lisbon - https://lisbon.net.solidwallet.io/api/v3
 
     private string $version;
     private string $iconServiceUrl;
-    private TransactionBuilder $transactionBuilder;
 
     public function __construct($url)
     {
         $this->version = '0x3';
         $this->iconServiceUrl = $url;
-        $this->transactionBuilder = new TransactionBuilder($this);
     }
 
     /**
@@ -41,8 +35,10 @@ class IconService
      */
     public function getLastBlock(): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::LAST_BLOCK)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::LAST_BLOCK)
             ->send();
     }
 
@@ -54,13 +50,16 @@ class IconService
      * @param string $height Block height in hex e.g 0x2
      *
      * @return object
+     * @throws \Exception
      */
 
     public function getBlockByHeight(string $height): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::BLOCK_BY_HEIGHT)
-            ->blockHeight($height)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::BLOCK_BY_HEIGHT)
+            ->blockHeight(height: $height)
             ->send();
     }
 
@@ -77,9 +76,11 @@ class IconService
 
     public function getBlockByHash(string $hash): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::BLOCK_BY_HASH)
-            ->blockHash($hash)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::BLOCK_BY_HASH)
+            ->blockHash(hash: $hash)
             ->send();
     }
 
@@ -94,10 +95,12 @@ class IconService
      */
     public function call(string $score, \stdClass $params): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::CALL)
-            ->to($score)
-            ->call($params)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::CALL)
+            ->to(address: $score)
+            ->call(params: $params)
             ->send();
     }
 
@@ -114,9 +117,11 @@ class IconService
 
     public function getBalance(string $address): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::BALANCE)
-            ->address($address)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::BALANCE)
+            ->address(address: $address)
             ->send();
     }
 
@@ -132,9 +137,11 @@ class IconService
      */
     public function getScoreApi(string $address): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::SCORE_API)
-            ->address($address)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::SCORE_API)
+            ->address(address: $address)
             ->send();
     }
 
@@ -149,8 +156,10 @@ class IconService
 
     public function getTotalSupply(): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::TOTAL_SUPPLY)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::TOTAL_SUPPLY)
             ->send();
     }
 
@@ -167,14 +176,19 @@ class IconService
 
     public function getTransactionResult(string $txHash): object
     {
-        $result = $this->transactionBuilder
-            ->method(TransactionTypes::TRANSACTION_RESULT)
-            ->txHash($txHash)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        $result = $transactionBuilder
+            ->method(method: TransactionTypes::TRANSACTION_RESULT)
+            ->txHash(hash: $txHash)
             ->send();
 
         //If successful, return transaction fee as well
         if (!isset($result->error)) {
-            $fee = $this->calculateTransactionFee($result->result->stepUsed, $result->result->stepPrice);
+            $fee = $this->calculateTransactionFee(
+                stepUsed: $result->result->stepUsed,
+                stepPrice: $result->result->stepPrice
+            );
             $result->result->transactionFee = $fee;
         }
 
@@ -200,57 +214,80 @@ class IconService
      * @throws \Exception
      */
 
-    public function getTransactionByHash(string $txHash): ?\stdClass
+    public function getTransactionByHash(string $txHash): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::TRANSACTION_BY_HASH)
-            ->txHash($txHash)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::TRANSACTION_BY_HASH)
+            ->txHash(hash: $txHash)
             ->send();
     }
 
     /**
-     * ise_getStatus
+     * sendTransaction
      *
      * Get IconService status
      *
-     * @param array $keys Array of keys to filter eg. ["lastBlock"]
-     *
+     * @param string $from
+     * @param string $to
+     * @param string $value
+     * @param Wallet $wallet
+     * @param string|null $stepLimit
+     * @param string $nid
      * @return object
      * @throws \Exception
      */
 
-    public function send(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'): object
+    public function send(
+        string $from,
+        string $to,
+        string $value,
+        Wallet $wallet,
+        ?string $stepLimit = null,
+        string $nid = '0x1'): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::SEND_TRANSACTION)
-            ->from($from)
-            ->to($to)
-            ->value($value)
-            ->version($this->version)
-            ->nid($nid)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::SEND_TRANSACTION)
+            ->from(address: $from)
+            ->to(address:$to)
+            ->value(value: $value)
+            ->version(version: $this->version)
+            ->nid(nid: $nid)
             ->timestamp()
             ->nonce()
-            ->stepLimit($stepLimit)
-            ->sign($privateKey)
+            ->stepLimit(stepLimit: $stepLimit)
+            ->sign(wallet: $wallet)
             ->send();
     }
 
     /**
      * @throws \Exception
      */
-    public function sendAndWait(string $from, string $to, string $value, string $privateKey, ?string $stepLimit = null, string $nid = '0x1'): ?\stdClass
+    public function sendAndWait(
+        string $from,
+        string $to,
+        string $value,
+        Wallet $wallet,
+        ?string $stepLimit = null,
+        string $nid = '0x1'
+    ): object
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::SEND_TRANSACTION)
-            ->from($from)
-            ->to($to)
-            ->value($value)
-            ->version($this->version)
-            ->nid($nid)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::SEND_TRANSACTION)
+            ->from(address: $from)
+            ->to(address:$to)
+            ->value(value: $value)
+            ->version(version: $this->version)
+            ->nid(nid: $nid)
             ->timestamp()
             ->nonce()
-            ->stepLimit($stepLimit)
-            ->sign($privateKey)
+            ->stepLimit(stepLimit: $stepLimit)
+            ->sign(wallet: $wallet)
             ->wait()
             ->send(true);
     }
@@ -259,13 +296,13 @@ class IconService
      {
          $transaction = new TransactionBuilder();
          $transaction = $transaction
-             ->method(TransactionTypes::SEND_TRANSACTION)
+             ->method(method: TransactionTypes::SEND_TRANSACTION)
              ->from($from)
-             ->to($to)
+             ->to(address:$to)
              ->stepLimit($stepLimit)
              ->nid($nid)
              ->nonce()
-             ->call($params)
+             ->call(params: $params)
              ->sign($privateKey)
              ->get();
 
@@ -299,13 +336,13 @@ class IconService
          );
          $transaction = new TransactionBuilder();
          $transaction = $transaction
-             ->method(TransactionTypes::SEND_TRANSACTION)
+             ->method(method: TransactionTypes::SEND_TRANSACTION)
              ->from($from)
-             ->to('cx0000000000000000000000000000000000000000')
+             ->to(address:'cx0000000000000000000000000000000000000000')
              ->stepLimit($stepLimit)
              ->nid($nid)
              ->nonce()
-             ->call($params, 'deploy')
+             ->call(params: $params, 'deploy')
              ->sign($privateKey)
              ->get();
          //TODO sign($privateKey)
@@ -348,23 +385,31 @@ class IconService
     /**
      * @throws \Exception
      */
-    public function message(string $from, string $to, string $privateKey, string $message, ?string $stepLimit = null, string $nid = '0x1')
+    public function message(
+        string $from,
+        string $to,
+        Wallet $wallet,
+        string $message,
+        ?string $stepLimit = null,
+        string $nid = '0x1'
+    ): ?\stdClass
     {
-        return $this->transactionBuilder
-            ->method(TransactionTypes::SEND_TRANSACTION)
-            ->from($from)
-            ->to($to)
-            ->message($message)
-            ->version($this->version)
-            ->nid($nid)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::SEND_TRANSACTION)
+            ->from(address: $from)
+            ->to(address:$to)
+            ->message(message: $message)
+            ->version(version: $this->version)
+            ->nid(nid: $nid)
             ->timestamp()
             ->nonce()
-            ->stepLimit($stepLimit)
-            ->sign($privateKey)
+            ->stepLimit(stepLimit: $stepLimit)
+            ->sign(wallet: $wallet)
             ->send();
     }
 
-    //Not working for now
 
     /**
      * debug_estimateStep
@@ -380,19 +425,26 @@ class IconService
      */
 
     //TODO make it work for contracts as well
-    public function debug_estimateStep(string $from, string $to, string $value = "0", string $nid = "0x1")
+    public function debug_estimateStep(
+        string $from,
+        string $to,
+        string $value = "0",
+        string $nid = "0x1"
+    ): \stdClass
     {
         $url = $this->iconServiceUrl;
         $this->setIconServiceUrl($url . 'd');
 
-        $res = $this->transactionBuilder
-            ->method(TransactionTypes::ESTIMATE_STEP)
-            ->version($this->version)
-            ->from($from)
-            ->to($to)
+        $transactionBuilder = new TransactionBuilder(iconService: $this);
+
+        $res = $transactionBuilder
+            ->method(method: TransactionTypes::ESTIMATE_STEP)
+            ->version(version: $this->version)
+            ->from(address: $from)
+            ->to(address:$to)
             ->value($value)
             ->timestamp()
-            ->nid($nid)
+            ->nid(nid: $nid)
             ->nonce()
             ->send();
 

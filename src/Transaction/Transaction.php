@@ -52,18 +52,23 @@ class Transaction
     }
 
     /**
-     * @param array $params
+     * @param array|\stdClass $params
      */
-    public function setParams(array $params): void
+    public function setParams(array|\stdClass $params): void
     {
-        if (empty($this->params)) {
-            $this->params = new \stdClass();
-        }
+        if ($params instanceof \stdClass) {
+            $this->params = $params;
+        } else {
+            if (empty($this->params)) {
+                $this->params = new \stdClass();
+            }
 
-        foreach ($params as $key => $value) {
-            $this->params->$key = $value;
+            foreach ($params as $key => $value) {
+                $this->params->$key = $value;
+            }
         }
     }
+
 
     /**
      * @return string

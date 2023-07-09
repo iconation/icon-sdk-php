@@ -7,15 +7,15 @@ use Exception;
 use iconation\IconSDK\Utils\Helpers;
 
 /**
- * @property string private_key
- * @property string public_key
- * @property string public_address
+ * @property string privateKey
+ * @property string publicKey
+ * @property string publicAddress
  */
 class Wallet
 {
-    private $private_key;
-    private $public_key;
-    private $public_address;
+    private string $privateKey;
+    private string $publicKey;
+    private string $publicAddress;
 
     /**
      * @throws Exception
@@ -23,42 +23,42 @@ class Wallet
     function __construct($privateKey = null)
     {
         if (is_null($privateKey)) { // Generate wallet
-            $this->private_key = $this->create();
+            $this->privateKey = $this->create();
         } else {
-            $this->private_key = $privateKey;
+            $this->privateKey = $privateKey;
         }
-        $this->public_key = $this->getPublicKeyFromPrivate($this->private_key);
-        $this->public_address = $this->pubKeyToAddress($this->public_key);
+        $this->publicKey = $this->getPublicKeyFromPrivate(privateKey: $this->privateKey);
+        $this->publicAddress = $this->pubKeyToAddress(publicKey: $this->publicKey);
     }
 
     /**
      * @throws Exception
      */
-    public function create()
+    public function create(): string
     {
         $characters = '0123456789abcdef';
         $charactersLength = strlen($characters);
-        $private_key = '';
+        $privateKey = '';
         for ($i = 0; $i < 64; $i++) {
-                $private_key .= $characters[random_int(0, $charactersLength - 1)];
+                $privateKey .= $characters[random_int(0, $charactersLength - 1)];
         }
 
-        return $private_key;
+        return $privateKey;
     }
 
     /**
-     * @param $private_key
+     * @param string $privateKey
      * @return string
      * @throws Exception
      */
-    public function getPublicKeyFromPrivate(string $private_key): string
+    public function getPublicKeyFromPrivate(string $privateKey): string
     {
         $ec = new EC('secp256k1');
-        if (!Helpers::isPrivateKey($private_key)) {
+        if (!Helpers::isPrivateKey(key: $privateKey)) {
             throw new Exception('Private key must be a 64 char hex string');
         }
 
-        $publicKey = $ec->keyFromPrivate($private_key)->getPublic(false, 'hex');
+        $publicKey = $ec->keyFromPrivate($privateKey)->getPublic(false, 'hex');
         return substr($publicKey, 2);
     }
 
@@ -72,7 +72,7 @@ class Wallet
      */
     public function getPrivateKey(): string
     {
-        return $this->private_key;
+        return $this->privateKey;
     }
 
     /**
@@ -80,7 +80,7 @@ class Wallet
      */
     public function getPublicKey(): string
     {
-        return $this->public_key;
+        return $this->publicKey;
     }
 
     /**
@@ -88,7 +88,7 @@ class Wallet
      */
     public function getPublicAddress(): string
     {
-        return $this->public_address;
+        return $this->publicAddress;
     }
 
 
