@@ -237,6 +237,11 @@ class TransactionBuilder
         return $this->transaction;
     }
 
+    public function build(): Transaction
+    {
+        return $this->transaction;
+    }
+
     /**
      * @throws \Exception
      */

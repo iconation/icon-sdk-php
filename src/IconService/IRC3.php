@@ -106,25 +106,7 @@ class IRC3
         $params = new stdClass();
         $params->method = "approve";
         $params->params = new stdClass();
-        $params->params->_to = $to;
-        $params->params->_tokenId = $tokenId;
-        if (isset($data)) {
-            $params->params->_data = "0x" . bin2hex($data);
-        }
-        $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
-
-        return $transactionBuilder
-            ->method(method: TransactionTypes::SEND_TRANSACTION)
-            ->from(address: $wallet->getPublicAddress())
-            ->to(address:$this->contract)
-            ->version(version: $this->iconService->getVersion())
-            ->nid(nid: $nid)
-            ->timestamp()
-            ->nonce()
-            ->call(params: $params)
-            ->stepLimit(stepLimit: $stepLimit)
-            ->sign(wallet: $wallet)
-            ->send();
+        return $this->sendTransferTransaction($to, $params, $tokenId, $data, $wallet, $nid, $stepLimit);
     }
 
 
@@ -143,25 +125,7 @@ class IRC3
         $params = new stdClass();
         $params->method = "transfer";
         $params->params = new stdClass();
-        $params->params->_to = $to;
-        $params->params->_tokenId = $tokenId;
-        if (isset($data)) {
-            $params->params->_data = "0x" . bin2hex($data);
-        }
-        $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
-
-        return $transactionBuilder
-            ->method(method: TransactionTypes::SEND_TRANSACTION)
-            ->from(address: $wallet->getPublicAddress())
-            ->to(address:$this->contract)
-            ->version(version: $this->iconService->getVersion())
-            ->nid(nid: $nid)
-            ->timestamp()
-            ->nonce()
-            ->call(params: $params)
-            ->stepLimit(stepLimit: $stepLimit)
-            ->sign(wallet: $wallet)
-            ->send();
+        return $this->sendTransferTransaction($to, $params, $tokenId, $data, $wallet, $nid, $stepLimit);
     }
 
     /**
@@ -181,25 +145,7 @@ class IRC3
         $params->method = "transferFrom";
         $params->params = new stdClass();
         $params->params->_from = $from;
-        $params->params->_to = $to;
-        $params->params->_tokenId = $tokenId;
-        if (isset($data)) {
-            $params->params->_data = "0x" . bin2hex($data);
-        }
-        $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
-
-        return $transactionBuilder
-            ->method(method: TransactionTypes::SEND_TRANSACTION)
-            ->from(address: $wallet->getPublicAddress())
-            ->to(address:$this->contract)
-            ->version(version: $this->iconService->getVersion())
-            ->nid(nid: $nid)
-            ->timestamp()
-            ->nonce()
-            ->call(params: $params)
-            ->stepLimit(stepLimit: $stepLimit)
-            ->sign(wallet: $wallet)
-            ->send();
+        return $this->sendTransferTransaction($to, $params, $tokenId, $data, $wallet, $nid, $stepLimit);
     }
 
     public function totalSupply(): ?stdClass
@@ -316,6 +262,40 @@ class IRC3
             ->method(method: TransactionTypes::SEND_TRANSACTION)
             ->from(address: $from)
             ->to(address:$this->contract)
+            ->version(version: $this->iconService->getVersion())
+            ->nid(nid: $nid)
+            ->timestamp()
+            ->nonce()
+            ->call(params: $params)
+            ->stepLimit(stepLimit: $stepLimit)
+            ->sign(wallet: $wallet)
+            ->send();
+    }
+
+    /**
+     * @param string $to
+     * @param stdClass $params
+     * @param string $tokenId
+     * @param string|null $data
+     * @param Wallet $wallet
+     * @param string $nid
+     * @param string|null $stepLimit
+     * @return stdClass|null
+     * @throws \Exception
+     */
+    private function sendTransferTransaction(string $to, stdClass $params, string $tokenId, ?string $data, Wallet $wallet, string $nid, ?string $stepLimit): ?stdClass
+    {
+        $params->params->_to = $to;
+        $params->params->_tokenId = $tokenId;
+        if (isset($data)) {
+            $params->params->_data = "0x" . bin2hex($data);
+        }
+        $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
+
+        return $transactionBuilder
+            ->method(method: TransactionTypes::SEND_TRANSACTION)
+            ->from(address: $wallet->getPublicAddress())
+            ->to(address: $this->contract)
             ->version(version: $this->iconService->getVersion())
             ->nid(nid: $nid)
             ->timestamp()

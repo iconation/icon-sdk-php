@@ -22,7 +22,7 @@ ICON SDK for PHP is a tool to interact with the ICON blockchain.
 Install the package via composer:
 
 ```shell script
-apt install php-curl php-xml php-gmp php-bcmath
+apt install php8.0-curl php8.0-xml php8.0-gmp php8.0-bcmath
 ```
 
 Require the package in the `composer.json` file in your project:
@@ -33,7 +33,7 @@ Testing
 --------
 
 ```shell script
-apt install php-mbstring
+apt install php8.0-mbstring
 composer install
 composer test
 ```
