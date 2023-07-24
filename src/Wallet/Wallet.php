@@ -5,6 +5,7 @@ namespace iconation\IconSDK\Wallet;
 use Elliptic\EC;
 use Exception;
 use iconation\IconSDK\Utils\Helpers;
+use kornrunner\Keccak;
 
 /**
  * @property string privateKey
@@ -23,7 +24,7 @@ class Wallet
     function __construct($privateKey = null)
     {
         if (is_null($privateKey)) { // Generate wallet
-            $this->privateKey = $this->create();
+            $this->privateKey = $this->generatePrivateKey();
         } else {
             $this->privateKey = $privateKey;
         }
@@ -34,7 +35,54 @@ class Wallet
     /**
      * @throws Exception
      */
-    public function create(): string
+    public static function createFromKeystore(string $keystoreData, string $password): Wallet
+    {
+        // Decode the keystore content into an array
+        $keystore = json_decode($keystoreData);
+
+        // Perform some basic validation
+        if (!isset($keystore->crypto)) {
+            throw new Exception('Invalid keystore file');
+        }
+
+        if ($keystore->crypto->kdf !== 'scrypt') {
+            throw new Exception('Unsupported key derivation scheme');
+        }
+
+        // Derive the key from the password
+        $kdfParams = $keystore->crypto->kdfparams;
+        $derivedKey = scrypt(
+            $password,
+            hex2bin($kdfParams->salt),
+            $kdfParams->n,
+            $kdfParams->r,
+            $kdfParams->p,
+            $kdfParams->dklen
+        );
+
+
+        // Validate the derived key
+        $validation = Keccak::hash(substr(pack('H*', $derivedKey),16, 16).pack('H*', $keystore->crypto->ciphertext), 256);
+        if ($validation !== $keystore->crypto->mac) {
+            throw new Exception('Invalid password');
+        }
+
+        $decryptedPrivateKey = openssl_decrypt(
+            data: hex2bin($keystore->crypto->ciphertext),
+            cipher_algo: strtoupper($keystore->crypto->cipher),
+            passphrase: hex2bin($derivedKey),
+            options: OPENSSL_RAW_DATA,
+            iv: hex2bin($keystore->crypto->cipherparams->iv)
+        );
+
+        // Create a new Wallet instance from the decrypted private key
+        return new self(privateKey: bin2hex($decryptedPrivateKey));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function generatePrivateKey(): string
     {
         $characters = '0123456789abcdef';
         $charactersLength = strlen($characters);
