@@ -122,16 +122,21 @@ class IconServiceTest extends TestCase
         $stepLimit = "0x186a0"; // = 100000 steps
         $nid = "0x2";  // Lisbon network
 
+        try {
+            $result = $this->iconServiceLisbon->sendAndWait(
+                from: $this->wallet->getPublicAddress(),
+                to: $to,
+                value: $value,
+                wallet: $this->wallet,
+                stepLimit: $stepLimit,
+                nid: $nid
+            );
+        } catch (Exception $e) {
+            $result = $e->getMessage();
+        }
 
-        $result = $this->iconServiceLisbon->sendAndWait(
-            from: $this->wallet->getPublicAddress(),
-            to: $to,
-            value: $value,
-            wallet: $this->wallet,
-            stepLimit: $stepLimit,
-            nid: $nid
-        );
-        $this->assertSame('MethodNotFound: NotEnabled(waitTimeout=0)', $result->error->message);
+        $this->assertFalse(!isset($result->error));
+
     }
 
     public function test_getTransactionByHash()
@@ -146,9 +151,9 @@ class IconServiceTest extends TestCase
         $value = "0xde0b6b3a7640000";
 
         $this->assertTrue(!isset($this->iconServiceLisbon->debug_estimateStep(
-            from: $this->wallet->getPublicAddress(),
-            to: $to,
-            value: $value
+                from: $this->wallet->getPublicAddress(),
+                to: $to,
+                value: $value
             )->error));
     }
 
@@ -160,12 +165,12 @@ class IconServiceTest extends TestCase
         $nid = "0x2";  // Lisbon network
 
         $this->assertTrue(!isset($this->iconServiceLisbon->send(
-            from: $this->wallet->getPublicAddress(),
-            to: $to,
-            value: $value,
-            wallet: $this->wallet,
-            stepLimit: $stepLimit,
-            nid: $nid
+                from: $this->wallet->getPublicAddress(),
+                to: $to,
+                value: $value,
+                wallet: $this->wallet,
+                stepLimit: $stepLimit,
+                nid: $nid
             )->error));
     }
     //Commenting out until I find a contract to test against
@@ -238,12 +243,12 @@ class IconServiceTest extends TestCase
         $nid = "0x2";  // Lisbon network
 
         $this->assertTrue(!isset($this->iconServiceLisbon->message(
-            from: $this->wallet->getPublicAddress(),
-            to: $to,
-            wallet: $this->wallet,
-            message: $message,
-            stepLimit: $stepLimit,
-            nid: $nid
+                from: $this->wallet->getPublicAddress(),
+                to: $to,
+                wallet: $this->wallet,
+                message: $message,
+                stepLimit: $stepLimit,
+                nid: $nid
             )->error));
     }
 

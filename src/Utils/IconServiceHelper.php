@@ -2,11 +2,13 @@
 
 namespace iconation\IconSDK\Utils;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use iconation\IconSDK\IconService\IconService;
 
 class IconServiceHelper
 {
-    private $iconService;
+    private IconService $iconService;
 
     public function __construct(IconService $iconService)
     {
@@ -20,30 +22,34 @@ class IconServiceHelper
      */
     public function sendRequest($data, ?bool $wait = false): ?object
     {
-        //Send request to RPC
-        $data_string = json_encode($data);
-        $ch = curl_init($this->iconService->getIconServiceUrl());
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $headers = [
-            'Content-Type: application/json',
+        $client = new Client();
+
+        $options = [
+            'headers' => ['Content-Type' => 'application/json'],
+            'json' => $data
         ];
+
         if ($wait) {
-            $headers[] = 'timeout: 10000';
-        }
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $result = curl_exec($ch);
-
-        if (curl_errno($ch) !== 0 || !str_contains(strtolower($result), 'jsonrpc')) {
-            curl_close($ch);
-            throw new \Exception('Error: '. curl_error($ch));
+            $options['timeout'] = 10000;
         }
 
-        curl_close($ch);
-        return json_decode($result);
+        try {
+            $response = $client->request('POST', $this->iconService->getIconServiceUrl(), $options);
+            $body = $response->getBody();
+            $result = json_decode($body->getContents());
 
+            if (!isset($result->jsonrpc)) {
+                throw new \Exception('Response does not contain jsonrpc');
+            }
+
+
+        } catch (ClientException $e) {
+            $responseBody = $e->getResponse()->getBody();
+            $result = json_decode($responseBody->getContents());
+        } catch (\Exception $e) {
+            throw new \Exception('Error: ' . $e->getMessage());
+        }
+
+        return $result;
     }
 }

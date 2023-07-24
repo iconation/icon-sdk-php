@@ -105,6 +105,9 @@ class IISS
         return $this->call(method: 'queryIScore', methodParams: $methodParams);
     }
 
+    /**
+     * @throws \Exception
+     */
     private function sendTransactionToGovernanceContract(
         string $method,
         ?\stdClass$methodParams,
@@ -127,7 +130,7 @@ class IISS
 
         $transactionBuilder = new TransactionBuilder($this->iconservice);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::SEND_TRANSACTION)
             ->from(address: $from)
             ->to(address: 'cx0000000000000000000000000000000000000000')
@@ -137,9 +140,14 @@ class IISS
             ->call(params: $params)
             ->stepLimit(stepLimit: $stepLimit)
             ->sign(wallet: $wallet)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     private function call(string $method, ?\stdClass $methodParams): ?\stdClass
     {
         $params = new \stdClass();
@@ -148,11 +156,13 @@ class IISS
 
         $transactionBuilder = new TransactionBuilder($this->iconservice);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address: 'cx0000000000000000000000000000000000000000')
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     public function setBond(
@@ -176,6 +186,9 @@ class IISS
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getBond(string $address): ?\stdClass
     {
         $methodParams = new \stdClass();
@@ -184,6 +197,9 @@ class IISS
         return $this->call(method: 'getBond', methodParams: $methodParams);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getBonderList(string $address): ?\stdClass
     {
         $methodParams = new \stdClass();
@@ -192,6 +208,9 @@ class IISS
         return $this->call(method: 'getBonderList', methodParams: $methodParams);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function setBonderList(
         array $bonders,
         string $from,
@@ -213,6 +232,9 @@ class IISS
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     public function registerPrep(
         string $name,
         string $email,
@@ -251,6 +273,9 @@ class IISS
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     public function unRegisterPrep(
         string $from,
         Wallet $wallet,

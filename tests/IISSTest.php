@@ -1,7 +1,6 @@
 <?php
 
 use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IISS\Bond;
 use iconation\IconSDK\IISS\Delegation;
 use iconation\IconSDK\IISS\IISS;
 use iconation\IconSDK\Wallet\Wallet;
@@ -26,7 +25,7 @@ class IISSTest extends TestCase
 
     public function testIsThereAnySyntaxError()
     {
-        $this->assertTrue(is_object(new IISS( $this->iconService)));
+        $this->assertTrue(is_object(new IISS($this->iconService)));
     }
 
     public function test_setStake()
@@ -35,10 +34,10 @@ class IISSTest extends TestCase
         $nid = "0x2";  // Lisbon network
 
         $this->assertTrue(!isset($this->iiss->setStake(
-            value: $value,
-            from: $this->wallet->getPublicAddress(),
-            wallet: $this->wallet,
-            nid: $nid
+                value: $value,
+                from: $this->wallet->getPublicAddress(),
+                wallet: $this->wallet,
+                nid: $nid
             )->error));
     }
 
@@ -62,10 +61,10 @@ class IISSTest extends TestCase
         $nid = "0x2";  // Lisbon network
 
         $this->assertTrue(!isset($this->iiss->setDelegation(
-            delegations: $delegations,
-            from: $this->wallet->getPublicAddress(),
-            wallet: $this->wallet,
-            nid: $nid
+                delegations: $delegations,
+                from: $this->wallet->getPublicAddress(),
+                wallet: $this->wallet,
+                nid: $nid
             )->error));
     }
 

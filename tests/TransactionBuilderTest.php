@@ -36,15 +36,17 @@ class TransactionBuilderTest extends TestCase
         $this->assertTrue(is_object($this->transactionBuilder));
     }
 
-    public function test_stepLimit_wrong_prefix(){
+    public function test_stepLimit_wrong_prefix()
+    {
         $builder = $this->transactionBuilder;
         $limit = '1';
-        $result = substr($builder->stepLimit($limit)->getTransaction()->getParams()->stepLimit,0, 2);
-        $expected ='0x';
+        $result = substr($builder->stepLimit($limit)->build()->getParams()->stepLimit, 0, 2);
+        $expected = '0x';
         $this->assertSame($expected, $result);
     }
 
-    public function test_stepLimit(){
+    public function test_stepLimit()
+    {
 
         $privateKey = "3468ea815d8896ef4552f10768caf2660689b965975c3ec2c1f5fe84bc3a77a5"; //Sender's private key
         $from = "hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160";
@@ -62,17 +64,18 @@ class TransactionBuilderTest extends TestCase
             ->timestamp()
             ->nonce()
             ->stepLimit()
-            ->get();
+            ->build();
 
         $expectedStepLimit = '0x186a0';
         $resStepLimit = $transaction->getParams()->stepLimit;
         $this->assertSame($expectedStepLimit, $resStepLimit);
     }
 
-    public function test_value(){
+    public function test_value()
+    {
         $endpoint = '1';
         $builder = $this->transactionBuilder;
-        $result = $builder->value($endpoint)->getTransaction()->getParams()->value;
+        $result = $builder->value($endpoint)->build()->getParams()->value;
         $this->assertSame('0xde0b6b3a7640000', $result);
     }
 

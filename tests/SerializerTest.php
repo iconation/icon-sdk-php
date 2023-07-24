@@ -54,11 +54,11 @@ class SerializerTest extends TestCase
             ->nid()
             ->nonce('0x1')
             ->stepLimit('0x186a0')
-            ->get();
+            ->build();
 
         $result = \iconation\IconSDK\Utils\Serializer::serialize($transaction);
-        $this->assertEquals('icx_sendTransaction.from.hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160.nid.0x1'.
-            '.nonce.0x1.stepLimit.0x186a0.to.hxf8689d6c4c8f333651469fdea2ac59a18f6c242d.value.0x2386f26fc10000'.
+        $this->assertEquals('icx_sendTransaction.from.hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160.nid.0x1' .
+            '.nonce.0x1.stepLimit.0x186a0.to.hxf8689d6c4c8f333651469fdea2ac59a18f6c242d.value.0x2386f26fc10000' .
             '.version.0x2', $result);
     }
 
@@ -81,7 +81,7 @@ class SerializerTest extends TestCase
         $this->assertStringContainsString('data.{some_key.some_value}', $result);
 
         // Test object value
-        $obj->data = (object) ['some_key' => 'some_value'];
+        $obj->data = (object)['some_key' => 'some_value'];
         $result = $method->invoke(null, $obj);
         $this->assertStringContainsString('data.{some_key.some_value}', $result);
     }

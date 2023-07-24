@@ -1,9 +1,9 @@
 <?php
 
-use iconation\IconSDK\Transaction\TransactionBuilder;
-use PHPUnit\Framework\TestCase;
+
 use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\Transaction;
+use PHPUnit\Framework\TestCase;
 
 
 /**
@@ -56,18 +56,20 @@ class TransactionTest extends TestCase
         $this->assertNull($this->transaction->getTransactionParamsObject());
     }
 
-    public function test_getTransactionParamsArray(){
+    public function test_getTransactionParamsArray()
+    {
         //First check when no param is set
         $this->assertNull($this->transaction->getTransactionParamsArray());
 
         //Now set an arbitrary param
-        $paramsArray = ['test'=>'test'];
+        $paramsArray = ['test' => 'test'];
         $this->transaction->setParams($paramsArray);
         $this->assertNotNull($this->transaction->getTransactionParamsArray());
         $this->assertSame($paramsArray, $this->transaction->getTransactionParamsArray());
     }
 
-    public function test_getIconservice(){
+    public function test_getIconservice()
+    {
         $this->assertInstanceOf(IconService::class, $this->transaction->getIconService());
     }
 }

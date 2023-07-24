@@ -1,7 +1,8 @@
 <?php
 
-namespace iconation\IconSDK\IconService;
+namespace iconation\IconSDK\Tokens;
 
+use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
 use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Wallet\Wallet;
@@ -20,32 +21,46 @@ class IRC3
         $this->contract = $contract;
         $this->iconService = $iconService;
     }
+
+    /**
+     * @throws \Exception
+     */
     public function name(): ?stdClass
     {
         $params = new stdClass();
         $params->method = "name";
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function symbol(): ?stdClass
     {
         $params = new stdClass();
         $params->method = "symbol";
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function balanceOf(string $owner): ?stdClass
     {
         $params = new stdClass();
@@ -54,13 +69,18 @@ class IRC3
         $params->params->_owner = $owner;
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function ownerOf(string $tokenId): ?stdClass
     {
         $params = new stdClass();
@@ -69,13 +89,18 @@ class IRC3
         $params->params->_tokenId = $tokenId;
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getApproved(string $tokenId): ?stdClass
     {
         $params = new stdClass();
@@ -84,11 +109,13 @@ class IRC3
         $params->params->_tokenId = $tokenId;
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -148,6 +175,9 @@ class IRC3
         return $this->sendTransferTransaction($to, $params, $tokenId, $data, $wallet, $nid, $stepLimit);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function totalSupply(): ?stdClass
     {
         $params = new stdClass();
@@ -155,11 +185,13 @@ class IRC3
 
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
 
@@ -175,11 +207,13 @@ class IRC3
 
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -194,11 +228,13 @@ class IRC3
         $params->params->_index = strval($index);
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
 
@@ -223,7 +259,7 @@ class IRC3
         }
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::SEND_TRANSACTION)
             ->from(address: $from)
             ->to(address:$this->contract)
@@ -234,7 +270,9 @@ class IRC3
             ->call(params: $params)
             ->stepLimit(stepLimit: $stepLimit)
             ->sign(wallet: $wallet)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -258,7 +296,7 @@ class IRC3
         }
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::SEND_TRANSACTION)
             ->from(address: $from)
             ->to(address:$this->contract)
@@ -269,7 +307,9 @@ class IRC3
             ->call(params: $params)
             ->stepLimit(stepLimit: $stepLimit)
             ->sign(wallet: $wallet)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -292,7 +332,7 @@ class IRC3
         }
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::SEND_TRANSACTION)
             ->from(address: $wallet->getPublicAddress())
             ->to(address: $this->contract)
@@ -303,6 +343,8 @@ class IRC3
             ->call(params: $params)
             ->stepLimit(stepLimit: $stepLimit)
             ->sign(wallet: $wallet)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 }

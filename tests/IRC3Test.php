@@ -1,7 +1,7 @@
 <?php
 
 use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC3;
+use iconation\IconSDK\Tokens\IRC3;
 use iconation\IconSDK\Wallet\Wallet;
 use PHPUnit\Framework\TestCase;
 
@@ -112,8 +112,8 @@ class IRC3Test extends TestCase
         sleep(5);
 
         $this->assertTrue(!isset($this->irc3->tokenOfOwnerByIndex(
-            owner: $this->wallet->getPublicAddress(),
-            index: 0
+                owner: $this->wallet->getPublicAddress(),
+                index: 0
             )->error));
 
         $this->cleanUp($this->wallet);
@@ -212,7 +212,7 @@ class IRC3Test extends TestCase
             owner: $wallet->getPublicAddress(),
         )->result);
 
-        for ($index = $numberOfTokens; $index > 0 ; $index--) {
+        for ($index = $numberOfTokens; $index > 0; $index--) {
             try {
                 $tokenId = hexdec($this->irc3->tokenOfOwnerByIndex(
                     owner: $wallet->getPublicAddress(),

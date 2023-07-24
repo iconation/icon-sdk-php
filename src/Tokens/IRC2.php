@@ -1,7 +1,8 @@
 <?php
 
-namespace iconation\IconSDK\IconService;
+namespace iconation\IconSDK\Tokens;
 
+use iconation\IconSDK\IconService\IconService;
 use iconation\IconSDK\Transaction\TransactionBuilder;
 use iconation\IconSDK\Transaction\TransactionTypes;
 use iconation\IconSDK\Utils\Helpers;
@@ -32,11 +33,13 @@ class IRC2
 
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -48,11 +51,13 @@ class IRC2
         $params->method = "symbol";
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -64,11 +69,13 @@ class IRC2
         $params->method = "decimals";
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -80,11 +87,13 @@ class IRC2
         $params->method = "totalSupply";
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -98,11 +107,13 @@ class IRC2
         $params->params->_owner = $account;
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->contract)
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
     /**
@@ -127,7 +138,7 @@ class IRC2
         }
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::SEND_TRANSACTION)
             ->from(address: $wallet->getPublicAddress())
             ->to(address:$this->contract)
@@ -138,6 +149,8 @@ class IRC2
             ->call(params: $params)
             ->stepLimit(stepLimit: $stepLimit)
             ->sign(wallet: $wallet)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 }

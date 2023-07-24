@@ -117,6 +117,9 @@ class TransactionBuilder
         return $this;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function stepLimit(?string $stepLimit = null): TransactionBuilder
     {
         if (is_null($stepLimit)){
@@ -124,7 +127,8 @@ class TransactionBuilder
             $this->transaction->getIconService()->setIconServiceUrl($url . 'd');
 
             $method = $this->transaction->getMethod();
-            $stepLimit = $this->method(method: TransactionTypes::ESTIMATE_STEP)->send();
+            $transaction = $this->method(method: TransactionTypes::ESTIMATE_STEP)->build();
+            $stepLimit = $transaction->send();
             $stepLimit = isset($stepLimit) ? ($stepLimit->result ?? '0x0') : '0x0';
 
             //Revert changes to method and iconservice
@@ -232,25 +236,7 @@ class TransactionBuilder
         return $this;
     }
 
-    public function get(): Transaction
-    {
-        return $this->transaction;
-    }
-
     public function build(): Transaction
-    {
-        return $this->transaction;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function send(?bool $wait = false): ?\stdClass
-    {
-         return $this->iconServiceHelper->sendRequest($this->transaction->getTransactionObject(), $wait);
-    }
-
-    public function getTransaction(): Transaction
     {
         return $this->transaction;
     }

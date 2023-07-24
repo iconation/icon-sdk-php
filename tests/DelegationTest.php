@@ -2,7 +2,6 @@
 
 use iconation\IconSDK\IISS\Delegation;
 use PHPUnit\Framework\TestCase;
-use iconation\IconSDK\Transaction\Transaction;
 
 
 /**

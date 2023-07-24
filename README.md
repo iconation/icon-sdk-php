@@ -152,9 +152,9 @@ $res = $iconservice->message($from, $to, $private_key, $message);
 ```
 ### IRC-2:
 * name
+
 ```php
-use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\IconService\IconService;use iconation\IconSDK\Tokens\IRC2;
 
 $contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
@@ -163,9 +163,9 @@ $irc2 = new IRC2($contract, $iconservice);
 $res = $irc2->name();
 ```
 * symbol
+
 ```php
-use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\IconService\IconService;use iconation\IconSDK\Tokens\IRC2;
 
 $contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
@@ -174,9 +174,9 @@ $irc2 = new IRC2($contract, $iconservice);
 $res = $irc2->symbol();
 ```
 * decimals
+
 ```php
-use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\IconService\IconService;use iconation\IconSDK\Tokens\IRC2;
 
 $contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
@@ -185,9 +185,9 @@ $irc2 = new IRC2($contract, $iconservice);
 $res = $irc2->decimals();
 ```
 * totalSupply
+
 ```php
-use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\IconService\IconService;use iconation\IconSDK\Tokens\IRC2;
 
 $contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
@@ -196,9 +196,9 @@ $irc2 = new IRC2($contract, $iconservice);
 $res = $irc2->totalSupply();
 ```
 * balanceOf
+
 ```php
-use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\IconService\IconService;use iconation\IconSDK\Tokens\IRC2;
 
 $contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');
@@ -209,9 +209,9 @@ $account = 'hx8dc6ae3d93e60a2dddf80bfc5fb1cd16a2bf6160';
 $res = $irc2->balanceOf($account);
 ```
 * transfer
+
 ```php
-use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\IconService\IconService;use iconation\IconSDK\Tokens\IRC2;
 
 $contract = 'cx8901ee4f6df58bd437de0e66c9dd3385ba4c2328';
 $iconservice = new IconService('https://ctz.solidwallet.io/api/v3');

@@ -3,20 +3,23 @@
 namespace iconation\IconSDK\Transaction;
 
 use iconation\IconSDK\IconService\IconService;
+use iconation\IconSDK\Utils\IconServiceHelper;
 
 class Transaction
 {
-    private $jsonrpc;
-    private $id;
-    private $iconService;
-    private $method;
-    private $params;
+    private string $jsonrpc;
+    private int $id;
+    private IconService $iconService;
+    private string $method;
+    private array|\stdClass $params;
+    private IconServiceHelper $iconServiceHelper;
 
-    public function __construct(IconService $iconService, int $id = 1234)
+    public function __construct(IconService $iconService, string $jsonrpc = null, int $id = null)
     {
-        $this->jsonrpc = '2.0';
+        $this->jsonrpc = is_null($jsonrpc) ? '2.0' : $jsonrpc;
         $this->iconService = $iconService;
-        $this->id = $id;
+        $this->id = is_null($id) ? rand(1, 10000) : $id;
+        $this->iconServiceHelper = new IconServiceHelper($iconService);
     }
 
     /**
@@ -38,7 +41,7 @@ class Transaction
     /**
      * @param string $method
      */
-    public function setMethod($method): void
+    public function setMethod(string $method): void
     {
         $this->method = $method;
     }
@@ -114,8 +117,8 @@ class Transaction
         if (!empty($this->getMethod())) {
             $transaction->method = $this->getMethod();
         }
-        if (!empty($this->getParams())) {
-            $transaction->params = $this->getParams();
+        if (!empty($this->params)) {
+            $transaction->params = $this->params;
         }
 
         return $transaction;
@@ -155,6 +158,14 @@ class Transaction
         }
 
         return $params;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function send(?bool $wait = false): ?\stdClass
+    {
+        return $this->iconServiceHelper->sendRequest($this->getTransactionObject(), $wait);
     }
 
 }

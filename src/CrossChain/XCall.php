@@ -23,6 +23,9 @@ class XCall
         $this->iconService = $iconService;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function sendCallMessage(string $data, string $rollbackData = null): ?stdClass
     {
         $encodedData = '0x'.bin2hex($data);
@@ -39,13 +42,18 @@ class XCall
 
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->sourceContract->getAddress())
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getFee(bool $rollback = false): ?stdClass
     {
         $params = new stdClass();
@@ -55,13 +63,18 @@ class XCall
         $params->params->_rollback = $rollback ? "0x1" : "0x0";
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->sourceContract->getAddress())
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function executeRollback(string $eventId): ?stdClass
     {
         $params = new stdClass();
@@ -70,13 +83,18 @@ class XCall
         $params->params->_sn = $eventId;
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->sourceContract->getAddress())
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function executeCall(string $reqId, $data): ?stdClass
     {
         $params = new stdClass();
@@ -86,10 +104,14 @@ class XCall
         $params->params->_data = $data;
         $transactionBuilder = new TransactionBuilder(iconService: $this->iconService);
 
-        return $transactionBuilder
+        $transaction = $transactionBuilder
             ->method(method: TransactionTypes::CALL)
             ->to(address:$this->destinationContact->getAddress())
             ->call(params: $params)
-            ->send();
+            ->build();
+
+        return $transaction->send();
     }
+
+    // TODO Add event listeners
 }

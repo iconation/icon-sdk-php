@@ -1,7 +1,7 @@
 <?php
 
 use iconation\IconSDK\IconService\IconService;
-use iconation\IconSDK\IconService\IRC2;
+use iconation\IconSDK\Tokens\IRC2;
 use iconation\IconSDK\Wallet\Wallet;
 use PHPUnit\Framework\TestCase;
 
